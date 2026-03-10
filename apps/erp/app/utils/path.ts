@@ -1507,6 +1507,8 @@ export const path = {
       generatePath(`${x}/warehouse-transfer/${transferId}/details/${lineId}`),
     shippingMethods: `${x}/inventory/shipping-methods`,
     supplier: (id: string) => generatePath(`${x}/supplier/${id}`),
+    supplierApproval: (id: string) =>
+      generatePath(`${x}/supplier/${id}/approval`),
     suppliers: `${x}/purchasing/suppliers`,
     supplierAccounts: `${x}/users/suppliers`,
     supplierAccounting: (id: string) =>
