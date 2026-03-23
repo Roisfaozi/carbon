@@ -164,6 +164,10 @@ const SalesInvoiceHeader = () => {
     );
   };
 
+  const IS_PAYMENT_DROPDOWN_DISABLED =
+    ["Voided", "Draft", "Pending"].includes(salesInvoice.status ?? "") ||
+    !permissions.can("update", "invoicing");
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-card border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -314,14 +318,13 @@ const SalesInvoiceHeader = () => {
               </Button>
             )}
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger
+                asChild
+                disabled={IS_PAYMENT_DROPDOWN_DISABLED}
+              >
                 <Button
                   variant="secondary"
-                  isDisabled={
-                    ["Voided", "Draft", "Pending"].includes(
-                      salesInvoice.status ?? ""
-                    ) || !permissions.can("update", "invoicing")
-                  }
+                  isDisabled={IS_PAYMENT_DROPDOWN_DISABLED}
                   leftIcon={<LuDollarSign />}
                   rightIcon={<LuChevronDown />}
                 >
