@@ -133,7 +133,7 @@ export function useNotifications({
       const headlessService = new HeadlessService({
         applicationIdentifier: NOVU_APPLICATION_ID!,
         backendUrl: isEu ? "https://eu.api.novu.co" : "https://api.novu.co",
-        socketUrl: isEu ? "wss://eu.socket.novu.co" : undefined, // ← base only, no /socket.io
+        socketUrl: isEu ? "wss://eu.ws.novu.co" : undefined, // ← base only, no /socket.io
         subscriberId
       });
 
