@@ -156,7 +156,7 @@ export async function getStripeCustomerByCompanyId(
   if (!customerId) {
     return null;
   }
-  const customer = await getStripeCustomer(customerId);
+  const customer = await getStripeCustomer(customerId, companyId);
   if (!customer || customer.status === "canceled") {
     return null;
   }
@@ -164,7 +164,10 @@ export async function getStripeCustomerByCompanyId(
   return customer;
 }
 
-export async function getStripeCustomer(customerId: string) {
+export async function getStripeCustomer(
+  customerId: string,
+  companyId?: string
+) {
   if (CarbonEdition !== Edition.Cloud) {
     return null;
   }
@@ -176,7 +179,7 @@ export async function getStripeCustomer(customerId: string) {
   if (!stripe) return null;
 
   try {
-    const result = await syncStripeDataToKV(customerId);
+    const result = await syncStripeDataToKV(customerId, companyId);
     return result?.data ?? null;
   } catch (error) {
     console.error("Failed to sync stripe data from API fallback:", error);
@@ -521,13 +524,6 @@ export async function syncStripeDataToKV(
     subscription.items.data[0].price.id
   );
 
-  if (!plan.data) {
-    console.error("Failed to get plan by price id:", plan.error);
-    throw new Error(
-      `Failed to get plan for price_id: ${subscription.items.data[0].price.id}`
-    );
-  }
-
   const subDataResult = KvStripeCustomerSchema.safeParse({
     subscriptionId: subscription.id,
     status: subscription.status,
@@ -557,9 +553,9 @@ export async function syncStripeDataToKV(
     const companyPlanData: Database["public"]["Tables"]["companyPlan"]["Insert"] =
       {
         id: companyId,
-        planId: plan.data?.id ?? null,
-        tasksLimit: plan.data.tasksLimit,
-        aiTokensLimit: plan.data.aiTokensLimit,
+        planId: plan.data?.id ?? "",
+        tasksLimit: plan.data.tasksLimit ?? 0,
+        aiTokensLimit: plan.data.aiTokensLimit ?? 0,
         usersLimit: 10, // Default value as defined in the migration
         stripeSubscriptionStatus: (subData.cancelAtPeriodEnd
           ? "Canceled"
