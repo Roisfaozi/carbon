@@ -118,7 +118,7 @@ const Documents = ({
         return;
       }
 
-      const url = path.to.file.previewFile(`private/${model.modelPath}`);
+      const url = path.to.file.preview("private", model.modelPath);
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -165,7 +165,7 @@ const Documents = ({
 
   const download = useCallback(
     async (file: StorageItem) => {
-      const url = path.to.file.previewFile(`private/${getReadPath(file)}`);
+      const url = path.to.file.preview("private", getReadPath(file));
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -354,9 +354,7 @@ const Documents = ({
                         onClick={() => {
                           if (["PDF", "Image"].includes(type)) {
                             window.open(
-                              path.to.file.previewFile(
-                                `${"private"}/${getReadPath(file)}`
-                              ),
+                              path.to.file.preview("private", getReadPath(file)),
                               "_blank"
                             );
                           } else {

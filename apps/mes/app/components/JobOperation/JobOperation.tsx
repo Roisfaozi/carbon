@@ -1441,10 +1441,9 @@ export const JobOperation = ({
                                               ["PDF", "Image"].includes(type)
                                             ) {
                                               window.open(
-                                                path.to.file.previewFile(
-                                                  `${"private"}/${getFilePath(
-                                                    file
-                                                  )}`
+                                                path.to.file.preview(
+                                                  "private",
+                                                  getFilePath(file)
                                                 ),
                                                 "_blank"
                                               );

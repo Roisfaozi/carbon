@@ -255,7 +255,10 @@ export const path = {
         generatePath(`${file}/preview/${bucket}/${path}`),
       previewImage: (bucket: string, path: string) =>
         generatePath(`${file}/preview/image?file=${bucket}/${path}`),
-      previewFile: (path: string) => generatePath(`${file}/preview/${path}`),
+      previewFile: (bucketOrPath: string, path?: string) =>
+        path
+          ? generatePath(`${file}/preview/${bucketOrPath}/${path}`)
+          : generatePath(`${file}/preview/${bucketOrPath}`),
       purchaseOrder: (id: string) =>
         generatePath(`${file}/purchase-order/${id}.pdf`),
       receiptLabelsPdf: (
@@ -1639,9 +1642,16 @@ export const getParams = (request: Request) => {
   return searchParams.toString();
 };
 
-export const getPrivateUrl = (path: string) => {
-  return `/file/preview/private/${path}`;
-};
+/**
+ * @deprecated Prefer `path.to.file.preview(bucket, objectPath)` in new code.
+ */
+export function getPrivateUrl(path: string): string;
+export function getPrivateUrl(bucket: string, objectPath: string): string;
+export function getPrivateUrl(bucketOrPath: string, objectPath?: string) {
+  return objectPath
+    ? path.to.file.preview(bucketOrPath, objectPath)
+    : path.to.file.preview("private", bucketOrPath);
+}
 
 export const getPublicModelUrl = (path: string) => {
   return `/file/model/public/${path}`;

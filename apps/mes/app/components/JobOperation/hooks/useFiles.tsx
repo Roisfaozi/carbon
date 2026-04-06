@@ -32,7 +32,7 @@ export function useFiles(job: Job) {
 
   const downloadFile = useCallback(
     async (file: StorageItem) => {
-      const url = path.to.file.previewFile(`private/${getFilePath(file)}`);
+      const url = path.to.file.preview("private", getFilePath(file));
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -59,7 +59,7 @@ export function useFiles(job: Job) {
         return;
       }
 
-      const url = path.to.file.previewFile(`private/${model.modelPath}`);
+      const url = path.to.file.preview("private", model.modelPath);
       try {
         const response = await fetch(url);
         const blob = await response.blob();

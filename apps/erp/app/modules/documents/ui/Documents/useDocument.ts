@@ -71,7 +71,7 @@ export const useDocument = () => {
     async (doc: DocumentType) => {
       if (!doc.path) throw new Error("Document path is undefined");
 
-      const url = path.to.file.previewFile(`private/${doc.path}`);
+      const url = path.to.file.preview("private", doc.path);
       try {
         const response = await fetch(url);
         const blob = await response.blob();

@@ -227,7 +227,7 @@ function MaintenanceFilesContent({
   const download = useCallback(
     async (file: FileObject) => {
       const filePath = getFilePath(file.name);
-      const url = path.to.file.previewFile(`private/${filePath}`);
+      const url = path.to.file.preview("private", filePath);
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -312,8 +312,9 @@ function MaintenanceFilesContent({
                       onClick={() => {
                         if (["PDF", "Image"].includes(type)) {
                           window.open(
-                            path.to.file.previewFile(
-                              `private/${getFilePath(file.name)}`
+                            path.to.file.preview(
+                              "private",
+                              getFilePath(file.name)
                             ),
                             "_blank"
                           );
