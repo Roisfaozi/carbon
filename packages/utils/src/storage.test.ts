@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest";
 import {
   LEGACY_PRIVATE_BUCKET,
   buildCompanyPrivateStorageTarget,
-  getCompanyPrivateBucket
+  downloadPrivateObjectWithFallback,
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets,
+  hasCompanyPrivateObjectPathPrefix,
+  isAllowedPrivateBucketForCompany
 } from "./storage";
 
 describe("storage helpers", () => {
@@ -56,6 +60,66 @@ describe("storage helpers", () => {
       physicalBucket: "cmp_123",
       logicalFolder: "models",
       objectPath: "cmp_123/models/render.png"
+    });
+  });
+
+  it("validates the expected company prefix in private object paths", () => {
+    expect(
+      hasCompanyPrivateObjectPathPrefix(
+        "cmp_123",
+        "cmp_123/job/job_987/work-instruction.pdf"
+      )
+    ).toBe(true);
+    expect(
+      hasCompanyPrivateObjectPathPrefix(
+        "cmp_123",
+        "other-company/job/job_987/work-instruction.pdf"
+      )
+    ).toBe(false);
+  });
+
+  it("allows only the company bucket and legacy private bucket", () => {
+    expect(isAllowedPrivateBucketForCompany("cmp_123", "cmp_123")).toBe(true);
+    expect(isAllowedPrivateBucketForCompany("private", "cmp_123")).toBe(true);
+    expect(isAllowedPrivateBucketForCompany("public", "cmp_123")).toBe(false);
+  });
+
+  it("returns company-first fallback buckets for private reads", () => {
+    expect(getPrivateReadCandidateBuckets("cmp_123")).toEqual([
+      "cmp_123",
+      "private"
+    ]);
+    expect(getPrivateReadCandidateBuckets("cmp_123", "cmp_123")).toEqual([
+      "cmp_123",
+      "private"
+    ]);
+    expect(getPrivateReadCandidateBuckets("cmp_123", "private")).toEqual([
+      "private"
+    ]);
+    expect(getPrivateReadCandidateBuckets("cmp_123", "public")).toEqual([]);
+  });
+
+  it("falls back from the company bucket to the legacy private bucket", async () => {
+    const bucketsTried: string[] = [];
+    const result = await downloadPrivateObjectWithFallback({
+      companyId: "cmp_123",
+      objectPath: "cmp_123/job/job_987/work-instruction.pdf",
+      requestedBucket: "cmp_123",
+      downloadObject: async (physicalBucket) => {
+        bucketsTried.push(physicalBucket);
+
+        if (physicalBucket === "private") {
+          return { data: "legacy-file", error: null };
+        }
+
+        return { data: null, error: { message: "Not found" } };
+      }
+    });
+
+    expect(bucketsTried).toEqual(["cmp_123", "private"]);
+    expect(result).toEqual({
+      data: "legacy-file",
+      physicalBucket: "private"
     });
   });
 });

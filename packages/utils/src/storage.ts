@@ -6,6 +6,11 @@ export type PrivateStorageTarget = {
   objectPath: string;
 };
 
+type DownloadPrivateObjectResult<TData> = {
+  data: TData | null;
+  error: unknown | null;
+};
+
 type BuildCompanyPrivateStorageTargetInput = {
   companyId: string;
   logicalFolder: string;
@@ -21,6 +26,66 @@ const normalizeStorageSegment = (value: string) =>
 
 export const getCompanyPrivateBucket = (companyId: string) => {
   return normalizeStorageSegment(companyId);
+};
+
+export const hasCompanyPrivateObjectPathPrefix = (
+  companyId: string,
+  objectPath: string
+) => {
+  return objectPath.startsWith(`${getCompanyPrivateBucket(companyId)}/`);
+};
+
+export const getPrivateReadCandidateBuckets = (
+  companyId: string,
+  requestedBucket?: string
+) => {
+  const companyBucket = getCompanyPrivateBucket(companyId);
+  const candidates =
+    !requestedBucket || requestedBucket === companyBucket
+      ? [companyBucket, LEGACY_PRIVATE_BUCKET]
+      : requestedBucket === LEGACY_PRIVATE_BUCKET
+        ? [LEGACY_PRIVATE_BUCKET]
+        : [];
+
+  return [...new Set(candidates)];
+};
+
+export const isAllowedPrivateBucketForCompany = (
+  bucket: string,
+  companyId: string
+) => {
+  return getPrivateReadCandidateBuckets(companyId, bucket).length > 0;
+};
+
+export const downloadPrivateObjectWithFallback = async <TData>({
+  companyId,
+  objectPath,
+  requestedBucket,
+  downloadObject
+}: {
+  companyId: string;
+  objectPath: string;
+  requestedBucket?: string;
+  downloadObject: (
+    physicalBucket: string,
+    objectPath: string
+  ) => Promise<DownloadPrivateObjectResult<TData>>;
+}) => {
+  for (const physicalBucket of getPrivateReadCandidateBuckets(
+    companyId,
+    requestedBucket
+  )) {
+    const result = await downloadObject(physicalBucket, objectPath);
+
+    if (!result.error && result.data) {
+      return {
+        data: result.data,
+        physicalBucket
+      };
+    }
+  }
+
+  return null;
 };
 
 export const buildCompanyPrivateStorageTarget = ({
