@@ -1,18 +1,18 @@
-import type { Database, Json } from '@carbon/database'
-import { fetchAllFromTable } from '@carbon/database'
+import type { Database, Json } from "@carbon/database";
+import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback,
-} from '@carbon/utils'
-import { getLocalTimeZone, today } from '@internationalized/date'
-import type { SupabaseClient } from '@supabase/supabase-js'
-import { nanoid } from 'nanoid'
-import type { z } from 'zod'
-import type { StorageItem } from '~/types'
-import type { GenericQueryFilters } from '~/utils/query'
-import { setGenericQueryFilters } from '~/utils/query'
-import { sanitize } from '~/utils/supabase'
-import { getItemShelfQuantities } from '../items/items.service'
+  listPrivateObjectsWithFallback
+} from "@carbon/utils";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { nanoid } from "nanoid";
+import type { z } from "zod";
+import type { StorageItem } from "~/types";
+import type { GenericQueryFilters } from "~/utils/query";
+import { setGenericQueryFilters } from "~/utils/query";
+import { sanitize } from "~/utils/supabase";
+import { getItemShelfQuantities } from "../items/items.service";
 import type {
   batchPropertyOrderValidator,
   batchPropertyValidator,
@@ -24,94 +24,97 @@ import type {
   shippingMethodValidator,
   stockTransferLineValidator,
   stockTransferValidator,
-  warehouseTransferValidator,
-} from './inventory.models'
+  warehouseTransferValidator
+} from "./inventory.models";
 
 export async function deleteBatchProperty(
   client: SupabaseClient<Database>,
-  id: string,
+  id: string
 ) {
-  return client.from('batchProperty').delete().eq('id', id)
+  return client.from("batchProperty").delete().eq("id", id);
 }
 
 export async function deleteKanban(
   client: SupabaseClient<Database>,
-  kanbanId: string,
+  kanbanId: string
 ) {
-  return client.from('kanban').delete().eq('id', kanbanId)
+  return client.from("kanban").delete().eq("id", kanbanId);
 }
 
 export async function deleteReceipt(
   client: SupabaseClient<Database>,
-  receiptId: string,
+  receiptId: string
 ) {
-  return client.from('receipt').delete().eq('id', receiptId)
+  return client.from("receipt").delete().eq("id", receiptId);
 }
 
 export async function deleteReceiptLine(
   client: SupabaseClient<Database>,
-  receiptLineId: string,
+  receiptLineId: string
 ) {
-  return client.from('receiptLine').delete().eq('id', receiptLineId)
+  return client.from("receiptLine").delete().eq("id", receiptLineId);
 }
 
 export async function deleteShelf(
   client: SupabaseClient<Database>,
-  shelfId: string,
+  shelfId: string
 ) {
-  return client.from('shelf').delete().eq('id', shelfId)
+  return client.from("shelf").delete().eq("id", shelfId);
 }
 
 export async function deleteShipment(
   client: SupabaseClient<Database>,
-  shipmentId: string,
+  shipmentId: string
 ) {
-  return client.from('shipment').delete().eq('id', shipmentId)
+  return client.from("shipment").delete().eq("id", shipmentId);
 }
 
 export async function deleteShipmentLine(
   client: SupabaseClient<Database>,
-  shipmentLineId: string,
+  shipmentLineId: string
 ) {
-  return client.from('shipmentLine').delete().eq('id', shipmentLineId)
+  return client.from("shipmentLine").delete().eq("id", shipmentLineId);
 }
 
 export async function deleteShippingMethod(
   client: SupabaseClient<Database>,
-  shippingMethodId: string,
+  shippingMethodId: string
 ) {
   return client
-    .from('shippingMethod')
+    .from("shippingMethod")
     .update({ active: false })
-    .eq('id', shippingMethodId)
+    .eq("id", shippingMethodId);
 }
 
 export async function deleteStockTransfer(
   client: SupabaseClient<Database>,
-  stockTransferId: string,
+  stockTransferId: string
 ) {
-  return client.from('stockTransfer').delete().eq('id', stockTransferId)
+  return client.from("stockTransfer").delete().eq("id", stockTransferId);
 }
 
 export async function deleteStockTransferLine(
   client: SupabaseClient<Database>,
-  stockTransferLineId: string,
+  stockTransferLineId: string
 ) {
-  return client.from('stockTransferLine').delete().eq('id', stockTransferLineId)
+  return client
+    .from("stockTransferLine")
+    .delete()
+    .eq("id", stockTransferLineId);
 }
 
 export async function deleteWarehouseTransfer(
   client: SupabaseClient<Database>,
-  transferId: string,
+  transferId: string
 ) {
-  return client.from('warehouseTransfer').delete().eq('id', transferId)
+  return client.from("warehouseTransfer").delete().eq("id", transferId);
 }
 
 export async function deleteWarehouseTransferLine(
   client: SupabaseClient<Database>,
-  transferLineId: string,
+  transferLineId: string
 ) {
-  return client.from('warehouseTransferLine').delete().eq('id', transferLineId)
+  return client.from("warehouseTransferLine").delete().eq("id", transferLineId);
 }
 
 export async function getItemLedgerPage(
@@ -120,24 +123,24 @@ export async function getItemLedgerPage(
   companyId: string,
   locationId: string,
   sortDescending: boolean = false,
-  page: number = 1,
+  page: number = 1
 ) {
-  const pageSize = 20
-  const offset = (page - 1) * pageSize
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
 
   let query = client
-    .from('itemLedger')
-    .select('*, shelf(name)', { count: 'exact' })
-    .eq('itemId', itemId)
-    .eq('companyId', companyId)
-    .eq('locationId', locationId)
-    .order('createdAt', { ascending: !sortDescending })
-    .range(offset, offset + pageSize - 1)
+    .from("itemLedger")
+    .select("*, shelf(name)", { count: "exact" })
+    .eq("itemId", itemId)
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .order("createdAt", { ascending: !sortDescending })
+    .range(offset, offset + pageSize - 1);
 
-  const { data, error, count } = await query
+  const { data, error, count } = await query;
 
   if (error) {
-    return { error }
+    return { error };
   }
 
   return {
@@ -145,21 +148,21 @@ export async function getItemLedgerPage(
     count,
     page,
     pageSize,
-    hasMore: count !== null && offset + pageSize < count,
-  }
+    hasMore: count !== null && offset + pageSize < count
+  };
 }
 
 export async function getBatchProperties(
   client: SupabaseClient<Database>,
   itemIds: string[],
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('batchProperty')
-    .select('*')
-    .in('itemId', itemIds)
-    .eq('companyId', companyId)
-    .order('sortOrder')
+    .from("batchProperty")
+    .select("*")
+    .in("itemId", itemIds)
+    .eq("companyId", companyId)
+    .order("sortOrder");
 }
 
 export async function getInventoryItems(
@@ -167,31 +170,31 @@ export async function getInventoryItems(
   locationId: string,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client.rpc(
-    'get_inventory_quantities',
+    "get_inventory_quantities",
     {
       location_id: locationId,
-      company_id: companyId,
+      company_id: companyId
     },
     {
-      count: 'exact',
-    },
-  )
+      count: "exact"
+    }
+  );
 
   if (args?.search) {
     query = query.or(
-      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`,
-    )
+      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'readableIdWithRevision', ascending: true },
-  ])
+    { column: "readableIdWithRevision", ascending: true }
+  ]);
 
-  return query
+  return query;
 }
 
 export async function getInventoryItemsCount(
@@ -199,26 +202,26 @@ export async function getInventoryItemsCount(
   locationId: string,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('item')
-    .select('id', {
-      count: 'exact',
+    .from("item")
+    .select("id", {
+      count: "exact"
     })
-    .neq('itemTrackingType', 'Non-Inventory')
-    .eq('companyId', companyId)
+    .neq("itemTrackingType", "Non-Inventory")
+    .eq("companyId", companyId);
 
   if (args?.search) {
     query = query.or(
-      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`,
-    )
+      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`
+    );
   }
 
-  query = setGenericQueryFilters(query, args)
+  query = setGenericQueryFilters(query, args);
 
-  return query
+  return query;
 }
 
 export async function getKanbans(
@@ -226,216 +229,216 @@ export async function getKanbans(
   locationId: string,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('kanbans')
-    .select('*', {
-      count: 'exact',
+    .from("kanbans")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .eq('locationId', locationId)
+    .eq("companyId", companyId)
+    .eq("locationId", locationId);
 
   if (args.search) {
     query = query.or(
-      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`,
-    )
+      `name.ilike.%${args.search}%,readableIdWithRevision.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'readableIdWithRevision', ascending: true },
-  ])
-  return query
+    { column: "readableIdWithRevision", ascending: true }
+  ]);
+  return query;
 }
 
 export async function getKanban(
   client: SupabaseClient<Database>,
-  kanbanId: string,
+  kanbanId: string
 ) {
-  return client.from('kanbans').select('*').eq('id', kanbanId).single()
+  return client.from("kanbans").select("*").eq("id", kanbanId).single();
 }
 
 export async function getStockTransfer(
   client: SupabaseClient<Database>,
-  stockTransferId: string,
+  stockTransferId: string
 ) {
   return client
-    .from('stockTransfer')
-    .select('*')
-    .eq('id', stockTransferId)
-    .single()
+    .from("stockTransfer")
+    .select("*")
+    .eq("id", stockTransferId)
+    .single();
 }
 
 export async function getStockTransferLine(
   client: SupabaseClient<Database>,
-  stockTransferLineId: string,
+  stockTransferLineId: string
 ) {
   return client
-    .from('stockTransferLines')
-    .select('*')
-    .eq('id', stockTransferLineId)
-    .single()
+    .from("stockTransferLines")
+    .select("*")
+    .eq("id", stockTransferLineId)
+    .single();
 }
 
 export async function getStockTransferLines(
   client: SupabaseClient<Database>,
-  stockTransferId: string,
+  stockTransferId: string
 ) {
   return client
-    .from('stockTransferLines')
-    .select('*')
-    .eq('stockTransferId', stockTransferId)
-    .order('itemReadableId', { ascending: true })
-    .order('createdAt', { ascending: true })
+    .from("stockTransferLines")
+    .select("*")
+    .eq("stockTransferId", stockTransferId)
+    .order("itemReadableId", { ascending: true })
+    .order("createdAt", { ascending: true });
 }
 
 export async function getStockTransferTracking(
   client: SupabaseClient<Database>,
   stockTransferId: string,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('trackedActivity')
-    .select('attributes, trackedActivityInput(trackedEntityId)')
-    .eq('sourceDocument', 'Stock Transfer')
-    .eq('sourceDocumentId', stockTransferId)
-    .eq('companyId', companyId)
+    .from("trackedActivity")
+    .select("attributes, trackedActivityInput(trackedEntityId)")
+    .eq("sourceDocument", "Stock Transfer")
+    .eq("sourceDocumentId", stockTransferId)
+    .eq("companyId", companyId);
 }
 
 export async function getStockTransfers(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-    locationId: string | null
-  },
+    search: string | null;
+    locationId: string | null;
+  }
 ) {
   let query = client
-    .from('stockTransfer')
-    .select('*', {
-      count: 'exact',
+    .from("stockTransfer")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
+    .eq("companyId", companyId);
 
   if (args.search) {
-    query = query.ilike('stockTransferId', `%${args.search}%`)
+    query = query.ilike("stockTransferId", `%${args.search}%`);
   }
 
   if (args.locationId) {
-    query = query.eq('locationId', args.locationId)
+    query = query.eq("locationId", args.locationId);
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'stockTransferId', ascending: false },
-  ])
-  return query
+    { column: "stockTransferId", ascending: false }
+  ]);
+  return query;
 }
 
 export async function getDefaultShelfOrShelfWithHighestQuantity(
   client: SupabaseClient<Database>,
   itemId: string,
   locationId: string,
-  companyId: string,
+  companyId: string
 ) {
   const pickMethod = await client
-    .from('pickMethod')
-    .select('defaultShelfId')
-    .eq('itemId', itemId)
-    .eq('locationId', locationId)
-    .eq('companyId', companyId)
-    .maybeSingle()
+    .from("pickMethod")
+    .select("defaultShelfId")
+    .eq("itemId", itemId)
+    .eq("locationId", locationId)
+    .eq("companyId", companyId)
+    .maybeSingle();
 
-  if (pickMethod.data?.defaultShelfId) return pickMethod.data.defaultShelfId
+  if (pickMethod.data?.defaultShelfId) return pickMethod.data.defaultShelfId;
 
   const shelves = await getItemShelfQuantities(
     client,
     itemId,
     companyId,
-    locationId,
-  )
+    locationId
+  );
 
   const shelfWithHighestQuantity = shelves.data?.reduce(
     (acc, curr) => {
       return acc.quantity > curr.quantity
         ? acc
-        : { ...curr, quantity: acc.quantity, shelfId: acc.shelfId }
+        : { ...curr, quantity: acc.quantity, shelfId: acc.shelfId };
     },
-    { quantity: 0, shelfId: null },
-  )
+    { quantity: 0, shelfId: null }
+  );
 
-  return shelfWithHighestQuantity?.shelfId ?? null
+  return shelfWithHighestQuantity?.shelfId ?? null;
 }
 
 export async function getReceipts(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('receipt')
-    .select('*', {
-      count: 'exact',
+    .from("receipt")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .neq('sourceDocumentId', '')
+    .eq("companyId", companyId)
+    .neq("sourceDocumentId", "");
 
   if (args.search) {
     query = query.or(
-      `receiptId.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%`,
-    )
+      `receiptId.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'receiptId', ascending: false },
-  ])
-  return query
+    { column: "receiptId", ascending: false }
+  ]);
+  return query;
 }
 
 export async function getReceipt(
   client: SupabaseClient<Database>,
-  receiptId: string,
+  receiptId: string
 ) {
-  return client.from('receipt').select('*').eq('id', receiptId).single()
+  return client.from("receipt").select("*").eq("id", receiptId).single();
 }
 
 export async function getReceiptLines(
   client: SupabaseClient<Database>,
-  receiptId: string,
+  receiptId: string
 ) {
-  return client.from('receiptLines').select('*').eq('receiptId', receiptId)
+  return client.from("receiptLines").select("*").eq("receiptId", receiptId);
 }
 
 export async function getReceiptTracking(
   client: SupabaseClient<Database>,
   receiptId: string,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('attributes ->> Receipt', receiptId)
-    .eq('companyId', companyId)
+    .from("trackedEntity")
+    .select("*")
+    .eq("attributes ->> Receipt", receiptId)
+    .eq("companyId", companyId);
 }
 
 export async function getReceiptLineTracking(
   client: SupabaseClient<Database>,
   receiptLineId: string,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('attributes ->> Receipt Line', receiptLineId)
-    .eq('companyId', companyId)
+    .from("trackedEntity")
+    .select("*")
+    .eq("attributes ->> Receipt Line", receiptLineId)
+    .eq("companyId", companyId);
 }
 
 export async function getReceiptFiles(
   client: SupabaseClient<Database>,
   companyId: string,
-  lineIds: string[],
+  lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
   const promises = lineIds.map(async (lineId) => ({
     data: await listPrivateObjectsWithFallback({
@@ -444,88 +447,88 @@ export async function getReceiptFiles(
       objectPathPrefix: `${companyId}/inventory/${lineId}`,
       listObjects: (physicalBucket, prefix) =>
         client.storage.from(physicalBucket).list(prefix),
-      getItemKey: (item) => item.name,
+      getItemKey: (item) => item.name
     }),
     error: null,
-    lineId,
-  }))
+    lineId
+  }));
 
-  const results = await Promise.all(promises)
+  const results = await Promise.all(promises);
 
   // Merge data arrays and add lineId as bucketName
   return {
     data: results.flatMap((result) =>
       (result.data ?? []).map((file) => ({
         ...file,
-        bucket: result.lineId,
-      })),
+        bucket: result.lineId
+      }))
     ),
-    error: null,
-  }
+    error: null
+  };
 }
 
 export async function getSerialNumbersForItem(
   client: SupabaseClient<Database>,
   args: {
-    itemId: string
-    companyId: string
-  },
+    itemId: string;
+    companyId: string;
+  }
 ) {
   let query = client
-    .from('trackedEntity')
-    .select('*')
-    .eq('sourceDocument', 'Item')
-    .eq('sourceDocumentId', args.itemId)
-    .eq('companyId', args.companyId)
-    .eq('quantity', 1)
+    .from("trackedEntity")
+    .select("*")
+    .eq("sourceDocument", "Item")
+    .eq("sourceDocumentId", args.itemId)
+    .eq("companyId", args.companyId)
+    .eq("quantity", 1);
 
-  return query
+  return query;
 }
 
 export async function getBatchNumbersForItem(
   client: SupabaseClient<Database>,
   args: {
-    itemId: string
-    companyId: string
-    isReadOnly?: boolean
-  },
+    itemId: string;
+    companyId: string;
+    isReadOnly?: boolean;
+  }
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('sourceDocument', 'Item')
-    .eq('sourceDocumentId', args.itemId)
-    .eq('companyId', args.companyId)
-    .gte('quantity', 1)
+    .from("trackedEntity")
+    .select("*")
+    .eq("sourceDocument", "Item")
+    .eq("sourceDocumentId", args.itemId)
+    .eq("companyId", args.companyId)
+    .gte("quantity", 1);
 }
 
 export async function getShelvesList(
   client: SupabaseClient<Database>,
-  companyId: string,
+  companyId: string
 ) {
   return fetchAllFromTable<{
-    id: string
-    name: string
-  }>(client, 'shelf', 'id, name', (query) =>
-    query.eq('active', true).eq('companyId', companyId).order('name'),
-  )
+    id: string;
+    name: string;
+  }>(client, "shelf", "id, name", (query) =>
+    query.eq("active", true).eq("companyId", companyId).order("name")
+  );
 }
 
 export async function getShelvesListForLocation(
   client: SupabaseClient<Database>,
   companyId: string,
-  locationId: string,
+  locationId: string
 ) {
   return fetchAllFromTable<{
-    id: string
-    name: string
-  }>(client, 'shelf', 'id, name', (query) =>
+    id: string;
+    name: string;
+  }>(client, "shelf", "id, name", (query) =>
     query
-      .eq('active', true)
-      .eq('companyId', companyId)
-      .eq('locationId', locationId)
-      .order('name'),
-  )
+      .eq("active", true)
+      .eq("companyId", companyId)
+      .eq("locationId", locationId)
+      .order("name")
+  );
 }
 
 export async function getShelves(
@@ -533,90 +536,90 @@ export async function getShelves(
   locationId: string,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('shelf')
-    .select('*', {
-      count: 'exact',
+    .from("shelf")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .eq('locationId', locationId)
+    .eq("companyId", companyId)
+    .eq("locationId", locationId);
 
   if (args?.search) {
-    query = query.ilike('name', `%${args.search}%`)
+    query = query.ilike("name", `%${args.search}%`);
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'name', ascending: true },
-  ])
+    { column: "name", ascending: true }
+  ]);
 
-  return query
+  return query;
 }
 
 export async function getShelf(
   client: SupabaseClient<Database>,
-  shelfId: string,
+  shelfId: string
 ) {
-  return client.from('shelf').select('*').eq('id', shelfId).single()
+  return client.from("shelf").select("*").eq("id", shelfId).single();
 }
 
 export async function getShipments(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('shipment')
-    .select('*', {
-      count: 'exact',
+    .from("shipment")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .neq('sourceDocumentId', '')
+    .eq("companyId", companyId)
+    .neq("sourceDocumentId", "");
 
   if (args.search) {
     query = query.or(
-      `shipmentId.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%`,
-    )
+      `shipmentId.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'shipmentId', ascending: false },
-  ])
-  return query
+    { column: "shipmentId", ascending: false }
+  ]);
+  return query;
 }
 
 export async function getShipment(
   client: SupabaseClient<Database>,
-  shipmentId: string,
+  shipmentId: string
 ) {
-  return client.from('shipment').select('*').eq('id', shipmentId).single()
+  return client.from("shipment").select("*").eq("id", shipmentId).single();
 }
 
 export async function getShipmentLines(
   client: SupabaseClient<Database>,
-  shipmentId: string,
+  shipmentId: string
 ) {
   return client
-    .from('shipmentLines')
-    .select('*, fulfillment(*, job(*))')
-    .eq('shipmentId', shipmentId)
+    .from("shipmentLines")
+    .select("*, fulfillment(*, job(*))")
+    .eq("shipmentId", shipmentId);
 }
 
 export async function getShipmentLinesWithDetails(
   client: SupabaseClient<Database>,
-  shipmentId: string,
+  shipmentId: string
 ) {
-  return client.from('shipmentLines').select('*').eq('shipmentId', shipmentId)
+  return client.from("shipmentLines").select("*").eq("shipmentId", shipmentId);
 }
 
 export async function getShipmentFiles(
   client: SupabaseClient<Database>,
   companyId: string,
-  lineIds: string[],
+  lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
   const promises = lineIds.map(async (lineId) => ({
     data: await listPrivateObjectsWithFallback({
@@ -625,839 +628,839 @@ export async function getShipmentFiles(
       objectPathPrefix: `${companyId}/inventory/${lineId}`,
       listObjects: (physicalBucket, prefix) =>
         client.storage.from(physicalBucket).list(prefix),
-      getItemKey: (item) => item.name,
+      getItemKey: (item) => item.name
     }),
     error: null,
-    lineId,
-  }))
+    lineId
+  }));
 
-  const results = await Promise.all(promises)
+  const results = await Promise.all(promises);
 
   // Merge data arrays and add lineId as bucketName
   return {
     data: results.flatMap((result) =>
       (result.data ?? []).map((file) => ({
         ...file,
-        bucket: result.lineId,
-      })),
+        bucket: result.lineId
+      }))
     ),
-    error: null,
-  }
+    error: null
+  };
 }
 
 export async function getShipmentRelatedItems(
   client: SupabaseClient<Database>,
   shipmentId: string,
-  sourceDocumentId: string,
+  sourceDocumentId: string
 ) {
   const salesOrder = await client
-    .from('salesOrder')
-    .select('*')
-    .eq('id', sourceDocumentId)
-    .single()
+    .from("salesOrder")
+    .select("*")
+    .eq("id", sourceDocumentId)
+    .single();
 
   const invoices = await client
-    .from('salesInvoice')
-    .select('*')
+    .from("salesInvoice")
+    .select("*")
     .or(
       `shipmentId.eq.${shipmentId},opportunityId.eq.${
-        salesOrder.data?.opportunityId ?? ''
-      }`,
-    )
+        salesOrder.data?.opportunityId ?? ""
+      }`
+    );
 
   return {
-    invoices: invoices.data ?? [],
-  }
+    invoices: invoices.data ?? []
+  };
 }
 
 export async function getShipmentTracking(
   client: SupabaseClient<Database>,
   shipmentId: string,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('attributes ->> Shipment', shipmentId)
-    .eq('companyId', companyId)
+    .from("trackedEntity")
+    .select("*")
+    .eq("attributes ->> Shipment", shipmentId)
+    .eq("companyId", companyId);
 }
 
 export async function getShipmentLineTracking(
   client: SupabaseClient<Database>,
   shipmentLineId: string,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('attributes ->> Shipment Line', shipmentLineId)
-    .eq('companyId', companyId)
+    .from("trackedEntity")
+    .select("*")
+    .eq("attributes ->> Shipment Line", shipmentLineId)
+    .eq("companyId", companyId);
 }
 
 export async function getShippingMethod(
   client: SupabaseClient<Database>,
-  shippingMethodId: string,
+  shippingMethodId: string
 ) {
   return client
-    .from('shippingMethod')
-    .select('*')
-    .eq('id', shippingMethodId)
-    .single()
+    .from("shippingMethod")
+    .select("*")
+    .eq("id", shippingMethodId)
+    .single();
 }
 
 export async function getShippingMethods(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('shippingMethod')
-    .select('*', {
-      count: 'exact',
+    .from("shippingMethod")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .eq('active', true)
+    .eq("companyId", companyId)
+    .eq("active", true);
 
   if (args.search) {
     query = query.or(
-      `name.ilike.%${args.search}%,carrier.ilike.%${args.search}%`,
-    )
+      `name.ilike.%${args.search}%,carrier.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'name', ascending: true },
-  ])
-  return query
+    { column: "name", ascending: true }
+  ]);
+  return query;
 }
 
 export async function getShippingMethodsList(
   client: SupabaseClient<Database>,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('shippingMethod')
-    .select('id, name')
-    .eq('companyId', companyId)
-    .eq('active', true)
-    .order('name', { ascending: true })
+    .from("shippingMethod")
+    .select("id, name")
+    .eq("companyId", companyId)
+    .eq("active", true)
+    .order("name", { ascending: true });
 }
 
 export async function getShippingTermsList(
   client: SupabaseClient<Database>,
-  companyId: string,
+  companyId: string
 ) {
   return client
-    .from('shippingTerm')
-    .select('id, name')
-    .eq('companyId', companyId)
-    .eq('active', true)
-    .order('name', { ascending: true })
+    .from("shippingTerm")
+    .select("id, name")
+    .eq("companyId", companyId)
+    .eq("active", true)
+    .order("name", { ascending: true });
 }
 
 export async function getTrackedEntities(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('trackedEntity')
-    .select('*', {
-      count: 'exact',
+    .from("trackedEntity")
+    .select("*", {
+      count: "exact"
     })
-    .eq('companyId', companyId)
-    .neq('status', 'Reserved')
+    .eq("companyId", companyId)
+    .neq("status", "Reserved");
 
   if (args.search) {
     query = query.or(
-      `id.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%,readableId.ilike.%${args.search}%`,
-    )
+      `id.ilike.%${args.search}%,sourceDocumentReadableId.ilike.%${args.search}%,readableId.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'sourceDocumentReadableId', ascending: true },
-  ])
-  return query
+    { column: "sourceDocumentReadableId", ascending: true }
+  ]);
+  return query;
 }
 
 export async function getTrackedEntitiesByMakeMethodId(
   client: SupabaseClient<Database>,
-  jobMakeMethodId: string,
+  jobMakeMethodId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('attributes->>Job Make Method', jobMakeMethodId)
-    .order('createdAt', { ascending: true })
+    .from("trackedEntity")
+    .select("*")
+    .eq("attributes->>Job Make Method", jobMakeMethodId)
+    .order("createdAt", { ascending: true });
 }
 
 export async function getTrackedEntity(
   client: SupabaseClient<Database>,
-  trackedEntityId: string,
+  trackedEntityId: string
 ) {
   return client
-    .from('trackedEntity')
-    .select('*')
-    .eq('id', trackedEntityId)
-    .single()
+    .from("trackedEntity")
+    .select("*")
+    .eq("id", trackedEntityId)
+    .single();
 }
 
 export async function getTrackedEntitiesByOperationId(
   client: SupabaseClient<Database>,
-  operationId: string,
+  operationId: string
 ) {
   const jobOperation = await client
-    .from('jobOperation')
-    .select('jobMakeMethodId')
-    .eq('id', operationId)
-    .single()
+    .from("jobOperation")
+    .select("jobMakeMethodId")
+    .eq("id", operationId)
+    .single();
 
   if (jobOperation.error || !jobOperation.data.jobMakeMethodId)
     return {
       data: null,
-      error: jobOperation.error,
-    }
+      error: jobOperation.error
+    };
 
   return getTrackedEntitiesByMakeMethodId(
     client,
-    jobOperation.data.jobMakeMethodId,
-  )
+    jobOperation.data.jobMakeMethodId
+  );
 }
 
 export async function getWarehouseTransfers(
   client: SupabaseClient<Database>,
   companyId: string,
   args: GenericQueryFilters & {
-    search: string | null
-  },
+    search: string | null;
+  }
 ) {
   let query = client
-    .from('warehouseTransfer')
+    .from("warehouseTransfer")
     .select(
-      '*, fromLocation:location!fromLocationId(name), toLocation:location!toLocationId(name)',
+      "*, fromLocation:location!fromLocationId(name), toLocation:location!toLocationId(name)",
       {
-        count: 'exact',
-      },
+        count: "exact"
+      }
     )
-    .eq('companyId', companyId)
+    .eq("companyId", companyId);
 
   if (args.search) {
     query = query.or(
-      `transferId.ilike.%${args.search}%,reference.ilike.%${args.search}%`,
-    )
+      `transferId.ilike.%${args.search}%,reference.ilike.%${args.search}%`
+    );
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: 'transferId', ascending: false },
-  ])
-  return query
+    { column: "transferId", ascending: false }
+  ]);
+  return query;
 }
 
 export async function getWarehouseTransfer(
   client: SupabaseClient<Database>,
-  transferId: string,
+  transferId: string
 ) {
   return client
-    .from('warehouseTransfer')
+    .from("warehouseTransfer")
     .select(
-      '*, fromLocation:location!fromLocationId(*), toLocation:location!toLocationId(*)',
+      "*, fromLocation:location!fromLocationId(*), toLocation:location!toLocationId(*)"
     )
-    .eq('id', transferId)
-    .single()
+    .eq("id", transferId)
+    .single();
 }
 
 export async function getWarehouseTransferLine(
   client: SupabaseClient<Database>,
   transferId: string,
-  lineId: string,
+  lineId: string
 ) {
   return client
-    .from('warehouseTransferLine')
+    .from("warehouseTransferLine")
     .select(
-      '*, warehouseTransfer(*, fromLocation:location!fromLocationId(name), toLocation:location!toLocationId(name))',
+      "*, warehouseTransfer(*, fromLocation:location!fromLocationId(name), toLocation:location!toLocationId(name))"
     )
-    .eq('id', lineId)
-    .eq('transferId', transferId)
-    .single()
+    .eq("id", lineId)
+    .eq("transferId", transferId)
+    .single();
 }
 
 export async function getWarehouseTransferLines(
   client: SupabaseClient<Database>,
-  transferId: string,
+  transferId: string
 ) {
   return client
-    .from('warehouseTransferLine')
+    .from("warehouseTransferLine")
     .select(
-      '*, item(*), fromShelf:shelf!fromShelfId(name), toShelf:shelf!toShelfId(name)',
+      "*, item(*), fromShelf:shelf!fromShelfId(name), toShelf:shelf!toShelfId(name)"
     )
-    .eq('transferId', transferId)
+    .eq("transferId", transferId);
 }
 
 export async function insertManualInventoryAdjustment(
   client: SupabaseClient<Database>,
   inventoryAdjustment: z.infer<typeof inventoryAdjustmentValidator> & {
-    companyId: string
-    createdBy: string
-  },
+    companyId: string;
+    createdBy: string;
+  }
 ) {
   const { adjustmentType, readableId, originalShelfId, comment, ...rest } =
-    inventoryAdjustment
+    inventoryAdjustment;
   const data = {
     ...rest,
     entryType:
-      adjustmentType === 'Set Quantity' ? 'Positive Adjmt.' : adjustmentType, // This will be overwritten below
-    comment: comment || null,
-  }
+      adjustmentType === "Set Quantity" ? "Positive Adjmt." : adjustmentType, // This will be overwritten below
+    comment: comment || null
+  };
 
   const shelfQuantities = await client.rpc(
-    'get_item_quantities_by_tracking_id',
+    "get_item_quantities_by_tracking_id",
     {
       item_id: data.itemId,
       company_id: data.companyId,
-      location_id: data.locationId,
-    },
-  )
+      location_id: data.locationId
+    }
+  );
 
   const currentQuantity = inventoryAdjustment.trackedEntityId
     ? shelfQuantities?.data?.find(
         (quantity) =>
-          quantity.trackedEntityId == inventoryAdjustment.trackedEntityId,
+          quantity.trackedEntityId == inventoryAdjustment.trackedEntityId
       )
     : shelfQuantities?.data?.find(
         // null == undefined - so we use a == instead of === here
-        (quantity) => quantity.shelfId == data.shelfId,
-      )
+        (quantity) => quantity.shelfId == data.shelfId
+      );
 
-  const currentQuantityOnHand = currentQuantity?.quantity ?? 0
+  const currentQuantityOnHand = currentQuantity?.quantity ?? 0;
 
   // Check if this is a shelf transfer for a tracked entity
   const isShelfTransfer =
     inventoryAdjustment.trackedEntityId &&
     originalShelfId &&
-    originalShelfId !== data.shelfId
+    originalShelfId !== data.shelfId;
 
   if (isShelfTransfer) {
     // Handle shelf transfer: negative adjustment at original shelf, positive at new shelf
     // First, update the readableId if provided
     if (readableId !== undefined) {
       const trackedEntityUpdate = await client
-        .from('trackedEntity')
+        .from("trackedEntity")
         .update({ readableId })
         // @ts-expect-error TS2345 - TODO: fix type
-        .eq('id', inventoryAdjustment.trackedEntityId)
+        .eq("id", inventoryAdjustment.trackedEntityId);
 
       if (trackedEntityUpdate.error) {
-        return trackedEntityUpdate
+        return trackedEntityUpdate;
       }
     }
 
     // Create negative adjustment at original shelf
     const negativeAdjustment = await client
-      .from('itemLedger')
+      .from("itemLedger")
       .insert([
         {
           itemId: data.itemId,
           locationId: data.locationId,
           shelfId: originalShelfId,
           trackedEntityId: inventoryAdjustment.trackedEntityId,
-          entryType: 'Negative Adjmt.' as const,
+          entryType: "Negative Adjmt." as const,
           quantity: -currentQuantityOnHand,
           companyId: data.companyId,
           createdBy: data.createdBy,
-          comment: data.comment,
-        },
+          comment: data.comment
+        }
       ])
-      .select('*')
-      .single()
+      .select("*")
+      .single();
 
     if (negativeAdjustment.error) {
-      return negativeAdjustment
+      return negativeAdjustment;
     }
 
     // Create positive adjustment at new shelf
     return client
-      .from('itemLedger')
+      .from("itemLedger")
       .insert([
         {
           itemId: data.itemId,
           locationId: data.locationId,
           shelfId: data.shelfId,
           trackedEntityId: inventoryAdjustment.trackedEntityId,
-          entryType: 'Positive Adjmt.' as const,
+          entryType: "Positive Adjmt." as const,
           quantity: currentQuantityOnHand,
           companyId: data.companyId,
           createdBy: data.createdBy,
-          comment: data.comment,
-        },
+          comment: data.comment
+        }
       ])
-      .select('*')
-      .single()
+      .select("*")
+      .single();
   }
 
-  if (adjustmentType === 'Set Quantity' && currentQuantity) {
-    const quantityDifference = data.quantity - currentQuantityOnHand
+  if (adjustmentType === "Set Quantity" && currentQuantity) {
+    const quantityDifference = data.quantity - currentQuantityOnHand;
     if (quantityDifference > 0) {
-      data.entryType = 'Positive Adjmt.'
-      data.quantity = quantityDifference
+      data.entryType = "Positive Adjmt.";
+      data.quantity = quantityDifference;
     } else if (quantityDifference < 0) {
-      data.entryType = 'Negative Adjmt.'
-      data.quantity = -Math.abs(quantityDifference)
+      data.entryType = "Negative Adjmt.";
+      data.quantity = -Math.abs(quantityDifference);
     } else {
       // No change in quantity, but readableId might have changed
       if (inventoryAdjustment.trackedEntityId && readableId !== undefined) {
         return client
-          .from('trackedEntity')
+          .from("trackedEntity")
           .update({ readableId })
-          .eq('id', inventoryAdjustment.trackedEntityId)
+          .eq("id", inventoryAdjustment.trackedEntityId);
       }
-      return { data: null }
+      return { data: null };
     }
   }
 
   // Check if it's a negative adjustment and if the quantity is sufficient
-  if (data.entryType === 'Negative Adjmt.') {
+  if (data.entryType === "Negative Adjmt.") {
     if (data.quantity > currentQuantityOnHand) {
       return {
-        error: 'Insufficient quantity for negative adjustment',
-      }
+        error: "Insufficient quantity for negative adjustment"
+      };
     }
-    data.quantity = -Math.abs(data.quantity)
+    data.quantity = -Math.abs(data.quantity);
   }
 
   if (inventoryAdjustment.trackedEntityId) {
     if (currentQuantity) {
       // Update the existing tracked entity
       const trackedEntityUpdate = await client
-        .from('trackedEntity')
+        .from("trackedEntity")
         .update({
           quantity: data.quantity + currentQuantityOnHand,
-          readableId: readableId,
+          readableId: readableId
         })
-        .eq('id', inventoryAdjustment.trackedEntityId)
+        .eq("id", inventoryAdjustment.trackedEntityId);
 
       if (trackedEntityUpdate.error) {
-        return trackedEntityUpdate
+        return trackedEntityUpdate;
       }
     } else {
       const item = await client
-        .from('item')
-        .select('*')
-        .eq('id', data.itemId)
-        .single()
+        .from("item")
+        .select("*")
+        .eq("id", data.itemId)
+        .single();
 
       // Create a new tracked entityr
       const trackedEntityInsert = await client
-        .from('trackedEntity')
+        .from("trackedEntity")
         .insert([
           {
             id: inventoryAdjustment.trackedEntityId,
-            sourceDocument: 'Item',
+            sourceDocument: "Item",
             sourceDocumentId: data.itemId,
             sourceDocumentReadableId: item.data?.readableIdWithRevision,
             readableId: readableId,
             quantity: data.quantity,
-            status: 'Available',
+            status: "Available",
             companyId: data.companyId,
-            createdBy: data.createdBy,
-          },
+            createdBy: data.createdBy
+          }
         ])
-        .select('*')
-        .single()
+        .select("*")
+        .single();
 
       if (trackedEntityInsert.error) {
-        return trackedEntityInsert
+        return trackedEntityInsert;
       }
     }
   }
 
-  return client.from('itemLedger').insert([data]).select('*').single()
+  return client.from("itemLedger").insert([data]).select("*").single();
 }
 
 export async function updateBatchPropertyOrder(
   client: SupabaseClient<Database>,
   data: Omit<
     z.infer<typeof batchPropertyOrderValidator>,
-    'batchPropertyGroupId'
+    "batchPropertyGroupId"
   > & {
-    batchPropertyGroupId?: string | null
-    updatedBy: string
-  },
+    batchPropertyGroupId?: string | null;
+    updatedBy: string;
+  }
 ) {
-  return client.from('batchProperty').update(sanitize(data)).eq('id', data.id)
+  return client.from("batchProperty").update(sanitize(data)).eq("id", data.id);
 }
 
 export async function updateStockTransferStatus(
   client: SupabaseClient<Database>,
   args: {
-    id: string
-    status: Database['public']['Enums']['stockTransferStatus']
-    assignee?: string | null
-    completedAt: string | null
-    updatedBy: string
-  },
+    id: string;
+    status: Database["public"]["Enums"]["stockTransferStatus"];
+    assignee?: string | null;
+    completedAt: string | null;
+    updatedBy: string;
+  }
 ) {
-  const { id, status, assignee, completedAt, updatedBy } = args
+  const { id, status, assignee, completedAt, updatedBy } = args;
   return client
-    .from('stockTransfer')
+    .from("stockTransfer")
     .update({
       status,
       assignee,
       completedAt,
-      updatedBy,
+      updatedBy
     })
-    .eq('id', id)
+    .eq("id", id);
 }
 
 export async function upsertBatchProperty(
   client: SupabaseClient<Database>,
   batchProperty: z.infer<typeof batchPropertyValidator> & {
-    companyId: string
-    userId: string
-  },
+    companyId: string;
+    userId: string;
+  }
 ) {
-  const { userId, ...data } = batchProperty
+  const { userId, ...data } = batchProperty;
   if (batchProperty.id) {
     return client
-      .from('batchProperty')
+      .from("batchProperty")
       .update(
         sanitize({
           ...data,
           updatedBy: userId,
-          updatedAt: new Date().toISOString(),
-        }),
+          updatedAt: new Date().toISOString()
+        })
       )
-      .eq('id', batchProperty.id)
+      .eq("id", batchProperty.id);
   }
 
-  return client.from('batchProperty').insert({
+  return client.from("batchProperty").insert({
     ...data,
-    createdBy: userId,
-  })
+    createdBy: userId
+  });
 }
 
 export async function upsertKanban(
   client: SupabaseClient<Database>,
   kanban:
-    | (Omit<z.infer<typeof kanbanValidator>, 'id'> & {
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof kanbanValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof kanbanValidator>, 'id'> & {
-        id: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof kanbanValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in kanban) {
+  if ("createdBy" in kanban) {
     return client
-      .from('kanban')
+      .from("kanban")
       .insert({
-        ...kanban,
+        ...kanban
       })
-      .select('id')
-      .single()
+      .select("id")
+      .single();
   }
   return client
-    .from('kanban')
+    .from("kanban")
     .update({
       ...sanitize(kanban),
-      updatedAt: today(getLocalTimeZone()).toString(),
+      updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq('id', kanban.id)
-    .select('id')
-    .single()
+    .eq("id", kanban.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertReceipt(
   client: SupabaseClient<Database>,
   receipt:
-    | (Omit<z.infer<typeof receiptValidator>, 'id' | 'receiptId'> & {
-        receiptId: string
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof receiptValidator>, "id" | "receiptId"> & {
+        receiptId: string;
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof receiptValidator>, 'id' | 'receiptId'> & {
-        id: string
-        receiptId: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof receiptValidator>, "id" | "receiptId"> & {
+        id: string;
+        receiptId: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in receipt) {
-    return client.from('receipt').insert([receipt]).select('*').single()
+  if ("createdBy" in receipt) {
+    return client.from("receipt").insert([receipt]).select("*").single();
   }
   return client
-    .from('receipt')
+    .from("receipt")
     .update({
       ...sanitize(receipt),
-      updatedAt: today(getLocalTimeZone()).toString(),
+      updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq('id', receipt.id)
-    .select('id')
-    .single()
+    .eq("id", receipt.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertShelf(
   client: SupabaseClient<Database>,
   shelf:
-    | (Omit<z.infer<typeof shelfValidator>, 'id'> & {
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof shelfValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof shelfValidator>, 'id'> & {
-        id: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof shelfValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in shelf) {
+  if ("createdBy" in shelf) {
     return client
-      .from('shelf')
+      .from("shelf")
       .insert({
         ...shelf,
-        id: nanoid(),
+        id: nanoid()
       })
-      .select('id')
-      .single()
+      .select("id")
+      .single();
   }
   return client
-    .from('shelf')
+    .from("shelf")
     .update({
       ...sanitize(shelf),
-      updatedAt: today(getLocalTimeZone()).toString(),
+      updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq('id', shelf.id)
-    .select('id')
-    .single()
+    .eq("id", shelf.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertShippingMethod(
   client: SupabaseClient<Database>,
   shippingMethod:
-    | (Omit<z.infer<typeof shippingMethodValidator>, 'id'> & {
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof shippingMethodValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof shippingMethodValidator>, 'id'> & {
-        id: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof shippingMethodValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in shippingMethod) {
+  if ("createdBy" in shippingMethod) {
     return client
-      .from('shippingMethod')
+      .from("shippingMethod")
       .insert([shippingMethod])
-      .select('id')
-      .single()
+      .select("id")
+      .single();
   }
   return client
-    .from('shippingMethod')
+    .from("shippingMethod")
     .update(sanitize(shippingMethod))
-    .eq('id', shippingMethod.id)
-    .select('id')
-    .single()
+    .eq("id", shippingMethod.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertShipment(
   client: SupabaseClient<Database>,
   shipment:
-    | (Omit<z.infer<typeof shipmentValidator>, 'id' | 'shipmentId'> & {
-        shipmentId: string
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof shipmentValidator>, "id" | "shipmentId"> & {
+        shipmentId: string;
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof shipmentValidator>, 'id' | 'shipmentId'> & {
-        id: string
-        shipmentId: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof shipmentValidator>, "id" | "shipmentId"> & {
+        id: string;
+        shipmentId: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in shipment) {
-    return client.from('shipment').insert([shipment]).select('*').single()
+  if ("createdBy" in shipment) {
+    return client.from("shipment").insert([shipment]).select("*").single();
   }
   return client
-    .from('shipment')
+    .from("shipment")
     .update({
       ...sanitize(shipment),
-      updatedAt: today(getLocalTimeZone()).toString(),
+      updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq('id', shipment.id)
-    .select('id')
-    .single()
+    .eq("id", shipment.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertStockTransfer(
   client: SupabaseClient<Database>,
   stockTransfer:
     | {
-        locationId: string
-        stockTransferId: string
-        companyId: string
-        createdBy: string
-        customFields?: Json
+        locationId: string;
+        stockTransferId: string;
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       }
     | {
-        id: string
-        locationId: string
-        stockTransferId: string
-        companyId: string
-        updatedBy: string
-        customFields?: Json
-      },
+        id: string;
+        locationId: string;
+        stockTransferId: string;
+        companyId: string;
+        updatedBy: string;
+        customFields?: Json;
+      }
 ) {
-  if ('createdBy' in stockTransfer) {
+  if ("createdBy" in stockTransfer) {
     return client
-      .from('stockTransfer')
+      .from("stockTransfer")
       .insert({
         ...stockTransfer,
-        status: 'Released',
+        status: "Released"
       })
-      .select('id')
-      .single()
+      .select("id")
+      .single();
   }
   return client
-    .from('stockTransfer')
+    .from("stockTransfer")
     .update(sanitize(stockTransfer))
-    .eq('id', stockTransfer.id)
-    .select('id')
-    .single()
+    .eq("id", stockTransfer.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertStockTransferLine(
   client: SupabaseClient<Database>,
   stockTransferLine:
-    | (Omit<z.infer<typeof stockTransferLineValidator>, 'id'> & {
-        companyId: string
-        createdBy: string
+    | (Omit<z.infer<typeof stockTransferLineValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
       })
-    | (Omit<z.infer<typeof stockTransferLineValidator>, 'id'> & {
-        id: string
-        updatedBy: string
-      }),
+    | (Omit<z.infer<typeof stockTransferLineValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+      })
 ) {
-  if ('createdBy' in stockTransferLine) {
+  if ("createdBy" in stockTransferLine) {
     return client
-      .from('stockTransferLine')
+      .from("stockTransferLine")
       .insert(stockTransferLine)
-      .select('id')
-      .single()
+      .select("id")
+      .single();
   }
   return client
-    .from('stockTransferLine')
+    .from("stockTransferLine")
     .update(sanitize(stockTransferLine))
-    .eq('id', stockTransferLine.id)
-    .select('id')
-    .single()
+    .eq("id", stockTransferLine.id)
+    .select("id")
+    .single();
 }
 
 export async function upsertStockTransferLines(
   client: SupabaseClient<Database>,
   args: {
-    lines: z.infer<typeof stockTransferValidator>['lines']
-    stockTransferId: string
-    companyId: string
-    createdBy: string
-  },
+    lines: z.infer<typeof stockTransferValidator>["lines"];
+    stockTransferId: string;
+    companyId: string;
+    createdBy: string;
+  }
 ) {
-  const { lines, stockTransferId, companyId, createdBy } = args
-  return client.from('stockTransferLine').insert(
+  const { lines, stockTransferId, companyId, createdBy } = args;
+  return client.from("stockTransferLine").insert(
     lines.map((line) => ({
       ...line,
       stockTransferId,
       companyId,
-      createdBy,
-    })),
-  )
+      createdBy
+    }))
+  );
 }
 
 export async function upsertWarehouseTransfer(
   client: SupabaseClient<Database>,
   transfer:
-    | (Omit<z.infer<typeof warehouseTransferValidator>, 'id' | 'transferId'> & {
-        transferId: string
-        companyId: string
-        createdBy: string
-        customFields?: Json
+    | (Omit<z.infer<typeof warehouseTransferValidator>, "id" | "transferId"> & {
+        transferId: string;
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
       })
-    | (Omit<z.infer<typeof warehouseTransferValidator>, 'id' | 'transferId'> & {
-        id: string
-        transferId: string
-        updatedBy: string
-        customFields?: Json
-      }),
+    | (Omit<z.infer<typeof warehouseTransferValidator>, "id" | "transferId"> & {
+        id: string;
+        transferId: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
 ) {
-  if ('createdBy' in transfer) {
+  if ("createdBy" in transfer) {
     return client
-      .from('warehouseTransfer')
+      .from("warehouseTransfer")
       .insert([transfer])
-      .select('*')
-      .single()
+      .select("*")
+      .single();
   }
   return client
-    .from('warehouseTransfer')
+    .from("warehouseTransfer")
     .update({
       ...sanitize(transfer),
-      updatedAt: today(getLocalTimeZone()).toString(),
+      updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq('id', transfer.id)
-    .select('id')
-    .single()
+    .eq("id", transfer.id)
+    .select("id")
+    .single();
 }
 
 export async function updateWarehouseTransferStatus(
   client: SupabaseClient<Database>,
   transferId: string,
-  status: Database['public']['Tables']['warehouseTransfer']['Row']['status'],
-  updatedBy: string,
+  status: Database["public"]["Tables"]["warehouseTransfer"]["Row"]["status"],
+  updatedBy: string
 ) {
   return client
-    .from('warehouseTransfer')
+    .from("warehouseTransfer")
     .update({
       status,
       updatedBy,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     })
-    .eq('id', transferId)
+    .eq("id", transferId);
 }
 
 export async function upsertWarehouseTransferLine(
   client: SupabaseClient<Database>,
   line:
-    | Database['public']['Tables']['warehouseTransferLine']['Insert']
-    | (Database['public']['Tables']['warehouseTransferLine']['Update'] & {
-        id: string
-      }),
+    | Database["public"]["Tables"]["warehouseTransferLine"]["Insert"]
+    | (Database["public"]["Tables"]["warehouseTransferLine"]["Update"] & {
+        id: string;
+      })
 ) {
-  if ('id' in line && line.id) {
-    const { id, ...updateData } = line
+  if ("id" in line && line.id) {
+    const { id, ...updateData } = line;
     return client
-      .from('warehouseTransferLine')
+      .from("warehouseTransferLine")
       .update({
         ...updateData,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       })
-      .eq('id', id)
+      .eq("id", id)
       .select()
-      .single()
+      .single();
   } else {
     return client
-      .from('warehouseTransferLine')
+      .from("warehouseTransferLine")
       .insert({
         ...line,
-        createdAt: new Date().toISOString(),
-      } as Database['public']['Tables']['warehouseTransferLine']['Insert'])
+        createdAt: new Date().toISOString()
+      } as Database["public"]["Tables"]["warehouseTransferLine"]["Insert"])
       .select()
-      .single()
+      .single();
   }
 }
 
@@ -1465,37 +1468,37 @@ export async function getDefaultShelfForJob(
   client: SupabaseClient<Database>,
   itemId: string,
   locationId: string,
-  companyId: string,
+  companyId: string
 ): Promise<string | null> {
   const pickMethod = await client
-    .from('pickMethod')
-    .select('defaultShelfId')
-    .eq('itemId', itemId)
-    .eq('locationId', locationId)
-    .eq('companyId', companyId)
-    .maybeSingle()
+    .from("pickMethod")
+    .select("defaultShelfId")
+    .eq("itemId", itemId)
+    .eq("locationId", locationId)
+    .eq("companyId", companyId)
+    .maybeSingle();
 
   if (pickMethod.data?.defaultShelfId) {
-    return pickMethod.data.defaultShelfId
+    return pickMethod.data.defaultShelfId;
   }
 
   const itemShelfQuantities = await getItemShelfQuantities(
     client,
     itemId,
     companyId,
-    locationId,
-  )
+    locationId
+  );
 
   if (itemShelfQuantities.data?.length) {
     // Find the shelf with the highest quantity
     const shelfWithHighestQuantity = itemShelfQuantities.data.reduce(
       (max, current) => {
-        return (current.quantity ?? 0) > (max.quantity ?? 0) ? current : max
-      },
-    )
+        return (current.quantity ?? 0) > (max.quantity ?? 0) ? current : max;
+      }
+    );
 
-    return shelfWithHighestQuantity.shelfId
+    return shelfWithHighestQuantity.shelfId;
   }
 
-  return null
+  return null;
 }

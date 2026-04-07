@@ -138,7 +138,13 @@ const Documents = ({
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [carbon?.storage, company.id, companyPrivateBucket, getReadPath, revalidator]
+    [
+      carbon?.storage,
+      company.id,
+      companyPrivateBucket,
+      getReadPath,
+      revalidator
+    ]
   );
 
   const downloadModel = useCallback(
@@ -166,7 +172,7 @@ const Documents = ({
       }
     },
 
-    []
+    [companyPrivateBucket]
   );
 
   const deleteModel = useCallback(async () => {
@@ -212,7 +218,7 @@ const Documents = ({
         console.error(error);
       }
     },
-    [getReadPath]
+    [companyPrivateBucket, getReadPath]
   );
 
   const upload = useCallback(
@@ -260,7 +266,6 @@ const Documents = ({
     [
       getWriteTarget,
       carbon,
-      companyPrivateBucket,
       revalidator,
       submit,
       sourceDocument,

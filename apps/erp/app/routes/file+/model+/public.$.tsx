@@ -48,7 +48,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
       !supportedModelTypes.includes(fileType))
   )
     throw new Error(`File type ${fileType} not supported`);
-  const contentType = supportedFileTypes[fileType] ?? "application/octet-stream";
+  const contentType =
+    supportedFileTypes[fileType] ?? "application/octet-stream";
 
   async function downloadFile(): Promise<Blob | null> {
     const result = await downloadPrivateObjectWithFallback<Blob>({

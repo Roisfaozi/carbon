@@ -222,14 +222,12 @@ function MaintenanceFilesContent({
       for (const file of filesToUpload) {
         const filePath = getFilePath(file.name);
 
-        const result = await carbon.storage.from(companyPrivateBucket).upload(
-          filePath,
-          file,
-          {
+        const result = await carbon.storage
+          .from(companyPrivateBucket)
+          .upload(filePath, file, {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
-          }
-        );
+          });
 
         if (result.error) {
           toast.error(`Failed to upload file: ${file.name}`);
@@ -281,7 +279,9 @@ function MaintenanceFilesContent({
         company.id,
         companyPrivateBucket
       )) {
-        const result = await carbon.storage.from(physicalBucket).remove([filePath]);
+        const result = await carbon.storage
+          .from(physicalBucket)
+          .remove([filePath]);
 
         if (!result.error) {
           deleted = true;

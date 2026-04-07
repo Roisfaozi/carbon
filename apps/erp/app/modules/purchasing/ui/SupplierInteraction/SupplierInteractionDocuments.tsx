@@ -258,7 +258,10 @@ export const useSupplierInteractionDocuments = ({
 
   const download = useCallback(
     async (attachment: FileObject) => {
-      const url = path.to.file.preview(companyPrivateBucket, getPath(attachment));
+      const url = path.to.file.preview(
+        companyPrivateBucket,
+        getPath(attachment)
+      );
       try {
         const response = await fetch(url);
         const blob = await response.blob();

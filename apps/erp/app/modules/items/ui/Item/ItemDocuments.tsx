@@ -20,7 +20,11 @@ import {
   Tr,
   toast
 } from "@carbon/react";
-import { convertKbToString, formatDate, getCompanyPrivateBucket, getPrivateReadCandidateBuckets } from "@carbon/utils";
+import {
+  convertKbToString,
+  formatDate,
+  getCompanyPrivateBucket
+} from "@carbon/utils";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -316,7 +320,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
       toast.success("File deleted successfully");
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, company.id, companyPrivateBucket, revalidator]
+    [getPath, carbon?.storage, companyPrivateBucket, revalidator]
   );
 
   const deleteModel = useCallback(async () => {
@@ -395,7 +399,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
       return "";
     }
     return path.to.file.cadModel(model.modelId);
-  }, [companyPrivateBucket]);
+  }, []);
 
   const upload = useCallback(
     async (files: File[]) => {

@@ -6,7 +6,7 @@ import {
   listPrivateObjectsWithFallback
 } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
-import type { FileObject, StorageError } from "@supabase/storage-js";
+import type { FileObject } from "@supabase/storage-js";
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 import { FunctionRegion } from "@supabase/supabase-js";
 import type { z } from "zod";
@@ -741,7 +741,9 @@ export async function getJobDocuments(
           }`
         )
       : Promise.resolve([]),
-    job.itemId ? listFiles(`${companyId}/parts/${job.itemId}`) : Promise.resolve([])
+    job.itemId
+      ? listFiles(`${companyId}/parts/${job.itemId}`)
+      : Promise.resolve([])
   ]);
 
   // Combine and return all sets of files with their respective buckets

@@ -40,7 +40,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       path.to.documents,
       await flash(
         request,
-        error({ message: "Document path is missing" }, "Failed to delete document")
+        error(
+          { message: "Document path is missing" },
+          "Failed to delete document"
+        )
       )
     );
   }

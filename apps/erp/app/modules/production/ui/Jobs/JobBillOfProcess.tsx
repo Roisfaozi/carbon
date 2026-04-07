@@ -1138,7 +1138,9 @@ function StepsForm({
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/parts/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from(getCompanyPrivateBucket(companyId)).upload(fileName, file);
+    const result = await carbon?.storage
+      .from(getCompanyPrivateBucket(companyId))
+      .upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");
@@ -1442,7 +1444,9 @@ function StepsListItem({
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/parts/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from(getCompanyPrivateBucket(companyId)).upload(fileName, file);
+    const result = await carbon?.storage
+      .from(getCompanyPrivateBucket(companyId))
+      .upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");
