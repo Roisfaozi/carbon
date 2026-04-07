@@ -33,7 +33,11 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
-import { formatDateTime, parseMentionsFromDocument } from "@carbon/utils";
+import {
+  formatDateTime,
+  getCompanyPrivateBucket,
+  parseMentionsFromDocument
+} from "@carbon/utils";
 import { useNumberFormatter } from "@react-aria/i18n";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -370,9 +374,10 @@ export function RecordModal({
     toast.info(`Uploading ${fileUpload.name}`);
 
     const fileName = `${company.id}/job/${attribute.operationId}/${fileUpload.name}`;
+    const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
     const upload = await carbon?.storage
-      .from("private")
+      .from(companyPrivateBucket)
       .upload(fileName, fileUpload, {
         cacheControl: `${12 * 60 * 60}`,
         upsert: true
