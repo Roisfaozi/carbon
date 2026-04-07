@@ -35,7 +35,11 @@ import {
   VStack
 } from "@carbon/react";
 import type { TrackedEntityAttributes } from "@carbon/utils";
-import { labelSizes } from "@carbon/utils";
+import {
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets,
+  labelSizes
+} from "@carbon/utils";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -1107,6 +1111,7 @@ export default ReceiptLines;
 function useReceiptFiles(receiptId: string) {
   const { company } = useUser();
   const { carbon } = useCarbon();
+  const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
   const getPath = useCallback(
     ({ name }: { name: string }, lineId: string) => {
@@ -1130,7 +1135,7 @@ function useReceiptFiles(receiptId: string) {
         const fileName = getPath({ name: file.name }, lineId);
         toast.info(`Uploading ${file.name}`);
         const fileUpload = await carbon.storage
-          .from("private")
+          .from(companyPrivateBucket)
           .upload(fileName, file, {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
@@ -1157,24 +1162,38 @@ function useReceiptFiles(receiptId: string) {
       }
       revalidator.revalidate();
     },
-    [carbon, revalidator, getPath, receiptId, submit]
+    [carbon, companyPrivateBucket, revalidator, getPath, receiptId, submit]
   );
 
   const deleteFile = useCallback(
     async (file: StorageItem, lineId: string) => {
-      const fileDelete = await carbon?.storage
-        .from("private")
-        .remove([getPath(file, lineId)]);
+      let deleted = false;
+      let lastError: string | undefined;
 
-      if (!fileDelete || fileDelete.error) {
-        toast.error(fileDelete?.error?.message || "Error deleting file");
+      for (const physicalBucket of getPrivateReadCandidateBuckets(
+        company.id,
+        companyPrivateBucket
+      )) {
+        const fileDelete = await carbon?.storage
+          .from(physicalBucket)
+          .remove([getPath(file, lineId)]);
+
+        if (fileDelete && !fileDelete.error) {
+          deleted = true;
+        } else if (fileDelete?.error) {
+          lastError = fileDelete.error.message;
+        }
+      }
+
+      if (!deleted) {
+        toast.error(lastError || "Error deleting file");
         return;
       }
 
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, revalidator]
+    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator]
   );
 
   return { upload, deleteFile, getPath };

@@ -26,7 +26,12 @@ import {
   toast,
   VStack
 } from "@carbon/react";
-import { convertKbToString, formatDate } from "@carbon/utils";
+import {
+  convertKbToString,
+  formatDate,
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets
+} from "@carbon/utils";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -58,6 +63,7 @@ const useOpportunityLineDocuments = ({
   const { carbon } = useCarbon();
   const { company } = useUser();
   const submit = useSubmit();
+  const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
   const canDelete = permissions.can("delete", "sales");
   const canUpdate = permissions.can("update", "sales");
@@ -82,19 +88,33 @@ const useOpportunityLineDocuments = ({
   const deleteFile = useCallback(
     async (file: FileObject & { bucket?: string }) => {
       const bucket = file.bucket === "parts" ? "parts" : "opportunity-line";
-      const fileDelete = await carbon?.storage
-        .from("private")
-        .remove([getPath(file, bucket as "opportunity-line" | "parts")]);
+      let deleted = false;
+      let lastError: string | undefined;
 
-      if (!fileDelete || fileDelete.error) {
-        toast.error(fileDelete?.error?.message || "Error deleting file");
+      for (const physicalBucket of getPrivateReadCandidateBuckets(
+        company.id,
+        companyPrivateBucket
+      )) {
+        const fileDelete = await carbon?.storage
+          .from(physicalBucket)
+          .remove([getPath(file, bucket as "opportunity-line" | "parts")]);
+
+        if (fileDelete && !fileDelete.error) {
+          deleted = true;
+        } else if (fileDelete?.error) {
+          lastError = fileDelete.error.message;
+        }
+      }
+
+      if (!deleted) {
+        toast.error(lastError || "Error deleting file");
         return;
       }
 
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, revalidator]
+    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator]
   );
 
   const deleteModel = useCallback(
@@ -158,7 +178,7 @@ const useOpportunityLineDocuments = ({
         return;
       }
 
-      const url = path.to.file.previewFile(`private/${model.modelPath}`);
+      const url = path.to.file.preview(companyPrivateBucket, model.modelPath);
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -176,15 +196,16 @@ const useOpportunityLineDocuments = ({
       }
     },
 
-    []
+    [companyPrivateBucket]
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const download = useCallback(
     async (file: FileObject & { bucket?: string }) => {
       const bucket = file.bucket === "parts" ? "parts" : "opportunity-line";
-      const url = path.to.file.previewFile(
-        `private/${getPath(file, bucket as "opportunity-line" | "parts")}`
+      const url = path.to.file.preview(
+        companyPrivateBucket,
+        getPath(file, bucket as "opportunity-line" | "parts")
       );
       try {
         const response = await fetch(url);
@@ -203,7 +224,7 @@ const useOpportunityLineDocuments = ({
       }
     },
 
-    []
+    [companyPrivateBucket, getPath]
   );
 
   const getModelPath = useCallback((model: ModelUpload) => {
@@ -261,7 +282,7 @@ const useOpportunityLineDocuments = ({
         const fileName = getPath(file, bucket);
 
         const fileUpload = await carbon.storage
-          .from("private")
+          .from(companyPrivateBucket)
           .upload(fileName, file, {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
@@ -280,7 +301,14 @@ const useOpportunityLineDocuments = ({
       }
       revalidator.revalidate();
     },
-    [getPath, createDocumentRecord, carbon, revalidator, itemId]
+    [
+      companyPrivateBucket,
+      getPath,
+      createDocumentRecord,
+      carbon,
+      revalidator,
+      itemId
+    ]
   );
 
   const moveFile = useCallback(
@@ -307,21 +335,33 @@ const useOpportunityLineDocuments = ({
       }
 
       try {
-        // Download the file first
         const sourcePath = getPath(file, currentBucket);
-        const { data: downloadData } = await carbon.storage
-          .from("private")
-          .download(sourcePath);
+        let downloadData: Blob | null = null;
+        let sourcePhysicalBucket = companyPrivateBucket;
+
+        for (const physicalBucket of getPrivateReadCandidateBuckets(
+          company.id,
+          companyPrivateBucket
+        )) {
+          const result = await carbon.storage
+            .from(physicalBucket)
+            .download(sourcePath);
+
+          if (!result.error && result.data) {
+            downloadData = result.data;
+            sourcePhysicalBucket = physicalBucket;
+            break;
+          }
+        }
 
         if (!downloadData) {
           toast.error("Failed to download file for moving");
           return;
         }
 
-        // Upload to new location
         const targetPath = getPath(file, targetBucket);
         const { error: uploadError } = await carbon.storage
-          .from("private")
+          .from(companyPrivateBucket)
           .upload(targetPath, downloadData, {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
@@ -332,9 +372,8 @@ const useOpportunityLineDocuments = ({
           return;
         }
 
-        // Delete from old location
         const { error: deleteError } = await carbon.storage
-          .from("private")
+          .from(sourcePhysicalBucket)
           .remove([sourcePath]);
 
         if (deleteError) {
@@ -353,7 +392,7 @@ const useOpportunityLineDocuments = ({
         console.error(error);
       }
     },
-    [carbon, itemId, getPath, revalidator]
+    [carbon, company.id, companyPrivateBucket, itemId, getPath, revalidator]
   );
 
   return {
@@ -389,6 +428,10 @@ const OpportunityLineDocuments = ({
   type,
   isReadOnly: isReadOnlyProp
 }: OpportunityLineDocumentsProps) => {
+  const {
+    company: { id: companyId }
+  } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const {
     canDelete: canDeleteBase,
     canUpdate: canUpdateBase,
@@ -534,11 +577,12 @@ const OpportunityLineDocuments = ({
                                   ? "parts"
                                   : "opportunity-line";
                               window.open(
-                                path.to.file.previewFile(
-                                  `${"private"}/${getPath(
+                                path.to.file.preview(
+                                  companyPrivateBucket,
+                                  getPath(
                                     file,
                                     bucket as "opportunity-line" | "parts"
-                                  )}`
+                                  )
                                 ),
                                 "_blank"
                               );
@@ -549,7 +593,7 @@ const OpportunityLineDocuments = ({
                         >
                           {["PDF", "Image"].includes(type) ? (
                             <DocumentPreview
-                              bucket="private"
+                              bucket={companyPrivateBucket}
                               pathToFile={getPath(
                                 file,
                                 (file as any).bucket === "parts"
@@ -700,6 +744,11 @@ const OpportunityLineDocumentForm = ({
 };
 
 const usePendingItems = () => {
+  const {
+    company: { id: companyId }
+  } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
+
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
@@ -717,8 +766,8 @@ const usePendingItems = () => {
         const newItem: OptimisticFileObject = {
           id: path,
           name: name,
-          bucket_id: "private",
-          bucket: "private",
+          bucket_id: companyPrivateBucket,
+          bucket: "opportunity-line",
           metadata: {
             size,
             mimetype: getDocumentType(name)
