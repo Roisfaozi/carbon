@@ -2,6 +2,7 @@ import type { Database } from "@carbon/database";
 import { SalesOrderEmail } from "@carbon/documents/email";
 import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
 import { redis } from "@carbon/kv";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { tasks } from "@trigger.dev/sdk";
@@ -147,9 +148,10 @@ export async function generateAndAttachSalesOrderPdf(args: {
 
   // 2. Upload to Supabase storage
   const documentFilePath = `${companyId}/opportunity/${opportunityId}/${fileName}`;
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
   const uploadResult = await serviceRole.storage
-    .from("private")
+    .from(companyPrivateBucket)
     .upload(documentFilePath, file, {
       cacheControl: `${12 * 60 * 60}`,
       contentType: "application/pdf",

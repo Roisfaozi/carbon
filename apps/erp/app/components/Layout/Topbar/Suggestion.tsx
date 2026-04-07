@@ -18,6 +18,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import data from "@emoji-mart/data";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
@@ -80,8 +81,9 @@ const Suggestion = () => {
       }
 
       const fileName = `${companyId}/suggestions/${nanoid()}.${fileExtension}`;
+      const companyPrivateBucket = getCompanyPrivateBucket(companyId);
       const imageUpload = await carbon.storage
-        .from("private")
+        .from(companyPrivateBucket)
         .upload(fileName, file, {
           cacheControl: `${12 * 60 * 60}`,
           upsert: true

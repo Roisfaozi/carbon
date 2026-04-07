@@ -346,7 +346,7 @@ function MaintenanceFilesContent({
                         if (["PDF", "Image"].includes(type)) {
                           window.open(
                             path.to.file.preview(
-                              "private",
+                              companyPrivateBucket,
                               getFilePath(file.name)
                             ),
                             "_blank"
@@ -358,7 +358,7 @@ function MaintenanceFilesContent({
                     >
                       {["PDF", "Image"].includes(type) ? (
                         <DocumentPreview
-                          bucket="private"
+                          bucket={companyPrivateBucket}
                           pathToFile={getFilePath(file.name)}
                           // @ts-expect-error
                           type={type}

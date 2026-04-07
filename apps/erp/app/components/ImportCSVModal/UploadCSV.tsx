@@ -8,6 +8,7 @@ import {
   Spinner,
   toast
 } from "@carbon/react";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { nanoid } from "nanoid";
 import Papa from "papaparse";
 import { useState } from "react";
@@ -84,7 +85,7 @@ export const UploadCSV = ({ table }: { table: keyof typeof importSchemas }) => {
     }
 
     const { data, error } = await carbon.storage
-      .from("private")
+      .from(getCompanyPrivateBucket(company.id))
       .upload(fileName, file);
 
     if (error) {

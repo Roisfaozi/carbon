@@ -4,6 +4,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { SalesInvoiceEmail } from "@carbon/documents/email";
 import { validator } from "@carbon/form";
 import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
 import { FunctionRegion } from "@supabase/supabase-js";
 import { tasks } from "@trigger.dev/sdk";
@@ -143,9 +144,10 @@ export async function action(args: ActionFunctionArgs) {
     );
 
     const documentFilePath = `${companyId}/opportunity/${salesInvoice.data.opportunityId}/${fileName}`;
+    const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
     const documentFileUpload = await serviceRole.storage
-      .from("private")
+      .from(companyPrivateBucket)
       .upload(documentFilePath, file, {
         cacheControl: `${12 * 60 * 60}`,
         contentType: "application/pdf",

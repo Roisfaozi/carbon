@@ -3,7 +3,11 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
-import { tiptapToHTML } from "@carbon/utils";
+import {
+  downloadPrivateObjectWithFallback,
+  getCompanyPrivateBucket,
+  tiptapToHTML
+} from "@carbon/utils";
 import type { JSONContent } from "@tiptap/react";
 import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs } from "react-router";
@@ -236,9 +240,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
 
     for (const doc of rfqDocs) {
-      const { data: fileData } = await client.storage
-        .from("private")
-        .download(`${companyId}/supplier-interaction/${rfqId}/${doc.name}`);
+      const result = await downloadPrivateObjectWithFallback<Blob>({
+        companyId,
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPath: `${companyId}/supplier-interaction/${rfqId}/${doc.name}`,
+        downloadObject: (physicalBucket, objectPath) =>
+          client.storage.from(physicalBucket).download(objectPath)
+      });
+      const fileData = result?.data;
 
       if (fileData) {
         const arrayBuffer = await fileData.arrayBuffer();
@@ -258,11 +267,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
 
       for (const doc of lineDocs) {
-        const { data: fileData } = await client.storage
-          .from("private")
-          .download(
-            `${companyId}/supplier-interaction-line/${line.id}/${doc.name}`
-          );
+        const result = await downloadPrivateObjectWithFallback<Blob>({
+          companyId,
+          requestedBucket: getCompanyPrivateBucket(companyId),
+          objectPath: `${companyId}/supplier-interaction-line/${line.id}/${doc.name}`,
+          downloadObject: (physicalBucket, objectPath) =>
+            client.storage.from(physicalBucket).download(objectPath)
+        });
+        const fileData = result?.data;
 
         if (fileData) {
           const arrayBuffer = await fileData.arrayBuffer();

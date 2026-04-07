@@ -315,6 +315,8 @@ function ReceiptLineItem({
   upload: (files: File[]) => Promise<void>;
   deleteFile: (file: StorageItem) => Promise<void>;
 }) {
+  const { company } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(company.id);
   const [items] = useItems();
   const item = items.find((p) => p.id === line.itemId);
   const unitsOfMeasure = useUnitOfMeasure();
@@ -502,7 +504,7 @@ function ReceiptLineItem({
                           <span className="font-medium text-sm">
                             {isPreviewable ? (
                               <DocumentPreview
-                                bucket="private"
+                                bucket={companyPrivateBucket}
                                 pathToFile={getPath(file)}
                                 // @ts-expect-error
                                 type={getDocumentType(file.name)}

@@ -6,6 +6,7 @@ import { PurchaseOrderEmail } from "@carbon/documents/email";
 import { validationError, validator } from "@carbon/form";
 import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
 import { NotificationEvent } from "@carbon/notifications";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
 import { FunctionRegion } from "@supabase/supabase-js";
 import { tasks } from "@trigger.dev/sdk";
@@ -218,9 +219,10 @@ export async function action(args: ActionFunctionArgs) {
     );
 
     const documentFilePath = `${companyId}/supplier-interaction/${purchaseOrder.data.supplierInteractionId}/${fileName}`;
+    const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
     const documentFileUpload = await serviceRole.storage
-      .from("private")
+      .from(companyPrivateBucket)
       .upload(documentFilePath, file, {
         cacheControl: `${12 * 60 * 60}`,
         contentType: "application/pdf",

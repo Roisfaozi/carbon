@@ -1,6 +1,10 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
-import { getPurchaseOrderStatus } from "@carbon/utils";
+import {
+  getCompanyPrivateBucket,
+  getPurchaseOrderStatus,
+  listPrivateObjectsWithFallback
+} from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type {
   PostgrestSingleResponse,
@@ -547,13 +551,16 @@ export async function getSupplierInteractionDocuments(
   companyId: string,
   interactionId: string
 ) {
-  const result = await client.storage
-    .from("private")
-    .list(`${companyId}/supplier-interaction/${interactionId}`);
+  const result = await listPrivateObjectsWithFallback({
+    companyId,
+    requestedBucket: getCompanyPrivateBucket(companyId),
+    objectPathPrefix: `${companyId}/supplier-interaction/${interactionId}`,
+    listObjects: (physicalBucket, prefix) =>
+      client.storage.from(physicalBucket).list(prefix),
+    getItemKey: (item) => item.name
+  });
 
-  return (
-    result.data?.map((f) => ({ ...f, bucket: "supplier-interaction" })) ?? []
-  );
+  return result.map((f) => ({ ...f, bucket: "supplier-interaction" }));
 }
 
 export async function getSupplierInteractionLineDocuments(
@@ -561,14 +568,16 @@ export async function getSupplierInteractionLineDocuments(
   companyId: string,
   lineId: string
 ) {
-  const result = await client.storage
-    .from("private")
-    .list(`${companyId}/supplier-interaction-line/${lineId}`);
+  const result = await listPrivateObjectsWithFallback({
+    companyId,
+    requestedBucket: getCompanyPrivateBucket(companyId),
+    objectPathPrefix: `${companyId}/supplier-interaction-line/${lineId}`,
+    listObjects: (physicalBucket, prefix) =>
+      client.storage.from(physicalBucket).list(prefix),
+    getItemKey: (item) => item.name
+  });
 
-  return (
-    result.data?.map((f) => ({ ...f, bucket: "supplier-interaction-line" })) ??
-    []
-  );
+  return result.map((f) => ({ ...f, bucket: "supplier-interaction-line" }));
 }
 
 export async function getSupplierLocations(
