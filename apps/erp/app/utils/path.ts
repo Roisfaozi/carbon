@@ -1642,6 +1642,10 @@ export const getParams = (request: Request) => {
   return searchParams.toString();
 };
 
+const getRequestedPrivateBucketFromPath = (objectPath: string) => {
+  return objectPath.split("/").find(Boolean) ?? "private";
+};
+
 /**
  * @deprecated Prefer `path.to.file.preview(bucket, objectPath)` in new code.
  */
@@ -1650,7 +1654,10 @@ export function getPrivateUrl(bucket: string, objectPath: string): string;
 export function getPrivateUrl(bucketOrPath: string, objectPath?: string) {
   return objectPath
     ? path.to.file.preview(bucketOrPath, objectPath)
-    : path.to.file.preview("private", bucketOrPath);
+    : path.to.file.preview(
+        getRequestedPrivateBucketFromPath(bucketOrPath),
+        bucketOrPath
+      );
 }
 
 export const getPublicModelUrl = (path: string) => {

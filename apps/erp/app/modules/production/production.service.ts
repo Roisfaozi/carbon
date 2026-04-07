@@ -1,6 +1,10 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
+import {
+  getCompanyPrivateBucket,
+  listPrivateObjectsWithFallback
+} from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import type { FileObject, StorageError } from "@supabase/storage-js";
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
@@ -718,45 +722,36 @@ export async function getJobDocuments(
     itemId?: string | null;
   }
 ): Promise<StorageItem[]> {
-  const promises: Promise<
-    | {
-        data: FileObject[];
-        error: null;
-      }
-    | {
-        data: null;
-        error: StorageError;
-      }
-  >[] = [client.storage.from("private").list(`${companyId}/job/${job.id}`)];
+  const listFiles = (objectPathPrefix: string) =>
+    listPrivateObjectsWithFallback({
+      companyId,
+      requestedBucket: getCompanyPrivateBucket(companyId),
+      objectPathPrefix,
+      listObjects: (physicalBucket, prefix) =>
+        client.storage.from(physicalBucket).list(prefix),
+      getItemKey: (item: FileObject) => item.name
+    });
 
-  // Add opportunity line files if available
-  if (job.salesOrderLineId || job.quoteLineId) {
-    const opportunityLine = job.salesOrderLineId || job.quoteLineId;
-    promises.push(
-      client.storage
-        .from("private")
-        .list(`${companyId}/opportunity-line/${opportunityLine}`)
-    );
-  }
-
-  // Add parts files if itemId is available
-  if (job.itemId) {
-    promises.push(
-      client.storage.from("private").list(`${companyId}/parts/${job.itemId}`)
-    );
-  }
-
-  const results = await Promise.all(promises);
-  const [jobFiles, opportunityLineFiles, partsFiles] = results;
+  const [jobFiles, opportunityLineFiles, partsFiles] = await Promise.all([
+    listFiles(`${companyId}/job/${job.id}`),
+    job.salesOrderLineId || job.quoteLineId
+      ? listFiles(
+          `${companyId}/opportunity-line/${
+            job.salesOrderLineId || job.quoteLineId
+          }`
+        )
+      : Promise.resolve([]),
+    job.itemId ? listFiles(`${companyId}/parts/${job.itemId}`) : Promise.resolve([])
+  ]);
 
   // Combine and return all sets of files with their respective buckets
   return [
-    ...(jobFiles.data?.map((f) => ({ ...f, bucket: "job" })) || []),
-    ...(opportunityLineFiles?.data?.map((f) => ({
+    ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
+    ...(opportunityLineFiles.map((f) => ({
       ...f,
       bucket: "opportunity-line"
     })) || []),
-    ...(partsFiles?.data?.map((f) => ({ ...f, bucket: "parts" })) || [])
+    ...(partsFiles.map((f) => ({ ...f, bucket: "parts" })) || [])
   ];
 }
 
@@ -766,13 +761,16 @@ export const getPartDocuments = async (
   ...items: Array<{ itemId: string }>
 ) => {
   const getFile = async (id: string) => {
-    const res = await client.storage
-      .from("private")
-      .list(`${companyId}/parts/${id}`);
+    const files = await listPrivateObjectsWithFallback({
+      companyId,
+      requestedBucket: getCompanyPrivateBucket(companyId),
+      objectPathPrefix: `${companyId}/parts/${id}`,
+      listObjects: (physicalBucket, prefix) =>
+        client.storage.from(physicalBucket).list(prefix),
+      getItemKey: (item: FileObject) => item.name
+    });
 
-    if (res.error || !res.data) return null;
-
-    return res.data.map((f) => ({ ...f, bucket: "parts", itemId: id }));
+    return files.map((f) => ({ ...f, bucket: "parts", itemId: id }));
   };
 
   const elems = items.map((el) => getFile(el.itemId));
@@ -794,28 +792,47 @@ export async function getJobDocumentsWithItemId(
     const opportunityLine = job.salesOrderLineId || job.quoteLineId;
 
     const [opportunityLineFiles, jobFiles] = await Promise.all([
-      client.storage
-        .from("private")
-        .list(`${companyId}/opportunity-line/${opportunityLine}`),
-      client.storage.from("private").list(`${companyId}/job/${job.id}`)
+      listPrivateObjectsWithFallback({
+        companyId,
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPathPrefix: `${companyId}/opportunity-line/${opportunityLine}`,
+        listObjects: (physicalBucket, prefix) =>
+          client.storage.from(physicalBucket).list(prefix),
+        getItemKey: (item: FileObject) => item.name
+      }),
+      listPrivateObjectsWithFallback({
+        companyId,
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPathPrefix: `${companyId}/job/${job.id}`,
+        listObjects: (physicalBucket, prefix) =>
+          client.storage.from(physicalBucket).list(prefix),
+        getItemKey: (item: FileObject) => item.name
+      })
     ]);
 
     // Combine and return both sets of files
     return [
-      ...(opportunityLineFiles.data?.map((f) => ({
+      ...(opportunityLineFiles.map((f) => ({
         ...f,
         bucket: "opportunity-line"
       })) || []),
-      ...(jobFiles.data?.map((f) => ({ ...f, bucket: "job" })) || []),
+      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
       ...itemFiles
     ];
   } else {
     const [jobFiles] = await Promise.all([
-      client.storage.from("private").list(`${companyId}/job/${job.id}`)
+      listPrivateObjectsWithFallback({
+        companyId,
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPathPrefix: `${companyId}/job/${job.id}`,
+        listObjects: (physicalBucket, prefix) =>
+          client.storage.from(physicalBucket).list(prefix),
+        getItemKey: (item: FileObject) => item.name
+      })
     ]);
 
     return [
-      ...(jobFiles.data?.map((f) => ({ ...f, bucket: "job" })) || []),
+      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
       ...itemFiles
     ];
   }

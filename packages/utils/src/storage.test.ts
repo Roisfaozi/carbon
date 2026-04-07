@@ -7,7 +7,8 @@ import {
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets,
   hasCompanyPrivateObjectPathPrefix,
-  isAllowedPrivateBucketForCompany
+  isAllowedPrivateBucketForCompany,
+  listPrivateObjectsWithFallback
 } from "./storage";
 
 describe("storage helpers", () => {
@@ -121,5 +122,38 @@ describe("storage helpers", () => {
       data: "legacy-file",
       physicalBucket: "private"
     });
+  });
+
+  it("lists company files first and falls back to legacy private files", async () => {
+    const bucketsTried: string[] = [];
+
+    const result = await listPrivateObjectsWithFallback({
+      companyId: "cmp_123",
+      objectPathPrefix: "cmp_123/job/job_987",
+      requestedBucket: "cmp_123",
+      listObjects: async (physicalBucket) => {
+        bucketsTried.push(physicalBucket);
+
+        if (physicalBucket === "cmp_123") {
+          return {
+            data: [{ name: "new-file.pdf" }, { name: "shared-file.pdf" }],
+            error: null
+          };
+        }
+
+        return {
+          data: [{ name: "shared-file.pdf" }, { name: "legacy-file.pdf" }],
+          error: null
+        };
+      },
+      getItemKey: (item) => item.name
+    });
+
+    expect(bucketsTried).toEqual(["cmp_123", "private"]);
+    expect(result).toEqual([
+      { name: "new-file.pdf" },
+      { name: "shared-file.pdf" },
+      { name: "legacy-file.pdf" }
+    ]);
   });
 });

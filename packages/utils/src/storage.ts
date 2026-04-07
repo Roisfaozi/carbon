@@ -11,6 +11,11 @@ type DownloadPrivateObjectResult<TData> = {
   error: unknown | null;
 };
 
+type ListPrivateObjectResult<TItem> = {
+  data: TItem[] | null;
+  error: unknown | null;
+};
+
 type BuildCompanyPrivateStorageTargetInput = {
   companyId: string;
   logicalFolder: string;
@@ -86,6 +91,46 @@ export const downloadPrivateObjectWithFallback = async <TData>({
   }
 
   return null;
+};
+
+export const listPrivateObjectsWithFallback = async <TItem>({
+  companyId,
+  objectPathPrefix,
+  requestedBucket,
+  listObjects,
+  getItemKey
+}: {
+  companyId: string;
+  objectPathPrefix: string;
+  requestedBucket?: string;
+  listObjects: (
+    physicalBucket: string,
+    objectPathPrefix: string
+  ) => Promise<ListPrivateObjectResult<TItem>>;
+  getItemKey: (item: TItem) => string;
+}) => {
+  const items = new Map<string, TItem>();
+
+  for (const physicalBucket of getPrivateReadCandidateBuckets(
+    companyId,
+    requestedBucket
+  )) {
+    const result = await listObjects(physicalBucket, objectPathPrefix);
+
+    if (result.error || !result.data) {
+      continue;
+    }
+
+    for (const item of result.data) {
+      const itemKey = getItemKey(item);
+
+      if (!items.has(itemKey)) {
+        items.set(itemKey, item);
+      }
+    }
+  }
+
+  return [...items.values()];
 };
 
 export const buildCompanyPrivateStorageTarget = ({

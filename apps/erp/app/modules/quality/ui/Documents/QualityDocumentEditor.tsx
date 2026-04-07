@@ -2,6 +2,7 @@ import { useCarbon } from "@carbon/auth";
 import type { JSONContent } from "@carbon/react";
 import { generateHTML, Input, toast, useDebounce } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { nanoid } from "nanoid";
 import { useState } from "react";
@@ -30,6 +31,7 @@ export default function QualityDocumentEditor() {
     id: userId,
     company: { id: companyId }
   } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
   const updateContent = useDebounce(
     async (next: JSONContent) => {
@@ -67,7 +69,7 @@ export default function QualityDocumentEditor() {
     const ext = file.name.split(".").pop();
     const storagePath = `${companyId}/parts/${nanoid()}.${ext}`;
     const result = await carbon?.storage
-      .from("private")
+      .from(companyPrivateBucket)
       .upload(storagePath, file);
 
     if (result?.error) {

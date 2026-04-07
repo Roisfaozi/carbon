@@ -17,6 +17,7 @@ import {
   useDebounce
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { nanoid } from "nanoid";
 import { useState } from "react";
@@ -44,6 +45,7 @@ const OpportunityLineNotes = ({
     id: userId,
     company: { id: companyId }
   } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { carbon } = useCarbon();
   const permissions = usePermissions();
   const isEmployee = permissions.is("employee");
@@ -60,7 +62,9 @@ const OpportunityLineNotes = ({
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/opportunity-line/${id}/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from("private").upload(fileName, file);
+    const result = await carbon?.storage
+      .from(companyPrivateBucket)
+      .upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");

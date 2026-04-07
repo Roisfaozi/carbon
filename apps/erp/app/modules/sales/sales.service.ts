@@ -1,7 +1,12 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
-import type { PickPartial } from "@carbon/utils";
+import {
+  getCompanyPrivateBucket,
+  listPrivateObjectsWithFallback,
+  type PickPartial
+} from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
+import type { FileObject } from "@supabase/storage-js";
 import type {
   PostgrestError,
   PostgrestSingleResponse,
@@ -721,11 +726,16 @@ export async function getOpportunityDocuments(
   companyId: string,
   opportunityId: string
 ) {
-  const result = await client.storage
-    .from("private")
-    .list(`${companyId}/opportunity/${opportunityId}`);
+  const result = await listPrivateObjectsWithFallback({
+    companyId,
+    requestedBucket: getCompanyPrivateBucket(companyId),
+    objectPathPrefix: `${companyId}/opportunity/${opportunityId}`,
+    listObjects: (physicalBucket, prefix) =>
+      client.storage.from(physicalBucket).list(prefix),
+    getItemKey: (item: FileObject) => item.name
+  });
 
-  return result.data?.map((f) => ({ ...f, bucket: "opportunity" })) ?? [];
+  return result.map((f) => ({ ...f, bucket: "opportunity" }));
 }
 
 export async function getOpportunityLineDocuments(
@@ -735,21 +745,31 @@ export async function getOpportunityLineDocuments(
   itemId?: string | null
 ) {
   const [opportunityLineResult, itemResult] = await Promise.all([
-    client.storage
-      .from("private")
-      .list(`${companyId}/opportunity-line/${lineId}`),
+    listPrivateObjectsWithFallback({
+      companyId,
+      requestedBucket: getCompanyPrivateBucket(companyId),
+      objectPathPrefix: `${companyId}/opportunity-line/${lineId}`,
+      listObjects: (physicalBucket, prefix) =>
+        client.storage.from(physicalBucket).list(prefix),
+      getItemKey: (item: FileObject) => item.name
+    }),
     itemId
-      ? client.storage.from("private").list(`${companyId}/parts/${itemId}`)
-      : Promise.resolve({ data: [] })
+      ? listPrivateObjectsWithFallback({
+          companyId,
+          requestedBucket: getCompanyPrivateBucket(companyId),
+          objectPathPrefix: `${companyId}/parts/${itemId}`,
+          listObjects: (physicalBucket, prefix) =>
+            client.storage.from(physicalBucket).list(prefix),
+          getItemKey: (item: FileObject) => item.name
+        })
+      : Promise.resolve([])
   ]);
 
-  const opportunityLineDocs =
-    opportunityLineResult.data?.map((f) => ({
-      ...f,
-      bucket: "opportunity-line"
-    })) ?? [];
-  const itemDocs =
-    itemResult.data?.map((f) => ({ ...f, bucket: "parts" })) ?? [];
+  const opportunityLineDocs = opportunityLineResult.map((f) => ({
+    ...f,
+    bucket: "opportunity-line"
+  }));
+  const itemDocs = itemResult.map((f) => ({ ...f, bucket: "parts" }));
 
   return [...opportunityLineDocs, ...itemDocs];
 }

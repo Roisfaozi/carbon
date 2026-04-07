@@ -4,6 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import type { JSONContent } from "@carbon/react";
 import { generateHTML, Input, toast, useDebounce } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { nanoid } from "nanoid";
 import { useState } from "react";
@@ -161,7 +162,7 @@ function ProcedureEditor() {
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/job/notes/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from("private").upload(fileName, file);
+    const result = await carbon?.storage.from(getCompanyPrivateBucket(companyId)).upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");

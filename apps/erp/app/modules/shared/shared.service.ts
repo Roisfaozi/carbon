@@ -1,6 +1,10 @@
 import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
-import { getPurchaseOrderStatus, supportedModelTypes } from "@carbon/utils";
+import {
+  downloadPrivateObjectWithFallback,
+  getPurchaseOrderStatus,
+  supportedModelTypes
+} from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { FunctionRegion } from "@supabase/supabase-js";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -632,12 +636,24 @@ export async function getBase64ImageFromSupabase(
     return Buffer.from(buffer).toString("base64");
   }
 
-  const { data, error } = await client.storage.from("private").download(path);
-  if (error) {
+  const companyId = path.split("/").find(Boolean);
+
+  if (!companyId) {
     return null;
   }
 
-  const arrayBuffer = await data.arrayBuffer();
+  const result = await downloadPrivateObjectWithFallback({
+    companyId,
+    objectPath: path,
+    downloadObject: (physicalBucket, objectPath) =>
+      client.storage.from(physicalBucket).download(objectPath)
+  });
+
+  if (!result?.data) {
+    return null;
+  }
+
+  const arrayBuffer = await result.data.arrayBuffer();
   const base64String = arrayBufferToBase64(arrayBuffer);
 
   // Determine the mime type based on file extension

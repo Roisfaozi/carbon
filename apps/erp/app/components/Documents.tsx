@@ -385,7 +385,10 @@ const Documents = ({
                         onClick={() => {
                           if (["PDF", "Image"].includes(type)) {
                             window.open(
-                              path.to.file.preview("private", getReadPath(file)),
+                              path.to.file.preview(
+                                companyPrivateBucket,
+                                getReadPath(file)
+                              ),
                               "_blank"
                             );
                           } else {
@@ -395,7 +398,7 @@ const Documents = ({
                       >
                         {isPreviewable ? (
                           <DocumentPreview
-                            bucket="private"
+                            bucket={companyPrivateBucket}
                             pathToFile={getReadPath(file)}
                             // @ts-ignore
                             type={getDocumentType(file.name)}

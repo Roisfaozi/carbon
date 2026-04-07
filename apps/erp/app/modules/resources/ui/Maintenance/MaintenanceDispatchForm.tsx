@@ -13,6 +13,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
@@ -64,6 +65,7 @@ const MaintenanceDispatchForm = ({
   const {
     company: { id: companyId }
   } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { carbon } = useCarbon();
 
   const isEditing = initialValues.id !== undefined;
@@ -94,7 +96,9 @@ const MaintenanceDispatchForm = ({
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/maintenance/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from("private").upload(fileName, file);
+    const result = await carbon?.storage
+      .from(companyPrivateBucket)
+      .upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");

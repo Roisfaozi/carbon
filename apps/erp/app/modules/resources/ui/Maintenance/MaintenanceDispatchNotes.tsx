@@ -25,7 +25,12 @@ import {
   useDebounce
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
-import { convertKbToString } from "@carbon/utils";
+import {
+  buildCompanyPrivateStorageTarget,
+  convertKbToString,
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets
+} from "@carbon/utils";
 import type { FileObject } from "@supabase/storage-js";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
@@ -55,14 +60,20 @@ export function MaintenanceDispatchNotes({
   } = useUser();
   const { carbon } = useCarbon();
   const permissions = usePermissions();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
   const [content, setContent] = useState(initialContent ?? {});
 
   const onUploadImage = async (file: File) => {
-    const fileType = file.name.split(".").pop();
-    const fileName = `${companyId}/maintenance/${nanoid()}.${fileType}`;
+    const target = buildCompanyPrivateStorageTarget({
+      companyId,
+      logicalFolder: "maintenance",
+      fileName: `${nanoid()}.${file.name.split(".").pop()}`
+    });
 
-    const result = await carbon?.storage.from("private").upload(fileName, file);
+    const result = await carbon?.storage
+      .from(target.physicalBucket)
+      .upload(target.objectPath, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");
@@ -73,7 +84,7 @@ export function MaintenanceDispatchNotes({
       throw new Error("Failed to upload image");
     }
 
-    return getPrivateUrl(result.data.path);
+    return getPrivateUrl(companyPrivateBucket, result.data.path);
   };
 
   const onUpdateContent = useDebounce(
@@ -188,11 +199,16 @@ function MaintenanceFilesContent({
   const { carbon } = useCarbon();
   const { company } = useUser();
   const revalidator = useRevalidator();
+  const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
   const getFilePath = useCallback(
-    (fileName: string) => {
-      return `${company.id}/maintenance/${dispatchId}/${stripSpecialCharacters(fileName)}`;
-    },
+    (fileName: string) =>
+      buildCompanyPrivateStorageTarget({
+        companyId: company.id,
+        logicalFolder: "maintenance",
+        entityId: dispatchId,
+        fileName: stripSpecialCharacters(fileName)
+      }).objectPath,
     [company.id, dispatchId]
   );
 
@@ -206,12 +222,14 @@ function MaintenanceFilesContent({
       for (const file of filesToUpload) {
         const filePath = getFilePath(file.name);
 
-        const result = await carbon.storage
-          .from("private")
-          .upload(filePath, file, {
+        const result = await carbon.storage.from(companyPrivateBucket).upload(
+          filePath,
+          file,
+          {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
-          });
+          }
+        );
 
         if (result.error) {
           toast.error(`Failed to upload file: ${file.name}`);
@@ -221,13 +239,13 @@ function MaintenanceFilesContent({
       }
       revalidator.revalidate();
     },
-    [carbon, getFilePath, revalidator]
+    [carbon, companyPrivateBucket, getFilePath, revalidator]
   );
 
   const download = useCallback(
     async (file: FileObject) => {
       const filePath = getFilePath(file.name);
-      const url = path.to.file.preview("private", filePath);
+      const url = path.to.file.preview(companyPrivateBucket, filePath);
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -244,7 +262,7 @@ function MaintenanceFilesContent({
         console.error(error);
       }
     },
-    [getFilePath]
+    [companyPrivateBucket, getFilePath]
   );
 
   const deleteFile = useCallback(
@@ -255,17 +273,32 @@ function MaintenanceFilesContent({
       }
 
       const filePath = getFilePath(file.name);
-      const result = await carbon.storage.from("private").remove([filePath]);
 
-      if (result.error) {
-        toast.error(result.error.message || "Error deleting file");
+      let deleted = false;
+      let lastError: string | undefined;
+
+      for (const physicalBucket of getPrivateReadCandidateBuckets(
+        company.id,
+        companyPrivateBucket
+      )) {
+        const result = await carbon.storage.from(physicalBucket).remove([filePath]);
+
+        if (!result.error) {
+          deleted = true;
+        } else {
+          lastError = result.error.message;
+        }
+      }
+
+      if (!deleted) {
+        toast.error(lastError || "Error deleting file");
         return;
       }
 
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [carbon, getFilePath, revalidator]
+    [carbon, company.id, companyPrivateBucket, getFilePath, revalidator]
   );
 
   const onDrop = useCallback(

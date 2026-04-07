@@ -16,6 +16,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useFetcher } from "react-router";
@@ -59,6 +60,7 @@ const RiskRegisterForm = ({
   const {
     company: { id: companyId }
   } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { carbon } = useCarbon();
   const fetcher = useFetcher<{
     data: { id: string } | null;
@@ -85,7 +87,9 @@ const RiskRegisterForm = ({
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/quality/${nanoid()}.${fileType}`;
 
-    const result = await carbon?.storage.from("private").upload(fileName, file);
+    const result = await carbon?.storage
+      .from(companyPrivateBucket)
+      .upload(fileName, file);
 
     if (result?.error) {
       toast.error("Failed to upload image");

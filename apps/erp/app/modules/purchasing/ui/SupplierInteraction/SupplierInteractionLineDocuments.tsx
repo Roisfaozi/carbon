@@ -20,7 +20,12 @@ import {
   Tr,
   toast
 } from "@carbon/react";
-import { convertKbToString, formatDate } from "@carbon/utils";
+import {
+  convertKbToString,
+  formatDate,
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets
+} from "@carbon/utils";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -55,6 +60,7 @@ const useSupplierInteractionLineDocuments = ({
   const { carbon } = useCarbon();
   const { company } = useUser();
   const submit = useSubmit();
+  const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
   const canDelete = permissions.can("delete", "sales");
   const canUpdate = permissions.can("update", "sales");
@@ -72,24 +78,38 @@ const useSupplierInteractionLineDocuments = ({
 
   const deleteFile = useCallback(
     async (file: ItemFile) => {
-      const fileDelete = await carbon?.storage
-        .from("private")
-        .remove([getPath(file)]);
+      let deleted = false;
+      let lastError: string | undefined;
 
-      if (!fileDelete || fileDelete.error) {
-        toast.error(fileDelete?.error?.message || "Error deleting file");
+      for (const physicalBucket of getPrivateReadCandidateBuckets(
+        company.id,
+        companyPrivateBucket
+      )) {
+        const fileDelete = await carbon?.storage
+          .from(physicalBucket)
+          .remove([getPath(file)]);
+
+        if (fileDelete && !fileDelete.error) {
+          deleted = true;
+        } else if (fileDelete?.error) {
+          lastError = fileDelete.error.message;
+        }
+      }
+
+      if (!deleted) {
+        toast.error(lastError || "Error deleting file");
         return;
       }
 
       toast.success(`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, revalidator]
+    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator]
   );
 
   const download = useCallback(
     async (file: ItemFile) => {
-      const url = path.to.file.previewFile(`private/${getPath(file)}`);
+      const url = path.to.file.preview(companyPrivateBucket, getPath(file));
       try {
         const response = await fetch(url);
         const blob = await response.blob();
@@ -106,7 +126,7 @@ const useSupplierInteractionLineDocuments = ({
         console.error(error);
       }
     },
-    [getPath]
+    [companyPrivateBucket, getPath]
   );
 
   const createDocumentRecord = useCallback(
@@ -147,7 +167,7 @@ const useSupplierInteractionLineDocuments = ({
         const fileName = getPath(file);
 
         const fileUpload = await carbon.storage
-          .from("private")
+          .from(companyPrivateBucket)
           .upload(fileName, file, {
             cacheControl: `${12 * 60 * 60}`,
             upsert: true
@@ -165,7 +185,7 @@ const useSupplierInteractionLineDocuments = ({
       }
       revalidator.revalidate();
     },
-    [getPath, createDocumentRecord, carbon, revalidator]
+    [companyPrivateBucket, getPath, createDocumentRecord, carbon, revalidator]
   );
 
   return {
@@ -194,6 +214,10 @@ const SupplierInteractionLineDocuments = ({
   lineId,
   type
 }: SupplierInteractionLineDocumentsProps) => {
+  const {
+    company: { id: companyId }
+  } = useUser();
+  const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { canDelete, download, deleteFile, getPath, upload } =
     useSupplierInteractionLineDocuments({
       id,
@@ -274,7 +298,7 @@ const SupplierInteractionLineDocuments = ({
                         >
                           {["PDF", "Image"].includes(type) ? (
                             <DocumentPreview
-                              bucket="private"
+                              bucket={companyPrivateBucket}
                               pathToFile={getPath(file)}
                               // @ts-ignore
                               type={type}
