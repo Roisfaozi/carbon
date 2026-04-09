@@ -108,6 +108,7 @@ type Material = z.infer<typeof methodMaterialValidator> & {
   item: {
     name: string;
     itemTrackingType: Database["public"]["Enums"]["itemTrackingType"];
+    replenishmentSystem: string | null;
   };
 };
 
@@ -655,6 +656,7 @@ function MaterialForm({
     quantity: number;
     kit: boolean;
     shelfIds: Record<string, string>;
+    itemReplenishmentSystem: string;
   }>({
     itemId: item.data.itemId ?? "",
     methodType: item.data.methodType ?? "Pull from Inventory",
@@ -664,7 +666,9 @@ function MaterialForm({
     methodOperationId: item.data.methodOperationId ?? undefined,
     quantity: item.data.quantity ?? 1,
     kit: item.data.kit ?? false,
-    shelfIds: item.data.shelfIds ?? {}
+    shelfIds: item.data.shelfIds ?? {},
+    itemReplenishmentSystem:
+      item.data.item?.replenishmentSystem ?? replenishmentSystem ?? "Buy"
   });
 
   const onTypeChange = (value: MethodItemType | "Item") => {
@@ -680,7 +684,8 @@ function MaterialForm({
       unitOfMeasureCode: "EA",
       kit: false,
       shelfIds: {},
-      methodOperationId: undefined
+      methodOperationId: undefined,
+      itemReplenishmentSystem: replenishmentSystem ?? "Buy"
     });
   };
 
@@ -694,7 +699,7 @@ function MaterialForm({
     const item = await carbon
       .from("item")
       .select(
-        "name, readableIdWithRevision, type, unitOfMeasureCode, defaultMethodType"
+        "name, readableIdWithRevision, type, unitOfMeasureCode, defaultMethodType, replenishmentSystem"
       )
       .eq("id", itemId)
       .eq("companyId", company.id)
@@ -711,7 +716,8 @@ function MaterialForm({
       description: item.data?.name ?? "",
       unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
       methodType: item.data?.defaultMethodType ?? "Pull from Inventory",
-      kit: false
+      kit: false,
+      itemReplenishmentSystem: item.data?.replenishmentSystem ?? "Buy"
     }));
     if (item.data?.type) {
       setItemType(item.data.type as MethodItemType);
@@ -981,7 +987,7 @@ function MaterialForm({
                     })
                 : undefined
             }
-            replenishmentSystem="Buy and Make"
+            replenishmentSystem={itemData.itemReplenishmentSystem}
           />
           <Location
             name="locationId"
