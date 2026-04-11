@@ -37,7 +37,6 @@ Tools are namespaced by module — use the prefix to discover related tools:
 - invoicing_* — 11 read, 13 write, 4 delete tools
 - items_* — 75 read, 44 write, 17 delete tools
 - people_* — 24 read, 14 write, 6 delete tools
-- pricing_* — 19 read, 14 write, 4 delete tools
 - production_* — 62 read, 45 write, 22 delete tools
 - purchasing_* — 51 read, 34 write, 11 delete tools
 - quality_* — 38 read, 19 write, 11 delete tools
