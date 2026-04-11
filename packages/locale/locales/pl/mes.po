@@ -13,46 +13,46 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/mes/app/components/JobOperation/components/Step.tsx:434
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
-#: apps/mes/app/components/JobOperation/components/Step.tsx:434
 msgid "{0} - Set {1}"
 msgstr "{0} - Zestaw {1}"
 
-#. placeholder {0}: employeeIds.length
 #: apps/mes/app/components/Kanban/components/ItemCard.tsx:262
+#. placeholder {0}: employeeIds.length
 msgid "{0} Active"
 msgstr "{0} Aktywnych"
 
-#. placeholder {0}: batch.quantity
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:147
+#. placeholder {0}: batch.quantity
 msgid "{0} available"
 msgstr "{0} dostępnych"
 
+#: apps/mes/app/components/JobOperation/JobOperation.tsx:637
+#: apps/mes/app/components/JobOperation/JobOperation.tsx:851
+#: apps/mes/app/components/JobOperation/JobOperation.tsx:1795
 #. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
 #. placeholder {1}: operation.targetQuantity
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:637
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:851
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1795
 msgid "{0} of {1}"
 msgstr "{0} z {1}"
 
+#: apps/mes/app/components/JobOperation/JobOperation.tsx:874
 #. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:874
 msgid "{0} of {1} complete"
 msgstr "{0} z {1} ukończono"
 
+#: apps/mes/app/components/JobOperation/JobOperation.tsx:1819
 #. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1819
 msgid "{0} of {1} completed"
 msgstr "{0} z {1} ukończonych"
 
-#. placeholder {0}: item.quantityScrapped
 #: apps/mes/app/components/Kanban/components/ItemCard.tsx:281
+#. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} Odrzuconych"
 
@@ -145,9 +145,9 @@ msgstr "Załącz plik"
 msgid "Authentication Error"
 msgstr "Błąd uwierzytelniania"
 
+#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:146
 #. placeholder {0}: batch.readableId
 #. placeholder {1}: batch.quantity
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:146
 msgid "Batch {0} ({1} available)"
 msgstr "Partia {0} ({1} dostępnych)"
 
@@ -155,8 +155,8 @@ msgstr "Partia {0} ({1} dostępnych)"
 msgid "Batch is not available"
 msgstr "Partia jest niedostępna"
 
-#. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:501
+#. placeholder {0}: index + 1
 msgid "Batch Number {0}"
 msgstr "Numer partii {0}"
 
@@ -164,8 +164,8 @@ msgstr "Numer partii {0}"
 msgid "Batch number is required"
 msgstr "Numer partii jest wymagany"
 
-#. placeholder {0}: column.blockingDispatchReadableId
 #: apps/mes/app/components/Kanban/components/ColumnCard.tsx:129
+#. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Zablokowane przez {0}"
 
@@ -175,7 +175,7 @@ msgstr "Blokujące"
 
 #: apps/mes/app/routes/_public+/callback.tsx:153
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
-msgstr ""
+msgstr "Ale nie martw się. Możesz użyć funkcji resetowania hasła, aby poprosić o nowy magiczny link."
 
 #: apps/mes/app/routes/_public+/login.tsx:249
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
@@ -239,8 +239,8 @@ msgstr "Rozpocznij zmianę"
 msgid "Clock Out"
 msgstr "Zakończ zmianę"
 
-#. placeholder {0}: formatTime(openEntry.clockIn)
 #: apps/mes/app/routes/x+/timecard.tsx:272
+#. placeholder {0}: formatTime(openEntry.clockIn)
 msgid "Clocked in since {0}"
 msgstr "Zalogowany od {0}"
 
@@ -256,28 +256,28 @@ msgstr "Zamknij mimo to"
 msgid "Close Out"
 msgstr "Zamknij"
 
-#. placeholder {0}: operation.itemReadableId
 #: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:74
+#. placeholder {0}: operation.itemReadableId
 msgid "Close out {0}"
 msgstr "Zamknij {0}"
 
+#: apps/mes/app/components/Kanban/Kanban.tsx:113
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:113
 msgid "Column {0} was dropped into position {1} of {2}"
 msgstr "Kolumna {0} została upuszczona na pozycję {1} z {2}"
 
+#: apps/mes/app/components/Kanban/Kanban.tsx:97
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: over.data.current.column.title
 #. placeholder {2}: overIndex + 1
 #. placeholder {3}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:97
 msgid "Column {0} was moved over {1} at position {2} of {3}"
 msgstr "Kolumna {0} została przeniesiona nad {1} na pozycję {2} z {3}"
 
-#. placeholder {0}: column.title
 #: apps/mes/app/components/Kanban/components/ColumnCard.tsx:71
+#. placeholder {0}: column.title
 msgid "Column: {0}"
 msgstr "Kolumna: {0}"
 
@@ -305,11 +305,11 @@ msgstr "Tryb konsoli"
 msgid "Copy PIN"
 msgstr "Kopiuj PIN"
 
-#. placeholder {0}: search.trim() === "" ? label : search
 #: packages/react/src/CreateableCombobox.tsx:291
 #: packages/react/src/CreateableMultiSelect.tsx:339
+#. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
-msgstr ""
+msgstr "Utwórz {0}"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:1985
 #: apps/mes/app/routes/x+/operations.tsx:428
@@ -342,8 +342,8 @@ msgstr "Usuń"
 msgid "Delete Step"
 msgstr "Usuń krok"
 
-#. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString()
 #: apps/mes/app/routes/x+/timecard.tsx:488
+#. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString()
 msgid "Delete Timecard ({0})"
 msgstr "Usuń kartę czasu pracy ({0})"
 
@@ -378,19 +378,19 @@ msgstr "Pobierz"
 msgid "Drag and drop a file here, or click to select a file"
 msgstr "Przeciągnij i upuść plik tutaj lub kliknij, aby wybrać plik"
 
-#. placeholder {0}: active.data.current?.type
 #: apps/mes/app/components/Kanban/Kanban.tsx:122
+#. placeholder {0}: active.data.current?.type
 msgid "Dragging {0} cancelled."
 msgstr "Przeciąganie {0} anulowane."
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:578
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:679
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:2031
 #: apps/mes/app/components/Kanban/components/ItemCard.tsx:229
 #: apps/mes/app/components/OperationsList.tsx:187
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "Termin {0}"
 
@@ -435,14 +435,14 @@ msgstr "Wprowadź imię"
 msgid "Enter last name"
 msgstr "Wprowadź nazwisko"
 
-#. placeholder {0}: selectedPerson.name
 #: apps/mes/app/components/PinInOverlay.tsx:352
+#. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "Wprowadź PIN dla {0}"
 
 #: apps/mes/app/routes/_public+/callback.tsx:146
 msgid "Error"
-msgstr ""
+msgstr "Błąd"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:1014
 msgid "Estimated"
@@ -468,8 +468,8 @@ msgstr "Nie udało się pobrać aktywnych operacji"
 msgid "Failed to fetch shelves"
 msgstr "Nie udało się pobrać półek"
 
-#. placeholder {0}: fileUpload.name
 #: apps/mes/app/components/JobOperation/components/Step.tsx:385
+#. placeholder {0}: fileUpload.name
 msgid "Failed to upload file: {0}"
 msgstr "Nie udało się przesłać pliku: {0}"
 
@@ -626,8 +626,8 @@ msgstr "Lokalizacja"
 msgid "Log Completed"
 msgstr "Rejestruj ukończone"
 
-#. placeholder {0}: operation.itemReadableId
 #: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:73
+#. placeholder {0}: operation.itemReadableId
 msgid "Log completed for {0}"
 msgstr "Rejestruj ukończone dla {0}"
 
@@ -635,8 +635,8 @@ msgstr "Rejestruj ukończone dla {0}"
 msgid "Log Rework"
 msgstr "Rejestruj poprawki"
 
-#. placeholder {0}: operation.itemReadableId
 #: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:72
+#. placeholder {0}: operation.itemReadableId
 msgid "Log rework for {0}"
 msgstr "Rejestruj poprawki dla {0}"
 
@@ -645,14 +645,14 @@ msgstr "Rejestruj poprawki dla {0}"
 msgid "Log Scrap"
 msgstr "Rejestruj odpad"
 
-#. placeholder {0}: operation.itemReadableId
 #: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:71
+#. placeholder {0}: operation.itemReadableId
 msgid "Log scrap for {0}"
 msgstr "Rejestruj odpad dla {0}"
 
 #: apps/mes/app/routes/_public+/callback.tsx:160
 msgid "Login"
-msgstr ""
+msgstr "Zaloguj się"
 
 #: apps/mes/app/components/JobOperation/components/Controls.tsx:198
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:2196
@@ -697,8 +697,8 @@ msgstr "Model"
 msgid "More options"
 msgstr "Więcej opcji"
 
-#. placeholder {0}: column.title
 #: apps/mes/app/components/Kanban/components/ColumnCard.tsx:153
+#. placeholder {0}: column.title
 msgid "Move column: {0}"
 msgstr "Przenieś kolumnę: {0}"
 
@@ -727,7 +727,7 @@ msgstr "Nazwa"
 #: packages/react/src/CreateableCombobox.tsx:217
 #: packages/react/src/CreateableMultiSelect.tsx:261
 msgid "New"
-msgstr ""
+msgstr "Nowy"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:846
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:1790
@@ -789,7 +789,7 @@ msgstr "Brak operatorów"
 #: packages/react/src/CreateableMultiSelect.tsx:291
 #: packages/react/src/MultiSelect.tsx:271
 msgid "No option found."
-msgstr ""
+msgstr "Nie znaleziono opcji."
 
 #: apps/mes/app/components/Filter/ActiveFilters.tsx:170
 msgid "No options found."
@@ -853,8 +853,8 @@ msgstr "Wpływ na OEE"
 msgid "OEM Required"
 msgstr "Wymagany OEM"
 
-#. placeholder {0}: batch.quantity
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:183
+#. placeholder {0}: batch.quantity
 msgid "Only {0} available"
 msgstr "Tylko {0} dostępnych"
 
@@ -880,7 +880,7 @@ msgstr "Wykonane przez operatora"
 
 #: packages/react/src/Form/FormLabel.tsx:44
 msgid "Optional"
-msgstr ""
+msgstr "Opcjonalnie"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:1698
 msgid "Parameters"
@@ -898,10 +898,10 @@ msgstr "Inspekcja zaliczona"
 msgid "Pause"
 msgstr "Pauza"
 
+#: apps/mes/app/components/Kanban/Kanban.tsx:84
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:84
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Podniesiono kolumnę {0} na pozycji: {1} z {2}"
 
@@ -982,9 +982,9 @@ msgstr "Ostatnie"
 msgid "Record"
 msgstr "Rejestruj"
 
-#. placeholder {0}: activeStep + 1
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:803
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:1754
+#. placeholder {0}: activeStep + 1
 msgid "Record {0}"
 msgstr "Rekord {0}"
 
@@ -1099,13 +1099,13 @@ msgstr "Wybierz pozycję i określ ilość do wydania"
 msgid "Select an item..."
 msgstr "Wybierz pozycję..."
 
-#. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:591
+#. placeholder {0}: index + 1
 msgid "Select Batch {0}"
 msgstr "Wybierz partię {0}"
 
-#. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:439
+#. placeholder {0}: index + 1
 msgid "Select Serial {0}"
 msgstr "Wybierz numer seryjny {0}"
 
@@ -1123,13 +1123,13 @@ msgstr "Wyślij"
 msgid "Serial"
 msgstr "Seryjny"
 
-#. placeholder {0}: sn.readableId
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
+#. placeholder {0}: sn.readableId
 msgid "Serial {0}"
 msgstr "Seryjny {0}"
 
-#. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:381
+#. placeholder {0}: index + 1
 msgid "Serial Number {0}"
 msgstr "Numer seryjny {0}"
 
@@ -1255,8 +1255,8 @@ msgstr "Zmień operatora"
 msgid "Tag"
 msgstr "Tag"
 
-#. placeholder {0}: operation.operationQuantity
 #: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:212
+#. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "Ukończona ilość dla tej operacji jest mniejsza niż wymagana ilość {0}."
 
@@ -1272,8 +1272,8 @@ msgstr "Miniatura"
 msgid "Time Entries"
 msgstr "Wpisy czasu pracy"
 
-#. placeholder {0}: formatDuration(totalDuration)
 #: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:306
+#. placeholder {0}: formatDuration(totalDuration)
 msgid "Time Worked: {0}"
 msgstr "Przepracowany czas: {0}"
 
@@ -1289,13 +1289,13 @@ msgstr "Narzędzia"
 msgid "Total Quantity"
 msgstr "Ilość całkowita"
 
-#. placeholder {0}: formatDuration(totalDuration)
 #: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:546
+#. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
 msgstr "Czas całkowity: {0}"
 
-#. placeholder {0}: formatTotalHours(entries)
 #: apps/mes/app/routes/x+/timecard.tsx:471
+#. placeholder {0}: formatTotalHours(entries)
 msgid "Total: {0}"
 msgstr "Razem: {0}"
 
@@ -1323,13 +1323,13 @@ msgstr "Aktualizuj"
 msgid "Updated successfully"
 msgstr "Zaktualizowano pomyślnie"
 
-#. placeholder {0}: fileUpload.name
 #: apps/mes/app/components/JobOperation/components/Step.tsx:387
+#. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "Przesłano: {0}"
 
-#. placeholder {0}: fileUpload.name
 #: apps/mes/app/components/JobOperation/components/Step.tsx:373
+#. placeholder {0}: fileUpload.name
 msgid "Uploading {0}"
 msgstr "Przesyłanie {0}"
 
@@ -1352,8 +1352,8 @@ msgstr "WIP"
 msgid "Work Center"
 msgstr "Gniazdo produkcyjne"
 
-#. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString()
 #: apps/mes/app/components/TimeCardWarning.tsx:119
+#. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString()
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "Zalogowałeś się o {0}. Możesz edytować czas zakończenia zmiany poniżej lub potwierdzić, że nadal pracujesz."
 
