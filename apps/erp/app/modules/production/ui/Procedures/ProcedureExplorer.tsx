@@ -45,6 +45,7 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { DragControls } from "framer-motion";
 import { Reorder, useDragControls } from "framer-motion";
 import { nanoid } from "nanoid";
@@ -250,8 +251,12 @@ export default function ProcedureExplorer() {
         >
           <div className="w-full p-2">
             <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="attributes">Steps</TabsTrigger>
-              <TabsTrigger value="parameters">Parameters</TabsTrigger>
+              <TabsTrigger value="attributes">
+                <Trans>Steps</Trans>
+              </TabsTrigger>
+              <TabsTrigger value="parameters">
+                <Trans>Parameters</Trans>
+              </TabsTrigger>
             </TabsList>
           </div>
           <TabsContent
@@ -331,7 +336,9 @@ export default function ProcedureExplorer() {
                 </TooltipTrigger>
                 <TooltipContent>
                   <HStack>
-                    <span>Add Step</span>
+                    <span>
+                      <Trans>Add Step</Trans>
+                    </span>
                     <Kbd>{prettifyShortcut("Command+Shift+a")}</Kbd>
                   </HStack>
                 </TooltipContent>
@@ -401,7 +408,9 @@ export default function ProcedureExplorer() {
                 </TooltipTrigger>
                 <TooltipContent>
                   <HStack>
-                    <span>Add Parameter</span>
+                    <span>
+                      <Trans>Add Parameter</Trans>
+                    </span>
                     <Kbd>{prettifyShortcut("Command+Shift+p")}</Kbd>
                   </HStack>
                 </TooltipContent>
@@ -479,6 +488,7 @@ function ProcedureStepItem({
   dragControls
 }: ProcedureStepProps) {
   const { id } = useParams();
+  const { t } = useLingui();
   if (!id) throw new Error("Could not find id");
   const permissions = usePermissions();
   if (!attribute || !attribute.id || !attribute.name) return null;
@@ -490,7 +500,7 @@ function ProcedureStepItem({
       )}
     >
       <IconButton
-        aria-label="Drag handle"
+        aria-label={t`Drag handle`}
         icon={<LuGripVertical />}
         variant="ghost"
         disabled={isDisabled}
@@ -536,7 +546,7 @@ function ProcedureStepItem({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
-                aria-label="More"
+                aria-label={t`More`}
                 className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                 icon={<LuEllipsisVertical />}
                 variant="solid"
@@ -607,6 +617,7 @@ function ProcedureParameterItem({
   onEdit,
   onDelete
 }: ProcedureParameterProps) {
+  const { t } = useLingui();
   const permissions = usePermissions();
   return (
     <VStack
@@ -625,7 +636,7 @@ function ProcedureParameterItem({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
-                aria-label="More"
+                aria-label={t`More`}
                 className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                 icon={<LuEllipsisVertical />}
                 variant="solid"
@@ -673,6 +684,7 @@ function ProcedureStepForm({
   if (!procedureId) throw new Error("id not found");
 
   const [type, setType] = useState<ProcedureStep["type"]>(initialValues.type);
+  const { t } = useLingui();
 
   const [numericControls, setNumericControls] = useState<string[]>(() => {
     const controls = [];
@@ -746,7 +758,7 @@ function ProcedureStepForm({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -790,7 +802,7 @@ function ProcedureStepForm({
             <VStack spacing={4}>
               <SelectControlled
                 name="type"
-                label="Type"
+                label={t`Type`}
                 options={typeOptions}
                 value={type}
                 onChange={(option) => {
@@ -799,9 +811,11 @@ function ProcedureStepForm({
                   }
                 }}
               />
-              <Input name="name" label="Name" />
+              <Input name="name" label={t`Name`} />
               <VStack spacing={2} className="w-full">
-                <Label>Description</Label>
+                <Label>
+                  <Trans>Description</Trans>
+                </Label>
                 <Editor
                   initialValue={description}
                   onUpload={onUploadImage}
@@ -815,7 +829,7 @@ function ProcedureStepForm({
                 <>
                   <UnitOfMeasure
                     name="unitOfMeasureCode"
-                    label="Unit of Measure"
+                    label={t`Unit of Measure`}
                   />
 
                   <ToggleGroup
@@ -835,7 +849,7 @@ function ProcedureStepForm({
                   {numericControls.includes("min") && (
                     <Number
                       name="minValue"
-                      label="Minimum"
+                      label={t`Minimum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -845,7 +859,7 @@ function ProcedureStepForm({
                   {numericControls.includes("max") && (
                     <Number
                       name="maxValue"
-                      label="Maximum"
+                      label={t`Maximum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -855,7 +869,7 @@ function ProcedureStepForm({
                 </>
               )}
               {type === "List" && (
-                <ArrayInput name="listValues" label="List Options" />
+                <ArrayInput name="listValues" label={t`List Options`} />
               )}
             </VStack>
           </DrawerBody>
@@ -863,7 +877,9 @@ function ProcedureStepForm({
             <Button variant="secondary" onClick={onClose}>
               Cancel
             </Button>
-            <Submit isDisabled={isDisabled}>Save</Submit>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
           </DrawerFooter>
         </ValidatedForm>
       </DrawerContent>
@@ -882,6 +898,7 @@ function ProcedureParameterForm({
   isDisabled = false,
   onClose
 }: ProcedureParameterFormProps) {
+  const { t } = useLingui();
   const { id: procedureId } = useParams();
   if (!procedureId) throw new Error("id not found");
 
@@ -921,15 +938,17 @@ function ProcedureParameterForm({
             <Hidden name="id" />
             <Hidden name="procedureId" />
             <VStack>
-              <Input name="key" label="Key" isDisabled={isDisabled} />
-              <Input name="value" label="Value" isDisabled={isDisabled} />
+              <Input name="key" label={t`Key`} isDisabled={isDisabled} />
+              <Input name="value" label={t`Value`} isDisabled={isDisabled} />
             </VStack>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="secondary" onClick={onClose}>
               Cancel
             </Button>
-            <Submit isDisabled={isDisabled}>Save</Submit>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
           </DrawerFooter>
         </ValidatedForm>
       </DrawerContent>

@@ -32,6 +32,7 @@ import {
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -58,6 +59,7 @@ const useOpportunityLineDocuments = ({
   itemId?: string | null;
   type: "Request for Quote" | "Sales Order" | "Quote" | "Sales Invoice";
 }) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const revalidator = useRevalidator();
   const { carbon } = useCarbon();
@@ -111,10 +113,10 @@ const useOpportunityLineDocuments = ({
         return;
       }
 
-      toast.success(`${file.name} deleted successfully`);
+      toast.success(t`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator]
+    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator, t]
   );
 
   const deleteModel = useCallback(
@@ -146,35 +148,35 @@ const useOpportunityLineDocuments = ({
       ]);
 
       if (salesRfqLineResult.error) {
-        toast.error("Error removing model from RFQ line");
+        toast.error(t`Error removing model from RFQ line`);
         return;
       }
 
       if (quoteLineResult.error) {
-        toast.error("Error removing model from quote line");
+        toast.error(t`Error removing model from quote line`);
         return;
       }
 
       if (salesOrderLineResult.error) {
-        toast.error("Error removing model from sales order line");
+        toast.error(t`Error removing model from sales order line`);
         return;
       }
 
       if (salesInvoiceLineResult.error) {
-        toast.error("Error removing model from sales invoice line");
+        toast.error(t`Error removing model from sales invoice line`);
         return;
       }
 
-      toast.success("Model removed from line");
+      toast.success(t`Model removed from line`);
       revalidator.revalidate();
     },
-    [carbon, revalidator]
+    [carbon, revalidator, t]
   );
 
   const downloadModel = useCallback(
     async (model: ModelUpload) => {
       if (!model.modelPath || !model.modelName) {
-        toast.error("Model data is missing");
+        toast.error(t`Model data is missing`);
         return;
       }
 
@@ -191,12 +193,12 @@ const useOpportunityLineDocuments = ({
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error("Error downloading file");
+        toast.error(t`Error downloading file`);
         console.error(error);
       }
     },
 
-    [companyPrivateBucket]
+    [companyPrivateBucket, t]
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -219,7 +221,7 @@ const useOpportunityLineDocuments = ({
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error("Error downloading file");
+        toast.error(t`Error downloading file`);
         console.error(error);
       }
     },
@@ -269,12 +271,12 @@ const useOpportunityLineDocuments = ({
       bucket: "opportunity-line" | "parts" = "opportunity-line"
     ) => {
       if (!carbon) {
-        toast.error("Carbon client not available");
+        toast.error(t`Carbon client not available`);
         return;
       }
 
       if (bucket === "parts" && !itemId) {
-        toast.error("Cannot upload to parts bucket without item ID");
+        toast.error(t`Cannot upload to parts bucket without item ID`);
         return;
       }
 
@@ -289,7 +291,7 @@ const useOpportunityLineDocuments = ({
           });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          toast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
           createDocumentRecord({
             path: fileUpload.data.path,
@@ -307,7 +309,8 @@ const useOpportunityLineDocuments = ({
       createDocumentRecord,
       carbon,
       revalidator,
-      itemId
+      itemId,
+      t
     ]
   );
 
@@ -317,12 +320,12 @@ const useOpportunityLineDocuments = ({
       targetBucket: "opportunity-line" | "parts"
     ) => {
       if (!carbon) {
-        toast.error("Carbon client not available");
+        toast.error(t`Carbon client not available`);
         return;
       }
 
       if (targetBucket === "parts" && !itemId) {
-        toast.error("Cannot move to parts bucket without item ID");
+        toast.error(t`Cannot move to parts bucket without item ID`);
         return;
       }
 
@@ -330,7 +333,7 @@ const useOpportunityLineDocuments = ({
         file.bucket === "parts" ? "parts" : "opportunity-line";
 
       if (currentBucket === targetBucket) {
-        toast.error("File is already in the selected bucket");
+        toast.error(t`File is already in the selected bucket`);
         return;
       }
 
@@ -355,7 +358,7 @@ const useOpportunityLineDocuments = ({
         }
 
         if (!downloadData) {
-          toast.error("Failed to download file for moving");
+          toast.error(t`Failed to download file for moving`);
           return;
         }
 
@@ -368,7 +371,7 @@ const useOpportunityLineDocuments = ({
           });
 
         if (uploadError) {
-          toast.error("Failed to upload file to new location");
+          toast.error(t`Failed to upload file to new location`);
           return;
         }
 
@@ -377,22 +380,22 @@ const useOpportunityLineDocuments = ({
           .remove([sourcePath]);
 
         if (deleteError) {
-          toast.error("Failed to delete file from old location");
+          toast.error(t`Failed to delete file from old location`);
           return;
         }
 
         toast.success(
-          `Moved ${file.name} to ${
+          t`Moved ${file.name} to ${
             targetBucket === "parts" ? "Parts" : "Opportunity"
           } bucket`
         );
         revalidator.revalidate();
       } catch (error) {
-        toast.error("Error moving file");
+        toast.error(t`Error moving file`);
         console.error(error);
       }
     },
-    [carbon, company.id, companyPrivateBucket, itemId, getPath, revalidator]
+    [carbon, company.id, companyPrivateBucket, itemId, getPath, revalidator, t]
   );
 
   return {
@@ -478,7 +481,9 @@ const OpportunityLineDocuments = ({
       <Card className="flex-grow">
         <HStack className="justify-between items-start">
           <CardHeader>
-            <CardTitle>Files</CardTitle>
+            <CardTitle>
+              <Trans>Files</Trans>
+            </CardTitle>
           </CardHeader>
           <CardAction>
             {!isReadOnlyProp && (
@@ -495,10 +500,18 @@ const OpportunityLineDocuments = ({
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
-                <Th>Size</Th>
-                <Th>Bucket</Th>
-                <Th>Created</Th>
+                <Th>
+                  <Trans>Name</Trans>
+                </Th>
+                <Th>
+                  <Trans>Size</Trans>
+                </Th>
+                <Th>
+                  <Trans>Bucket</Trans>
+                </Th>
+                <Th>
+                  <Trans>Created</Trans>
+                </Th>
                 <Th />
               </Tr>
             </Thead>
@@ -541,19 +554,21 @@ const OpportunityLineDocuments = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem asChild>
-                            <Link to={getModelPath(modelUpload)}>View</Link>
+                            <Link to={getModelPath(modelUpload)}>
+                              <Trans>View</Trans>
+                            </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => downloadModel(modelUpload)}
                           >
-                            Download
+                            <Trans>Download</Trans>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             destructive
                             disabled={!canDelete}
                             onClick={() => deleteModel(lineId)}
                           >
-                            Delete
+                            <Trans>Delete</Trans>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -640,12 +655,12 @@ const OpportunityLineDocuments = ({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => download(file)}>
-                              Download
+                              <Trans>Download</Trans>
                             </DropdownMenuItem>
                             {itemId && (
                               <DropdownMenuSub>
                                 <DropdownMenuSubTrigger disabled={!canUpdate}>
-                                  Move to
+                                  <Trans>Move to</Trans>
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuSubContent>
                                   <DropdownMenuRadioGroup
@@ -662,10 +677,10 @@ const OpportunityLineDocuments = ({
                                     }
                                   >
                                     <DropdownMenuRadioItem value="opportunity-line">
-                                      Opportunity
+                                      <Trans>Opportunity</Trans>
                                     </DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="parts">
-                                      Item
+                                      <Trans>Item</Trans>
                                     </DropdownMenuRadioItem>
                                   </DropdownMenuRadioGroup>
                                 </DropdownMenuSubContent>
@@ -676,7 +691,7 @@ const OpportunityLineDocuments = ({
                               disabled={!canDelete}
                               onClick={() => deleteFile(file)}
                             >
-                              Delete
+                              <Trans>Delete</Trans>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -691,7 +706,7 @@ const OpportunityLineDocuments = ({
                     colSpan={5}
                     className="py-8 text-muted-foreground text-center"
                   >
-                    No files
+                    <Trans>No files</Trans>
                   </Td>
                 </Tr>
               )}
@@ -738,7 +753,7 @@ const OpportunityLineDocumentForm = ({
       onChange={(e) => uploadFiles(e, "opportunity-line")}
       multiple
     >
-      New
+      <Trans>New</Trans>
     </File>
   );
 };

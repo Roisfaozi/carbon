@@ -2,7 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback
+  listPrivateObjectsWithFallbackDetailed
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -540,7 +540,7 @@ export async function getItemFiles(
   itemId: string,
   companyId: string
 ) {
-  return listPrivateObjectsWithFallback({
+  const result = await listPrivateObjectsWithFallbackDetailed({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/parts/${itemId}`,
@@ -548,6 +548,18 @@ export async function getItemFiles(
       client.storage.from(physicalBucket).list(prefix),
     getItemKey: (item) => item.name
   });
+
+  for (const bucketError of result.errors) {
+    console.error("Failed to list item files", {
+      companyId,
+      itemId,
+      physicalBucket: bucketError.physicalBucket,
+      prefix: `${companyId}/parts/${itemId}`,
+      error: bucketError.error
+    });
+  }
+
+  return result.data;
 }
 
 export async function getItemPostingGroup(
@@ -649,7 +661,7 @@ export async function getItemReplenishment(
     .single();
 }
 
-export async function getItemShelfQuantities(
+export async function getItemStorageUnitQuantities(
   client: SupabaseClient<Database>,
   itemId: string,
   companyId: string,
@@ -1180,7 +1192,7 @@ export async function getMethodMaterialsByMakeMethod(
 ) {
   return client
     .from("methodMaterial")
-    .select("*, item(name, itemTrackingType)")
+    .select("*, item(name, itemTrackingType, replenishmentSystem)")
     .eq("makeMethodId", makeMethodId)
     .order("order", { ascending: true });
 }

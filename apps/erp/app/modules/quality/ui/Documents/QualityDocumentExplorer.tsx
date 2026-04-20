@@ -41,6 +41,7 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { DragControls } from "framer-motion";
 import { Reorder, useDragControls } from "framer-motion";
 import { nanoid } from "nanoid";
@@ -234,7 +235,7 @@ export default function QualityDocumentExplorer() {
                     stepDisclosure.onOpen();
                   }}
                 >
-                  Add Step
+                  <Trans>Add Step</Trans>
                 </Button>
               )}
             </Empty>
@@ -256,12 +257,14 @@ export default function QualityDocumentExplorer() {
                   stepDisclosure.onOpen();
                 }}
               >
-                Add Step
+                <Trans>Add Step</Trans>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
               <HStack>
-                <span>Add Step</span>
+                <span>
+                  <Trans>Add Step</Trans>
+                </span>
                 <Kbd>{prettifyShortcut("Command+Shift+a")}</Kbd>
               </HStack>
             </TooltipContent>
@@ -323,6 +326,7 @@ function QualityDocumentStepItem({
   onDelete,
   dragControls
 }: QualityDocumentStepProps) {
+  const { t } = useLingui();
   const { id } = useParams();
   if (!id) throw new Error("Could not find id");
   const permissions = usePermissions();
@@ -335,7 +339,7 @@ function QualityDocumentStepItem({
       )}
     >
       <IconButton
-        aria-label="Drag handle"
+        aria-label={t`Drag handle`}
         icon={<LuGripVertical />}
         variant="ghost"
         disabled={isDisabled}
@@ -381,7 +385,7 @@ function QualityDocumentStepItem({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
-                aria-label="More"
+                aria-label={t`More`}
                 className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                 icon={<LuEllipsisVertical />}
                 variant="solid"
@@ -396,7 +400,7 @@ function QualityDocumentStepItem({
                 }}
               >
                 <DropdownMenuIcon icon={<LuPencil />} />
-                Edit Step
+                <Trans>Edit Step</Trans>
               </DropdownMenuItem>
               <DropdownMenuItem
                 destructive
@@ -407,7 +411,7 @@ function QualityDocumentStepItem({
                 }}
               >
                 <DropdownMenuIcon icon={<LuTrash />} />
-                Delete Step
+                <Trans>Delete Step</Trans>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -448,6 +452,7 @@ function QualityDocumentStepForm({
   isDisabled: boolean;
   onClose: () => void;
 }) {
+  const { t } = useLingui();
   const { id: qualityDocumentId } = useParams();
   if (!qualityDocumentId) throw new Error("id not found");
 
@@ -527,7 +532,7 @@ function QualityDocumentStepForm({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -564,7 +569,7 @@ function QualityDocumentStepForm({
           className="flex flex-col h-full"
         >
           <DrawerHeader>
-            <DrawerTitle>{isEditing ? "Edit Step" : "Add Step"}</DrawerTitle>
+            <DrawerTitle>{isEditing ? t`Edit Step` : t`Add Step`}</DrawerTitle>
           </DrawerHeader>
           <DrawerBody>
             <Hidden name="qualityDocumentId" />
@@ -574,7 +579,7 @@ function QualityDocumentStepForm({
             <VStack spacing={4}>
               <SelectControlled
                 name="type"
-                label="Type"
+                label={t`Type`}
                 options={typeOptions}
                 value={type}
                 onChange={(option) => {
@@ -583,9 +588,11 @@ function QualityDocumentStepForm({
                   }
                 }}
               />
-              <Input name="name" label="Name" />
+              <Input name="name" label={t`Name`} />
               <VStack spacing={2} className="w-full">
-                <Label>Description</Label>
+                <Label>
+                  <Trans>Description</Trans>
+                </Label>
                 <Editor
                   initialValue={description}
                   onUpload={onUploadImage}
@@ -599,7 +606,7 @@ function QualityDocumentStepForm({
                 <>
                   <UnitOfMeasure
                     name="unitOfMeasureCode"
-                    label="Unit of Measure"
+                    label={t`Unit of Measure`}
                   />
 
                   <ToggleGroup
@@ -619,7 +626,7 @@ function QualityDocumentStepForm({
                   {numericControls.includes("min") && (
                     <Number
                       name="minValue"
-                      label="Minimum"
+                      label={t`Minimum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -629,7 +636,7 @@ function QualityDocumentStepForm({
                   {numericControls.includes("max") && (
                     <Number
                       name="maxValue"
-                      label="Maximum"
+                      label={t`Maximum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -639,15 +646,17 @@ function QualityDocumentStepForm({
                 </>
               )}
               {type === "List" && (
-                <ArrayInput name="listValues" label="List Options" />
+                <ArrayInput name="listValues" label={t`List Options`} />
               )}
             </VStack>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
-            <Submit isDisabled={isDisabled}>Save</Submit>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
           </DrawerFooter>
         </ValidatedForm>
       </DrawerContent>

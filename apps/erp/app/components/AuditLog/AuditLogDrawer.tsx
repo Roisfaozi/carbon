@@ -14,6 +14,7 @@ import {
   VStack
 } from "@carbon/react";
 import { formatDateTime } from "@carbon/utils";
+import { Trans } from "@lingui/react/macro";
 import { memo, useEffect, useRef } from "react";
 import {
   LuFilePen,
@@ -33,6 +34,11 @@ type AuditLogDrawerProps = {
   entityType: string;
   entityId: string;
   companyId: string;
+  /**
+   * Optional: scope the view to a single raw row rather than the full entity.
+   * When set, the drawer filters audit entries to `recordId = recordId`.
+   */
+  recordId?: string;
   /** When true, shows an upgrade prompt instead of fetching audit data */
   planRestricted?: boolean;
 };
@@ -69,11 +75,12 @@ const AuditLogDrawer = memo(
     entityType,
     entityId,
     companyId,
+    recordId,
     planRestricted = false
   }: AuditLogDrawerProps) => {
     const fetcher = useFetcher<AuditLogFetcherData>();
     const lastLoadedRef = useRef<string | null>(null);
-    const loadKey = `${entityType}:${entityId}:${companyId}`;
+    const loadKey = `${entityType}:${entityId}:${companyId}:${recordId ?? ""}`;
 
     const rootRouteData = useRouteData<{ auditLogEnabled: boolean }>(
       path.to.authenticatedRoot
@@ -100,12 +107,14 @@ const AuditLogDrawer = memo(
         entityId,
         companyId
       });
+      if (recordId) params.set("recordId", recordId);
       fetcher.load(`/api/audit-log?${params.toString()}`);
     }, [
       isOpen,
       entityType,
       entityId,
       companyId,
+      recordId,
       loadKey,
       fetcher,
       planRestricted,
@@ -129,14 +138,18 @@ const AuditLogDrawer = memo(
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">
-            Upgrade to unlock audit history
+            <Trans>Upgrade to unlock audit history</Trans>
           </h3>
           <p className="text-sm text-muted-foreground text-balance">
-            Track every change to your orders, invoices, customers, and more.
+            <Trans>
+              Track every change to your orders, invoices, customers, and more.
+            </Trans>
           </p>
         </div>
         <Button asChild>
-          <Link to={path.to.billing}>Upgrade to Business</Link>
+          <Link to={path.to.billing}>
+            <Trans>Upgrade to Business</Trans>
+          </Link>
         </Button>
       </div>
     ) : !auditLogEnabled ? (
@@ -146,20 +159,26 @@ const AuditLogDrawer = memo(
         </div>
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">
-            Audit logging is not enabled
+            <Trans>Audit logging is not enabled</Trans>
           </h3>
           <p className="text-sm text-muted-foreground text-balance">
-            Enable audit logging in settings to start tracking changes to your
-            data.
+            <Trans>
+              Enable audit logging in settings to start tracking changes to your
+              data.
+            </Trans>
           </p>
         </div>
         {can("update", "settings") ? (
           <Button variant="secondary" leftIcon={<LuSettings />} asChild>
-            <Link to={path.to.auditLog}>Enable in Settings</Link>
+            <Link to={path.to.auditLog}>
+              <Trans>Enable in Settings</Trans>
+            </Link>
           </Button>
         ) : (
           <span className="text-sm text-muted-foreground">
-            Please contact your administrator to enable audit logging.
+            <Trans>
+              Please contact your administrator to enable audit logging.
+            </Trans>
           </span>
         )}
       </div>
@@ -189,7 +208,7 @@ const AuditLogDrawer = memo(
           <DrawerHeader>
             <DrawerTitle className="flex items-center gap-2">
               <LuHistory className="size-5" />
-              History
+              <Trans>History</Trans>
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>{drawerBody}</DrawerBody>
@@ -222,7 +241,9 @@ const AuditLogEntryCard = memo(({ entry }: AuditLogEntryCardProps) => {
           {entry.actorId ? (
             <EmployeeAvatar employeeId={entry.actorId} />
           ) : (
-            <span className="font-medium">System</span>
+            <span className="font-medium">
+              <Trans>System</Trans>
+            </span>
           )}
           <span
             className={cn(
@@ -247,7 +268,9 @@ const AuditLogEntryCard = memo(({ entry }: AuditLogEntryCardProps) => {
       </HStack>
 
       <div className="mt-3 pt-3 border-t">
-        <p className="text-sm font-medium mb-2">Changes</p>
+        <p className="text-sm font-medium mb-2">
+          <Trans>Changes</Trans>
+        </p>
         {diffKeys.length > 0 ? (
           <div className="space-y-1">
             {diffKeys.map((key) => {
@@ -279,11 +302,13 @@ const AuditLogEntryCard = memo(({ entry }: AuditLogEntryCardProps) => {
           </div>
         ) : (
           <p className="text-sm text-muted-foreground italic">
-            {entry.operation === "INSERT"
-              ? "New record created"
-              : entry.operation === "DELETE"
-                ? "Record deleted"
-                : "No changes recorded"}
+            {entry.operation === "INSERT" ? (
+              <Trans>New record created</Trans>
+            ) : entry.operation === "DELETE" ? (
+              <Trans>Record deleted</Trans>
+            ) : (
+              <Trans>No changes recorded</Trans>
+            )}
           </p>
         )}
       </div>
@@ -292,6 +317,7 @@ const AuditLogEntryCard = memo(({ entry }: AuditLogEntryCardProps) => {
 });
 
 AuditLogEntryCard.displayName = "AuditLogEntryCard";
+export { AuditLogEntryCard };
 
 function formatValue(value: unknown): string {
   if (value === null) return "null";

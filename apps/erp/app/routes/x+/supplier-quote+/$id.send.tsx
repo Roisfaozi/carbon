@@ -2,12 +2,11 @@ import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
+import { trigger } from "@carbon/jobs";
 import {
-  downloadPrivateObjectWithFallback,
-  getCompanyPrivateBucket
+  getCompanyPrivateBucket,
+  getPrivateReadCandidateBuckets
 } from "@carbon/utils";
-import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import {
@@ -116,7 +115,24 @@ export async function action(args: ActionFunctionArgs) {
           throw new Error("Failed to get supplier quote");
         if (!user.data) throw new Error("Failed to get user");
 
-        const attachments: Array<{ filename: string; content: string }> = [];
+        const attachments: Array<{ filename: string; path: string }> = [];
+
+        const createSignedUrlWithFallback = async (objectPath: string) => {
+          for (const physicalBucket of getPrivateReadCandidateBuckets(
+            companyId,
+            getCompanyPrivateBucket(companyId)
+          )) {
+            const { data, error } = await client.storage
+              .from(physicalBucket)
+              .createSignedUrl(objectPath, 3600);
+
+            if (!error && data?.signedUrl) {
+              return data.signedUrl;
+            }
+          }
+
+          return null;
+        };
 
         // Fetch top-level supplier interaction documents
         const interactionId = supplierQuote.data.supplierInteractionId;
@@ -128,22 +144,13 @@ export async function action(args: ActionFunctionArgs) {
           );
 
           for (const doc of topDocs) {
-            const result = await downloadPrivateObjectWithFallback<Blob>({
-              companyId,
-              requestedBucket: getCompanyPrivateBucket(companyId),
-              objectPath: `${companyId}/supplier-interaction/${interactionId}/${doc.name}`,
-              downloadObject: (physicalBucket, objectPath) =>
-                client.storage.from(physicalBucket).download(objectPath)
-            });
-            const fileData = result?.data;
+            const storagePath = `${companyId}/supplier-interaction/${interactionId}/${doc.name}`;
+            const signedUrl = await createSignedUrlWithFallback(storagePath);
 
-            if (fileData) {
-              const arrayBuffer = await fileData.arrayBuffer();
-              const base64 = Buffer.from(arrayBuffer).toString("base64");
-
+            if (signedUrl) {
               attachments.push({
                 filename: doc.name,
-                content: base64
+                path: signedUrl
               });
             }
           }
@@ -161,22 +168,13 @@ export async function action(args: ActionFunctionArgs) {
             );
 
             for (const doc of docs) {
-              const result = await downloadPrivateObjectWithFallback<Blob>({
-                companyId,
-                requestedBucket: getCompanyPrivateBucket(companyId),
-                objectPath: `${companyId}/supplier-interaction-line/${line.id}/${doc.name}`,
-                downloadObject: (physicalBucket, objectPath) =>
-                  client.storage.from(physicalBucket).download(objectPath)
-              });
-              const fileData = result?.data;
+              const storagePath = `${companyId}/supplier-interaction-line/${line.id}/${doc.name}`;
+              const signedUrl = await createSignedUrlWithFallback(storagePath);
 
-              if (fileData) {
-                const arrayBuffer = await fileData.arrayBuffer();
-                const base64 = Buffer.from(arrayBuffer).toString("base64");
-
+              if (signedUrl) {
                 attachments.push({
                   filename: doc.name,
-                  content: base64
+                  path: signedUrl
                 });
               }
             }
@@ -196,8 +194,10 @@ export async function action(args: ActionFunctionArgs) {
         },\n\nPlease provide pricing and lead time(s) for the linked quote:`;
         const emailSignature = `Thanks,\n${user.data.firstName} ${user.data.lastName}\n${company.data.name}`;
 
-        await tasks.trigger<typeof sendEmailResendTask>("send-email-resend", {
-          to: [user.data.email, supplierContact.data.contact?.email ?? ""],
+        await trigger("send-email", {
+          to: [user.data.email, supplierContact.data.contact?.email].filter(
+            Boolean
+          ) as string[],
           cc: ccSelections?.length ? ccSelections : undefined,
           from: user.data.email,
           subject: emailSubject,

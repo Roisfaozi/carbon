@@ -31,6 +31,7 @@ import {
   VStack
 } from "@carbon/react";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LuChevronDown,
@@ -85,6 +86,7 @@ const QuoteLinePricing = ({
   exchangeRate: number;
   getLineCosts: (quantity: number) => Costs;
 }) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
 
   const hasCalculatedCost = line.methodType !== "Pull from Inventory";
@@ -229,10 +231,10 @@ const QuoteLinePricing = ({
 
       if (costUpdate?.error) {
         console.error(costUpdate.error);
-        toast.error("Failed to update quote line");
+        toast.error(t`Failed to update quote line`);
       }
     },
-    [additionalCharges, lineId, carbon]
+    [additionalCharges, lineId, carbon, t]
   );
 
   const onUpdateChargeAmount = useCallback(
@@ -406,13 +408,12 @@ const QuoteLinePricing = ({
 
       if (costUpdate?.error) {
         console.error(costUpdate.error);
-        toast.error("Failed to update item cost");
+        toast.error(t`Failed to update item cost`);
       }
     },
-    [carbon, line.itemId]
+    [carbon, line.itemId, t]
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: deps are intentionally limited
   const onUpdateCategoryMarkup = useCallback(
     async (category: CostCategoryKey, quantity: number, value: number) => {
       const existingMarkups = categoryMarkupsByQuantity[quantity] ?? {};
@@ -448,7 +449,7 @@ const QuoteLinePricing = ({
 
       if (priceUpdate?.error) {
         console.error(priceUpdate.error);
-        toast.error("Failed to update category markups");
+        toast.error(t`Failed to update category markups`);
       }
     },
     [
@@ -457,7 +458,8 @@ const QuoteLinePricing = ({
       lineId,
       costsByQuantity,
       quantities,
-      computeUnitPriceFromMarkups
+      computeUnitPriceFromMarkups,
+      t
     ]
   );
 
@@ -520,7 +522,7 @@ const QuoteLinePricing = ({
 
         if (insert?.error) {
           console.error(insert.error);
-          toast.error("Failed to insert quote line");
+          toast.error(t`Failed to insert quote line`);
         }
       }
     },
@@ -531,7 +533,8 @@ const QuoteLinePricing = ({
       lineId,
       exchangeRate,
       userId,
-      carbon
+      carbon,
+      t
     ]
   );
 
@@ -539,7 +542,9 @@ const QuoteLinePricing = ({
     <Card>
       <HStack className="justify-between">
         <CardHeader>
-          <CardTitle>Pricing</CardTitle>
+          <CardTitle>
+            <Trans>Pricing</Trans>
+          </CardTitle>
         </CardHeader>
         {isEditable && (
           <CardAction>
@@ -761,33 +766,37 @@ const QuoteLinePricing = ({
                   const price = editableFields.prices[quantity]?.unitPrice ?? 0;
                   const cost = unitCostsByQuantity[index];
 
-                  const markup = price ? (price - cost) / cost : 0;
+                  const markup = cost > 0 ? (price - cost) / cost : 0;
 
                   return (
                     <Td key={quantity.toString()}>
-                      <NumberField
-                        value={markup}
-                        formatOptions={{
-                          style: "percent",
-                          maximumFractionDigits: 2
-                        }}
-                        onChange={(value) => {
-                          if (Number.isFinite(value) && value !== markup) {
-                            onUpdatePrice(
-                              "unitPrice",
-                              quantity,
-                              cost * (1 + value)
-                            );
-                          }
-                        }}
-                      >
-                        <NumberInput
-                          className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
-                          isDisabled={!isEditable}
-                          size="sm"
-                          min={0}
-                        />
-                      </NumberField>
+                      {cost > 0 ? (
+                        <NumberField
+                          value={markup}
+                          formatOptions={{
+                            style: "percent",
+                            maximumFractionDigits: 2
+                          }}
+                          onChange={(value) => {
+                            if (Number.isFinite(value) && value !== markup) {
+                              onUpdatePrice(
+                                "unitPrice",
+                                quantity,
+                                cost * (1 + value)
+                              );
+                            }
+                          }}
+                        >
+                          <NumberInput
+                            className="border-0 -ml-3 shadow-none disabled:bg-transparent disabled:opacity-100"
+                            isDisabled={!isEditable}
+                            size="sm"
+                            min={0}
+                          />
+                        </NumberField>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
                     </Td>
                   );
                 })}
@@ -1129,7 +1138,7 @@ const QuoteLinePricing = ({
                             />
                             <Button
                               type="submit"
-                              aria-label="Delete"
+                              aria-label={t`Delete`}
                               size="sm"
                               variant="secondary"
                               isDisabled={

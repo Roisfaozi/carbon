@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  LEGACY_PRIVATE_BUCKET,
   buildCompanyPrivateStorageTarget,
+  createPrivateSignedUrlWithFallbackDetailed,
   downloadPrivateObjectWithFallback,
+  downloadPrivateObjectWithFallbackDetailed,
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets,
   hasCompanyPrivateObjectPathPrefix,
   isAllowedPrivateBucketForCompany,
-  listPrivateObjectsWithFallback
+  LEGACY_PRIVATE_BUCKET,
+  listPrivateObjectsWithFallback,
+  listPrivateObjectsWithFallbackDetailed
 } from "./storage";
 
 describe("storage helpers", () => {
@@ -124,6 +127,29 @@ describe("storage helpers", () => {
     });
   });
 
+  it("captures download attempt metadata and bucket errors", async () => {
+    const result = await downloadPrivateObjectWithFallbackDetailed({
+      companyId: "cmp_123",
+      objectPath: "cmp_123/job/job_987/work-instruction.pdf",
+      requestedBucket: "cmp_123",
+      downloadObject: async (physicalBucket) => {
+        if (physicalBucket === "private") {
+          return { data: "legacy-file", error: null };
+        }
+
+        return { data: null, error: { message: "Not found" } };
+      }
+    });
+
+    expect(result).toEqual({
+      attemptedBuckets: ["cmp_123", "private"],
+      data: "legacy-file",
+      errors: [{ physicalBucket: "cmp_123", error: { message: "Not found" } }],
+      fallbackUsed: true,
+      physicalBucket: "private"
+    });
+  });
+
   it("lists company files first and falls back to legacy private files", async () => {
     const bucketsTried: string[] = [];
 
@@ -155,5 +181,99 @@ describe("storage helpers", () => {
       { name: "shared-file.pdf" },
       { name: "legacy-file.pdf" }
     ]);
+  });
+
+  it("captures list attempt metadata and bucket errors", async () => {
+    const result = await listPrivateObjectsWithFallbackDetailed({
+      companyId: "cmp_123",
+      objectPathPrefix: "cmp_123/job/job_987",
+      requestedBucket: "cmp_123",
+      listObjects: async (physicalBucket) => {
+        if (physicalBucket === "cmp_123") {
+          return {
+            data: null,
+            error: { message: "Temporary storage error" }
+          };
+        }
+
+        return {
+          data: [{ name: "legacy-file.pdf" }],
+          error: null
+        };
+      },
+      getItemKey: (item) => item.name
+    });
+
+    expect(result).toEqual({
+      attemptedBuckets: ["cmp_123", "private"],
+      data: [{ name: "legacy-file.pdf" }],
+      errors: [
+        {
+          physicalBucket: "cmp_123",
+          error: { message: "Temporary storage error" }
+        }
+      ],
+      fallbackUsed: true
+    });
+  });
+
+  it("creates a signed url from the company bucket before falling back", async () => {
+    const result = await createPrivateSignedUrlWithFallbackDetailed({
+      companyId: "cmp_123",
+      objectPath: "cmp_123/job/job_987/work-instruction.pdf",
+      requestedBucket: "cmp_123",
+      expiresIn: 3600,
+      createSignedUrl: async (physicalBucket) => {
+        if (physicalBucket === "cmp_123") {
+          return {
+            signedUrl: "https://example.com/company-file",
+            error: null
+          };
+        }
+
+        return {
+          signedUrl: null,
+          error: { message: "Should not be reached" }
+        };
+      }
+    });
+
+    expect(result).toEqual({
+      attemptedBuckets: ["cmp_123"],
+      errors: [],
+      fallbackUsed: false,
+      physicalBucket: "cmp_123",
+      signedUrl: "https://example.com/company-file"
+    });
+  });
+
+  it("falls back to the legacy private bucket when signed url creation fails in the company bucket", async () => {
+    const result = await createPrivateSignedUrlWithFallbackDetailed({
+      companyId: "cmp_123",
+      objectPath: "cmp_123/job/job_987/work-instruction.pdf",
+      requestedBucket: "cmp_123",
+      expiresIn: 3600,
+      createSignedUrl: async (physicalBucket) => {
+        if (physicalBucket === "private") {
+          return {
+            signedUrl: "https://example.com/legacy-file",
+            error: null
+          };
+        }
+
+        return {
+          signedUrl: null,
+          error: { message: "Not found" }
+        };
+      }
+    });
+
+    expect(result).toEqual({
+      attemptedBuckets: ["cmp_123", "private"],
+      errors: [{ physicalBucket: "cmp_123", error: { message: "Not found" } }],
+      fallbackUsed: true,
+      physicalBucket: "private",
+      signedUrl: "https://example.com/legacy-file"
+    });
   });
 });

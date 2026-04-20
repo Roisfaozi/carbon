@@ -20,6 +20,7 @@ import {
 } from "@carbon/react";
 import { getCompanyPrivateBucket } from "@carbon/utils";
 import data from "@emoji-mart/data";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
 import React, { Suspense, useEffect, useRef, useState } from "react";
@@ -33,6 +34,7 @@ import { path } from "~/utils/path";
 const Picker = React.lazy(() => import("@emoji-mart/react"));
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+const defaultEmoji = "\u{1F4A1}";
 
 type EmojiData = {
   native: string;
@@ -41,11 +43,12 @@ type EmojiData = {
 };
 
 const Suggestion = () => {
+  const { t } = useLingui();
   const fetcher = useFetcher<typeof action>();
   const location = useLocation();
   const popoverTriggerRef = useRef<HTMLButtonElement>(null);
   const [suggestion, setSuggestion] = useState("");
-  const [emoji, setEmoji] = useState("💡");
+  const [emoji, setEmoji] = useState(defaultEmoji);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [anonymous, setAnonymous] = useState(true);
   const [attachment, setAttachment] = useState<{
@@ -60,7 +63,7 @@ const Suggestion = () => {
     if (fetcher.data?.success) {
       toast.success(fetcher.data.message);
       setSuggestion("");
-      setEmoji("💡");
+      setEmoji(defaultEmoji);
       setAttachment(null);
       setAnonymous(true);
       popoverTriggerRef.current?.click();
@@ -72,26 +75,27 @@ const Suggestion = () => {
   const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       const file = e.target.files[0];
-      toast.info(`Uploading ${file.name}`);
+      const fileName = file.name;
+      toast.info(t`Uploading ${fileName}`);
       const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1);
 
       if (file.size > MAX_FILE_SIZE) {
-        toast.error("File size exceeds 10MB limit");
+        toast.error(t`File size exceeds 10MB limit`);
         return;
       }
 
-      const fileName = `${companyId}/suggestions/${nanoid()}.${fileExtension}`;
+      const storagePath = `${companyId}/suggestions/${nanoid()}.${fileExtension}`;
       const companyPrivateBucket = getCompanyPrivateBucket(companyId);
       const imageUpload = await carbon.storage
         .from(companyPrivateBucket)
-        .upload(fileName, file, {
+        .upload(storagePath, file, {
           cacheControl: `${12 * 60 * 60}`,
           upsert: true
         });
 
       if (imageUpload.error) {
         console.error(imageUpload.error);
-        toast.error("Failed to upload image");
+        toast.error(t`Failed to upload image`);
       }
 
       if (imageUpload.data?.path) {
@@ -112,7 +116,7 @@ const Suggestion = () => {
     <Popover>
       <PopoverTrigger ref={popoverTriggerRef} asChild>
         <Button variant="secondary" className="hover:scale-100">
-          Suggestion
+          <Trans>Suggestion</Trans>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[380px] ">
@@ -133,7 +137,7 @@ const Suggestion = () => {
                 label=""
                 value={suggestion}
                 onChange={(value) => setSuggestion(value)}
-                placeholder="Ideas, suggestions or problems?"
+                placeholder={t`Ideas, suggestions or problems?`}
               />
               {attachment && (
                 <Badge className="-mt-2 truncate" variant="secondary">
@@ -153,7 +157,9 @@ const Suggestion = () => {
                   isChecked={anonymous}
                   onCheckedChange={(checked) => setAnonymous(checked === true)}
                 />
-                <span className="text-sm">Submit anonymously</span>
+                <span className="text-sm">
+                  <Trans>Submit anonymously</Trans>
+                </span>
               </HStack>
               <Popover open={emojiPickerOpen} onOpenChange={setEmojiPickerOpen}>
                 <PopoverTrigger asChild>
@@ -188,12 +194,12 @@ const Suggestion = () => {
                 variant="secondary"
                 onClick={() => {
                   setSuggestion("");
-                  setEmoji("💡");
+                  setEmoji(defaultEmoji);
                   setAttachment(null);
                   popoverTriggerRef.current?.click();
                 }}
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <HStack spacing={1}>
                 <Button
@@ -201,11 +207,11 @@ const Suggestion = () => {
                   variant="secondary"
                   onClick={() => setSuggestion("")}
                 >
-                  Clear
+                  <Trans>Clear</Trans>
                 </Button>
                 <File
                   accept="image/*"
-                  aria-label="Attach File"
+                  aria-label={t`Attach File`}
                   className="px-2"
                   isDisabled={!!attachment}
                   variant="secondary"
@@ -213,7 +219,9 @@ const Suggestion = () => {
                 >
                   <LuImage />
                 </File>
-                <Submit isDisabled={suggestion.length < 3}>Send</Submit>
+                <Submit isDisabled={suggestion.length < 3}>
+                  <Trans>Send</Trans>
+                </Submit>
               </HStack>
             </HStack>
           </VStack>

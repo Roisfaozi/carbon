@@ -3,15 +3,15 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
+import { batchTrigger } from "@carbon/jobs";
 import {
   parseDate,
   parseDateTime,
   toCalendarDateTime
 } from "@internationalized/date";
-import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
-import { getDefaultShelfForJob } from "~/modules/inventory";
+import { getDefaultStorageUnitForJob } from "~/modules/inventory";
 import { getItemReplenishment } from "~/modules/items";
 import {
   bulkJobValidator,
@@ -102,7 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const shelfId = await getDefaultShelfForJob(
+  const storageUnitId = await getDefaultStorageUnitForJob(
     serviceRole,
     jobData.itemId,
     jobData.locationId,
@@ -141,7 +141,7 @@ export async function action({ request }: ActionFunctionArgs) {
             .subtract({ days: manufacturing.data?.leadTime ?? 7 })
             .toString()
         : undefined,
-      shelfId: shelfId ?? undefined,
+      storageUnitId: storageUnitId ?? undefined,
       configuration,
       companyId,
       createdBy: userId,
@@ -177,7 +177,7 @@ export async function action({ request }: ActionFunctionArgs) {
     jobIds.push(id);
   }
 
-  await tasks.batchTrigger(
+  await batchTrigger(
     "recalculate",
     jobIds.map((id) => ({
       payload: {

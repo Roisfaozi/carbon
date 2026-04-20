@@ -3,6 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
+import { msg } from "@lingui/core/macro";
 import { FunctionRegion } from "@supabase/supabase-js";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
@@ -11,7 +12,7 @@ import type { Handle } from "~/utils/handle";
 import { path, requestReferrer } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: "Jobs",
+  breadcrumb: msg`Jobs`,
   to: path.to.jobs,
   module: "production"
 };
@@ -37,7 +38,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     salesOrderId,
     salesOrderLineId,
     locationId,
-    shelfId,
+    storageUnitId,
     leftoverAction,
     leftoverShipQuantity,
     leftoverReceiveQuantity
@@ -122,7 +123,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
           companyId,
           userId,
           quantityComplete: quantityToReceiveToInventory,
-          shelfId,
+          storageUnitId,
           locationId
         },
         region: FunctionRegion.UsEast1
@@ -148,7 +149,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         companyId,
         userId,
         quantityComplete,
-        shelfId,
+        storageUnitId,
         locationId
       },
       region: FunctionRegion.UsEast1

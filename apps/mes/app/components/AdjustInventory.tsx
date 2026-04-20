@@ -19,6 +19,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useRouteData } from "@carbon/remix";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { LuGitBranchPlus, LuGitPullRequestCreateArrow } from "react-icons/lu";
 import { useFetcher } from "react-router";
@@ -28,15 +29,18 @@ import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 
 export function AdjustInventory({ add }: { add: boolean }) {
+  const { t } = useLingui();
   const modal = useDisclosure();
   const fetcher = useFetcher<typeof endShiftAction>();
   const [items] = useItems();
   const [loading, setLoading] = useState(false);
 
-  const [shelves, setShelves] = useState<{ value: string; label: string }[]>(
-    []
+  const [storageUnits, setStorageUnits] = useState<
+    { value: string; label: string }[]
+  >([]);
+  const [selectedStorageUnit, setSelectedStorageUnit] = useState<string | null>(
+    null
   );
-  const [selectedShelf, setSelectedShelf] = useState<string | null>(null);
   const { carbon } = useCarbon();
 
   const routeData = useRouteData<{
@@ -47,29 +51,29 @@ export function AdjustInventory({ add }: { add: boolean }) {
     if (!value || !carbon) return;
     carbon
       .from("pickMethod")
-      .select("defaultShelfId")
+      .select("defaultStorageUnitId")
       .eq("itemId", value.value)
       .eq("locationId", routeData?.location ?? "")
       .maybeSingle()
       .then((pickMethod) => {
-        setSelectedShelf(pickMethod?.data?.defaultShelfId ?? null);
+        setSelectedStorageUnit(pickMethod?.data?.defaultStorageUnitId ?? null);
       });
   };
 
-  async function fetchShelvesByLocationId() {
+  async function fetchStorageUnitsByLocationId() {
     if (!carbon) {
-      toast.error("Failed to fetch shelves");
+      toast.error(t`Failed to fetch storageUnits`);
       return;
     }
-    const shelves = await carbon
-      .from("shelf")
+    const storageUnits = await carbon
+      .from("storageUnit")
       .select("id, name")
       .eq("locationId", routeData?.location ?? "");
 
-    setShelves(
-      shelves.data?.map((shelf) => ({
-        value: shelf.id,
-        label: shelf.name
+    setStorageUnits(
+      storageUnits.data?.map((storageUnit) => ({
+        value: storageUnit.id,
+        label: storageUnit.name
       })) ?? []
     );
     setLoading(false);
@@ -77,19 +81,19 @@ export function AdjustInventory({ add }: { add: boolean }) {
 
   useMount(() => {
     setLoading(true);
-    fetchShelvesByLocationId();
+    fetchStorageUnitsByLocationId();
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
     if (fetcher.data?.success === true) {
       modal.onClose();
-      toast.success(fetcher.data?.message ?? "Inventory adjustment completed");
+      toast.success(fetcher.data?.message ?? t`Inventory adjustment completed`);
     }
 
     if (fetcher.data?.success === false) {
       toast.error(
-        fetcher.data?.message ?? "Failed to complete inventory adjustment"
+        fetcher.data?.message ?? t`Failed to complete inventory adjustment`
       );
     }
   }, [fetcher.data?.success]);
@@ -107,11 +111,13 @@ export function AdjustInventory({ add }: { add: boolean }) {
   return (
     <>
       <SidebarMenuButton
-        tooltip={add ? "Add Inventory" : "Remove Inventory"}
+        tooltip={add ? t`Add Inventory` : t`Remove Inventory`}
         onClick={modal.onOpen}
       >
         {add ? <LuGitPullRequestCreateArrow /> : <LuGitBranchPlus />}
-        <span>{add ? "Add" : "Remove"} Inventory</span>
+        <span>
+          {add ? <Trans>Add Inventory</Trans> : <Trans>Remove Inventory</Trans>}
+        </span>
       </SidebarMenuButton>
       {modal.isOpen && (
         <Modal
@@ -131,10 +137,19 @@ export function AdjustInventory({ add }: { add: boolean }) {
               fetcher={fetcher}
             >
               <ModalHeader>
-                <ModalTitle>{add ? "Add" : "Remove"} Inventory</ModalTitle>
+                <ModalTitle>
+                  {add ? (
+                    <Trans>Add Inventory</Trans>
+                  ) : (
+                    <Trans>Remove Inventory</Trans>
+                  )}
+                </ModalTitle>
                 <ModalDescription>
-                  Manually {add ? "add" : "remove"} items {add ? "to" : "from"}{" "}
-                  inventory
+                  {add ? (
+                    <Trans>Manually add items to inventory</Trans>
+                  ) : (
+                    <Trans>Manually remove items from inventory</Trans>
+                  )}
                 </ModalDescription>
               </ModalHeader>
               <ModalBody>
@@ -146,20 +161,20 @@ export function AdjustInventory({ add }: { add: boolean }) {
                 <VStack spacing={4}>
                   <Loading isLoading={loading}>
                     <Combobox
-                      label="Item"
+                      label={t`Item`}
                       name="itemId"
                       onChange={onItemChange}
                       options={itemOptions}
                       itemHeight={44}
                     />
-                    <Number label="Quantity" name="quantity" />
+                    <Number label={t`Quantity`} name="quantity" />
                     <Combobox
-                      label="Shelf"
-                      name="shelfId"
-                      options={shelves}
-                      value={selectedShelf ?? ""}
+                      label={t`Storage Unit`}
+                      name="storageUnitId"
+                      options={storageUnits}
+                      value={selectedStorageUnit ?? ""}
                       onChange={(value) =>
-                        setSelectedShelf(value?.value ?? null)
+                        setSelectedStorageUnit(value?.value ?? null)
                       }
                     />
                   </Loading>
@@ -172,10 +187,16 @@ export function AdjustInventory({ add }: { add: boolean }) {
                   onClick={modal.onClose}
                   variant="secondary"
                 >
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
 
-                <Submit>{add ? "Add" : "Remove"} Inventory</Submit>
+                <Submit>
+                  {add ? (
+                    <Trans>Add Inventory</Trans>
+                  ) : (
+                    <Trans>Remove Inventory</Trans>
+                  )}
+                </Submit>
               </ModalFooter>
             </ValidatedForm>
           </ModalContent>

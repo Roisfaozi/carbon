@@ -2,7 +2,8 @@ import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback
+  listPrivateObjectsWithFallback,
+  listPrivateObjectsWithFallbackDetailed
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -12,18 +13,19 @@ import type { StorageItem } from "~/types";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
-import { getItemShelfQuantities } from "../items/items.service";
+import { getItemStorageUnitQuantities } from "../items/items.service";
 import type {
   batchPropertyOrderValidator,
   batchPropertyValidator,
   inventoryAdjustmentValidator,
   kanbanValidator,
   receiptValidator,
-  shelfValidator,
   shipmentValidator,
   shippingMethodValidator,
   stockTransferLineValidator,
   stockTransferValidator,
+  storageTypeValidator,
+  storageUnitValidator,
   warehouseTransferValidator
 } from "./inventory.models";
 
@@ -55,11 +57,45 @@ export async function deleteReceiptLine(
   return client.from("receiptLine").delete().eq("id", receiptLineId);
 }
 
-export async function deleteShelf(
+export async function deleteStorageUnit(
   client: SupabaseClient<Database>,
-  shelfId: string
+  storageUnitId: string
 ) {
-  return client.from("shelf").delete().eq("id", shelfId);
+  return client.from("storageUnit").delete().eq("id", storageUnitId);
+}
+
+/**
+ * Deletes a storage unit along with every descendant in its subtree.
+ *
+ * The `storageUnit_parentId_fkey` FK is `ON DELETE RESTRICT`, so you cannot
+ * delete a parent while it still has children. Supabase evaluates FK
+ * constraints at statement end, so deleting the whole subtree in a single
+ * `WHERE id IN (...)` statement is safe - all referencing rows go away in
+ * the same transaction.
+ *
+ * We fetch the subtree via `storageUnits_recursive` (which already returns
+ * self + descendants thanks to `ancestorPath @> ARRAY[id]`).
+ */
+export async function deleteStorageUnitCascade(
+  client: SupabaseClient<Database>,
+  storageUnitId: string
+) {
+  const descendants = await getStorageUnitDescendants(client, storageUnitId);
+  if (descendants.error) return descendants;
+
+  // storageUnits_recursive is a view, so every column is nominally nullable
+  // in the generated types. Narrow `id` to a concrete string[] for
+  // Supabase's `.in()` signature.
+  const ids = (descendants.data ?? [])
+    .map((row) => row.id)
+    .filter((id): id is string => id != null);
+  // Safety net: fall back to the single-row delete if the view returned
+  // nothing (shouldn't happen — the self row is always in the subtree).
+  if (ids.length === 0) {
+    return client.from("storageUnit").delete().eq("id", storageUnitId);
+  }
+
+  return client.from("storageUnit").delete().in("id", ids);
 }
 
 export async function deleteShipment(
@@ -130,7 +166,7 @@ export async function getItemLedgerPage(
 
   let query = client
     .from("itemLedger")
-    .select("*, shelf(name)", { count: "exact" })
+    .select("*, storageUnit(name)", { count: "exact" })
     .eq("itemId", itemId)
     .eq("companyId", companyId)
     .eq("locationId", locationId)
@@ -335,7 +371,7 @@ export async function getStockTransfers(
   return query;
 }
 
-export async function getDefaultShelfOrShelfWithHighestQuantity(
+export async function getDefaultStorageUnitOrStorageUnitWithHighestQuantity(
   client: SupabaseClient<Database>,
   itemId: string,
   locationId: string,
@@ -343,31 +379,32 @@ export async function getDefaultShelfOrShelfWithHighestQuantity(
 ) {
   const pickMethod = await client
     .from("pickMethod")
-    .select("defaultShelfId")
+    .select("defaultStorageUnitId")
     .eq("itemId", itemId)
     .eq("locationId", locationId)
     .eq("companyId", companyId)
     .maybeSingle();
 
-  if (pickMethod.data?.defaultShelfId) return pickMethod.data.defaultShelfId;
+  if (pickMethod.data?.defaultStorageUnitId)
+    return pickMethod.data.defaultStorageUnitId;
 
-  const shelves = await getItemShelfQuantities(
+  const storageUnits = await getItemStorageUnitQuantities(
     client,
     itemId,
     companyId,
     locationId
   );
 
-  const shelfWithHighestQuantity = shelves.data?.reduce(
+  const storageUnitWithHighestQuantity = storageUnits.data?.reduce(
     (acc, curr) => {
       return acc.quantity > curr.quantity
         ? acc
-        : { ...curr, quantity: acc.quantity, shelfId: acc.shelfId };
+        : { ...curr, quantity: acc.quantity, storageUnitId: acc.storageUnitId };
     },
-    { quantity: 0, shelfId: null }
+    { quantity: 0, storageUnitId: null }
   );
 
-  return shelfWithHighestQuantity?.shelfId ?? null;
+  return storageUnitWithHighestQuantity?.storageUnitId ?? null;
 }
 
 export async function getReceipts(
@@ -440,20 +477,52 @@ export async function getReceiptFiles(
   companyId: string,
   lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
-  const promises = lineIds.map(async (lineId) => ({
-    data: await listPrivateObjectsWithFallback({
+  const promises = lineIds.map(async (lineId) => {
+    const result = await listPrivateObjectsWithFallbackDetailed({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/inventory/${lineId}`,
       listObjects: (physicalBucket, prefix) =>
         client.storage.from(physicalBucket).list(prefix),
       getItemKey: (item) => item.name
-    }),
-    error: null,
-    lineId
-  }));
+    });
+
+    for (const bucketError of result.errors) {
+      console.error("Failed to list receipt files", {
+        companyId,
+        lineId,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/inventory/${lineId}`,
+        error: bucketError.error
+      });
+    }
+
+    return {
+      data: result.data,
+      error:
+        result.data.length === 0 && result.errors.length > 0
+          ? result.errors[result.errors.length - 1]?.error
+          : null,
+      lineId
+    };
+  });
 
   const results = await Promise.all(promises);
+
+  const firstError = results.find((result) => result.error);
+  if (firstError) {
+    return {
+      data: [],
+      error:
+        firstError.error instanceof Error
+          ? firstError.error.message
+          : typeof firstError.error === "object" &&
+              firstError.error &&
+              "message" in firstError.error
+            ? String(firstError.error.message)
+            : "Failed to fetch files"
+    };
+  }
 
   // Merge data arrays and add lineId as bucketName
   return {
@@ -502,19 +571,19 @@ export async function getBatchNumbersForItem(
     .gte("quantity", 1);
 }
 
-export async function getShelvesList(
+export async function getStorageUnitsList(
   client: SupabaseClient<Database>,
   companyId: string
 ) {
   return fetchAllFromTable<{
     id: string;
     name: string;
-  }>(client, "shelf", "id, name", (query) =>
+  }>(client, "storageUnit", "id, name", (query) =>
     query.eq("active", true).eq("companyId", companyId).order("name")
   );
 }
 
-export async function getShelvesListForLocation(
+export async function getStorageUnitsListForLocation(
   client: SupabaseClient<Database>,
   companyId: string,
   locationId: string
@@ -522,7 +591,7 @@ export async function getShelvesListForLocation(
   return fetchAllFromTable<{
     id: string;
     name: string;
-  }>(client, "shelf", "id, name", (query) =>
+  }>(client, "storageUnit", "id, name", (query) =>
     query
       .eq("active", true)
       .eq("companyId", companyId)
@@ -531,7 +600,7 @@ export async function getShelvesListForLocation(
   );
 }
 
-export async function getShelves(
+export async function getStorageUnits(
   client: SupabaseClient<Database>,
   locationId: string,
   companyId: string,
@@ -539,11 +608,11 @@ export async function getShelves(
     search: string | null;
   }
 ) {
+  // Query the recursive view so the table gets depth + ancestorPath + parentId
+  // for tree rendering (indentation, hierarchy filters, subtree rollups).
   let query = client
-    .from("shelf")
-    .select("*", {
-      count: "exact"
-    })
+    .from("storageUnits_recursive")
+    .select("*", { count: "exact" })
     .eq("companyId", companyId)
     .eq("locationId", locationId);
 
@@ -551,18 +620,24 @@ export async function getShelves(
     query = query.ilike("name", `%${args.search}%`);
   }
 
+  // Default ordering: breadth-first by ancestorPath so parents render before
+  // children in the table. Caller-supplied sorts override when provided.
   query = setGenericQueryFilters(query, args, [
-    { column: "name", ascending: true }
+    { column: "ancestorPath", ascending: true }
   ]);
 
   return query;
 }
 
-export async function getShelf(
+export async function getStorageUnit(
   client: SupabaseClient<Database>,
-  shelfId: string
+  storageUnitId: string
 ) {
-  return client.from("shelf").select("*").eq("id", shelfId).single();
+  return client
+    .from("storageUnit")
+    .select("*")
+    .eq("id", storageUnitId)
+    .single();
 }
 
 export async function getShipments(
@@ -894,7 +969,7 @@ export async function getWarehouseTransferLines(
   return client
     .from("warehouseTransferLine")
     .select(
-      "*, item(*), fromShelf:shelf!fromShelfId(name), toShelf:shelf!toShelfId(name)"
+      "*, item(*), fromStorageUnit:storageUnit!fromStorageUnitId(name), toStorageUnit:storageUnit!toStorageUnitId(name)"
     )
     .eq("transferId", transferId);
 }
@@ -906,8 +981,13 @@ export async function insertManualInventoryAdjustment(
     createdBy: string;
   }
 ) {
-  const { adjustmentType, readableId, originalShelfId, comment, ...rest } =
-    inventoryAdjustment;
+  const {
+    adjustmentType,
+    readableId,
+    originalStorageUnitId,
+    comment,
+    ...rest
+  } = inventoryAdjustment;
   const data = {
     ...rest,
     entryType:
@@ -915,7 +995,7 @@ export async function insertManualInventoryAdjustment(
     comment: comment || null
   };
 
-  const shelfQuantities = await client.rpc(
+  const storageUnitQuantities = await client.rpc(
     "get_item_quantities_by_tracking_id",
     {
       item_id: data.itemId,
@@ -925,25 +1005,25 @@ export async function insertManualInventoryAdjustment(
   );
 
   const currentQuantity = inventoryAdjustment.trackedEntityId
-    ? shelfQuantities?.data?.find(
+    ? storageUnitQuantities?.data?.find(
         (quantity) =>
           quantity.trackedEntityId == inventoryAdjustment.trackedEntityId
       )
-    : shelfQuantities?.data?.find(
+    : storageUnitQuantities?.data?.find(
         // null == undefined - so we use a == instead of === here
-        (quantity) => quantity.shelfId == data.shelfId
+        (quantity) => quantity.storageUnitId == data.storageUnitId
       );
 
   const currentQuantityOnHand = currentQuantity?.quantity ?? 0;
 
-  // Check if this is a shelf transfer for a tracked entity
-  const isShelfTransfer =
+  // Check if this is a storage unit transfer for a tracked entity
+  const isStorageUnitTransfer =
     inventoryAdjustment.trackedEntityId &&
-    originalShelfId &&
-    originalShelfId !== data.shelfId;
+    originalStorageUnitId &&
+    originalStorageUnitId !== data.storageUnitId;
 
-  if (isShelfTransfer) {
-    // Handle shelf transfer: negative adjustment at original shelf, positive at new shelf
+  if (isStorageUnitTransfer) {
+    // Handle storage unit transfer: negative adjustment at original unit, positive at new unit
     // First, update the readableId if provided
     if (readableId !== undefined) {
       const trackedEntityUpdate = await client
@@ -957,14 +1037,14 @@ export async function insertManualInventoryAdjustment(
       }
     }
 
-    // Create negative adjustment at original shelf
+    // Create negative adjustment at original storage unit
     const negativeAdjustment = await client
       .from("itemLedger")
       .insert([
         {
           itemId: data.itemId,
           locationId: data.locationId,
-          shelfId: originalShelfId,
+          storageUnitId: originalStorageUnitId,
           trackedEntityId: inventoryAdjustment.trackedEntityId,
           entryType: "Negative Adjmt." as const,
           quantity: -currentQuantityOnHand,
@@ -980,14 +1060,14 @@ export async function insertManualInventoryAdjustment(
       return negativeAdjustment;
     }
 
-    // Create positive adjustment at new shelf
+    // Create positive adjustment at new storage unit
     return client
       .from("itemLedger")
       .insert([
         {
           itemId: data.itemId,
           locationId: data.locationId,
-          shelfId: data.shelfId,
+          storageUnitId: data.storageUnitId,
           trackedEntityId: inventoryAdjustment.trackedEntityId,
           entryType: "Positive Adjmt." as const,
           quantity: currentQuantityOnHand,
@@ -1205,37 +1285,37 @@ export async function upsertReceipt(
     .single();
 }
 
-export async function upsertShelf(
+export async function upsertStorageUnit(
   client: SupabaseClient<Database>,
-  shelf:
-    | (Omit<z.infer<typeof shelfValidator>, "id"> & {
+  storageUnit:
+    | (Omit<z.infer<typeof storageUnitValidator>, "id"> & {
         companyId: string;
         createdBy: string;
         customFields?: Json;
       })
-    | (Omit<z.infer<typeof shelfValidator>, "id"> & {
+    | (Omit<z.infer<typeof storageUnitValidator>, "id"> & {
         id: string;
         updatedBy: string;
         customFields?: Json;
       })
 ) {
-  if ("createdBy" in shelf) {
+  if ("createdBy" in storageUnit) {
     return client
-      .from("shelf")
+      .from("storageUnit")
       .insert({
-        ...shelf,
+        ...storageUnit,
         id: nanoid()
       })
       .select("id")
       .single();
   }
   return client
-    .from("shelf")
+    .from("storageUnit")
     .update({
-      ...sanitize(shelf),
+      ...sanitize(storageUnit),
       updatedAt: today(getLocalTimeZone()).toString()
     })
-    .eq("id", shelf.id)
+    .eq("id", storageUnit.id)
     .select("id")
     .single();
 }
@@ -1464,7 +1544,7 @@ export async function upsertWarehouseTransferLine(
   }
 }
 
-export async function getDefaultShelfForJob(
+export async function getDefaultStorageUnitForJob(
   client: SupabaseClient<Database>,
   itemId: string,
   locationId: string,
@@ -1472,33 +1552,146 @@ export async function getDefaultShelfForJob(
 ): Promise<string | null> {
   const pickMethod = await client
     .from("pickMethod")
-    .select("defaultShelfId")
+    .select("defaultStorageUnitId")
     .eq("itemId", itemId)
     .eq("locationId", locationId)
     .eq("companyId", companyId)
     .maybeSingle();
 
-  if (pickMethod.data?.defaultShelfId) {
-    return pickMethod.data.defaultShelfId;
+  if (pickMethod.data?.defaultStorageUnitId) {
+    return pickMethod.data.defaultStorageUnitId;
   }
 
-  const itemShelfQuantities = await getItemShelfQuantities(
+  const itemStorageUnitQuantities = await getItemStorageUnitQuantities(
     client,
     itemId,
     companyId,
     locationId
   );
 
-  if (itemShelfQuantities.data?.length) {
-    // Find the shelf with the highest quantity
-    const shelfWithHighestQuantity = itemShelfQuantities.data.reduce(
-      (max, current) => {
+  if (itemStorageUnitQuantities.data?.length) {
+    // Find the storage unit with the highest quantity
+    const storageUnitWithHighestQuantity =
+      itemStorageUnitQuantities.data.reduce((max, current) => {
         return (current.quantity ?? 0) > (max.quantity ?? 0) ? current : max;
-      }
-    );
+      });
 
-    return shelfWithHighestQuantity.shelfId;
+    return storageUnitWithHighestQuantity.storageUnitId;
   }
 
   return null;
+}
+
+// ----------------------------------------------------------------------------
+// storageUnit hierarchy helpers (backed by the storageUnits_recursive view
+// defined in 20260417000200_storage-unit-nesting-and-type.sql)
+// ----------------------------------------------------------------------------
+
+export async function getStorageUnitTree(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string
+) {
+  return client
+    .from("storageUnits_recursive")
+    .select(
+      "id, parentId, locationId, warehouseId, name, active, storageTypeIds, companyId, depth, ancestorPath"
+    )
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .order("ancestorPath");
+}
+
+export async function getStorageUnitDescendants(
+  client: SupabaseClient<Database>,
+  storageUnitId: string
+) {
+  return client
+    .from("storageUnits_recursive")
+    .select(
+      "id, parentId, locationId, warehouseId, name, active, storageTypeIds, companyId, depth, ancestorPath"
+    )
+    .contains("ancestorPath", [storageUnitId]);
+}
+
+// ----------------------------------------------------------------------------
+// storageType CRUD (mirrors materialType in items.service.ts)
+// ----------------------------------------------------------------------------
+
+export async function deleteStorageType(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client.from("storageType").delete().eq("id", id);
+}
+
+export async function getStorageTypes(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: GenericQueryFilters & { search: string | null }
+) {
+  let query = client
+    .from("storageType")
+    .select("*", { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.ilike("name", `%${args.search}%`);
+  }
+
+  query = setGenericQueryFilters(query, args ?? {}, [
+    { column: "name", ascending: true }
+  ]);
+  return query;
+}
+
+export async function getStorageType(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client.from("storageType").select("*").eq("id", id).single();
+}
+
+export async function getStorageTypesList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return fetchAllFromTable<{
+    id: string;
+    name: string;
+  }>(client, "storageType", "id, name", (query) =>
+    query.eq("companyId", companyId).order("name")
+  );
+}
+
+export async function upsertStorageType(
+  client: SupabaseClient<Database>,
+  storageType:
+    | (Omit<z.infer<typeof storageTypeValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
+      })
+    | (Omit<z.infer<typeof storageTypeValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        customFields?: Json;
+      })
+) {
+  if ("createdBy" in storageType) {
+    return client
+      .from("storageType")
+      .insert({ ...storageType })
+      .select("id")
+      .single();
+  }
+  return client
+    .from("storageType")
+    .update({
+      ...sanitize(storageType),
+      updatedAt: today(getLocalTimeZone()).toString()
+    })
+    .eq("id", storageType.id)
+    .select("id")
+    .single();
 }

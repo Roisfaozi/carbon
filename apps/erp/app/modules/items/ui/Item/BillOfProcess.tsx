@@ -38,6 +38,7 @@ import {
 import { Editor } from "@carbon/react/Editor";
 import { formatRelativeTime, getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { DragControls } from "framer-motion";
 import {
   AnimatePresence,
@@ -209,6 +210,7 @@ const BillOfProcess = ({
   tags
 }: BillOfProcessProps) => {
   const permissions = usePermissions();
+  const { t } = useLingui();
   const isReadOnly =
     permissions.can("update", "parts") === false ||
     makeMethod.status !== "Draft";
@@ -480,7 +482,7 @@ const BillOfProcess = ({
     const tabs = [
       {
         id: 0,
-        label: "Details",
+        label: t`Details`,
         content: (
           <div className="flex w-full flex-col pr-2 py-2">
             <motion.div
@@ -530,7 +532,11 @@ const BillOfProcess = ({
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="opacity-100">
-                  <p>Instructions are inherited from the procedure.</p>
+                  <p>
+                    <Trans>
+                      Instructions are inherited from the procedure.
+                    </Trans>
+                  </p>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -591,7 +597,9 @@ const BillOfProcess = ({
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="opacity-100">
-                  <p>Parameters are inherited from the procedure.</p>
+                  <p>
+                    <Trans>Parameters are inherited from the procedure.</Trans>
+                  </p>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -635,7 +643,9 @@ const BillOfProcess = ({
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="opacity-100">
-                  <p>Attributes are inherited from the procedure.</p>
+                  <p>
+                    <Trans>Attributes are inherited from the procedure.</Trans>
+                  </p>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -823,12 +833,12 @@ const BillOfProcess = ({
               isDisabled={isReadOnly || selectedItemId !== null}
               onClick={onAddItem}
             >
-              Add Operation
+              <Trans>Add Operation</Trans>
             </Button>
             {configurable && operations.length > 0 && (
               <IconButton
                 icon={<LuSquareFunction />}
-                aria-label="Configure"
+                aria-label={t`Configure`}
                 variant="ghost"
                 className={cn(
                   rulesByField.has(
@@ -837,7 +847,7 @@ const BillOfProcess = ({
                 )}
                 onClick={() =>
                   onConfigure({
-                    label: "Bill of Process",
+                    label: t`Bill of Process`,
                     field: `billOfProcess:${makeMethodId}:${materialId}`,
                     code: rulesByField.get(
                       `billOfProcess:${makeMethodId}:${materialId}`
@@ -905,6 +915,7 @@ function OperationForm({
   setTemporaryItems,
   onSubmit
 }: OperationFormProps) {
+  const { t } = useLingui();
   const methodOperationFetcher = useFetcher<{
     id: string;
     success: boolean;
@@ -1056,13 +1067,13 @@ function OperationForm({
       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
         <Process
           name="processId"
-          label="Process"
+          label={t`Process`}
           isConfigured={rulesByField.has(key("processId"))}
           onConfigure={
             configurable && !temporaryItems[item.id]
               ? () => {
                   onConfigure({
-                    label: "Process",
+                    label: t`Process`,
                     field: key("processId"),
                     code: rulesByField.get(key("processId"))?.code,
                     defaultValue: processData.processId,
@@ -1082,8 +1093,8 @@ function OperationForm({
 
         <Select
           name="operationOrder"
-          label="Operation Order"
-          placeholder="Operation Order"
+          label={t`Operation Order`}
+          placeholder={t`Operation Order`}
           options={methodOperationOrders.map((o) => ({
             value: o,
             label: o
@@ -1099,7 +1110,7 @@ function OperationForm({
             configurable && !temporaryItems[item.id]
               ? () => {
                   onConfigure({
-                    label: "Operation Order",
+                    label: t`Operation Order`,
                     field: key("operationOrder"),
                     code: rulesByField.get(key("operationOrder"))?.code,
                     defaultValue: processData.operationOrder,
@@ -1115,8 +1126,8 @@ function OperationForm({
 
         <SelectControlled
           name="operationType"
-          label="Operation Type"
-          placeholder="Operation Type"
+          label={t`Operation Type`}
+          placeholder={t`Operation Type`}
           options={operationTypes.map((o) => ({
             value: o,
             label: o
@@ -1136,7 +1147,7 @@ function OperationForm({
             configurable && !temporaryItems[item.id]
               ? () => {
                   onConfigure({
-                    label: "Operation Type",
+                    label: t`Operation Type`,
                     field: key("operationType"),
                     code: rulesByField.get(key("operationType"))?.code,
                     defaultValue: processData.operationType,
@@ -1152,7 +1163,7 @@ function OperationForm({
 
         <InputControlled
           name="description"
-          label="Description"
+          label={t`Description`}
           value={processData.description}
           onChange={(newValue) => {
             setProcessData((d) => ({ ...d, description: newValue }));
@@ -1163,7 +1174,7 @@ function OperationForm({
             configurable && !temporaryItems[item.id]
               ? () => {
                   onConfigure({
-                    label: "Description",
+                    label: t`Description`,
                     field: key("description"),
                     code: rulesByField.get(key("description"))?.code,
                     defaultValue: processData.description,
@@ -1180,13 +1191,13 @@ function OperationForm({
           <>
             <SupplierProcess
               name="operationSupplierProcessId"
-              label="Supplier"
+              label={t`Supplier`}
               processId={processData.processId}
               isOptional
             />
             <NumberControlled
               name="operationMinimumCost"
-              label="Minimum Cost"
+              label={t`Minimum Cost`}
               minValue={0}
               value={processData.operationMinimumCost}
               formatOptions={{
@@ -1202,7 +1213,7 @@ function OperationForm({
             />
             <NumberControlled
               name="operationUnitCost"
-              label="Unit Cost"
+              label={t`Unit Cost`}
               minValue={0}
               value={processData.operationUnitCost}
               formatOptions={{
@@ -1218,7 +1229,7 @@ function OperationForm({
             />
             <NumberControlled
               name="operationLeadTime"
-              label="Lead Time"
+              label={t`Lead Time`}
               minValue={0}
               value={processData.operationLeadTime}
               onChange={(newValue) =>
@@ -1233,7 +1244,7 @@ function OperationForm({
           <>
             <WorkCenter
               name="workCenterId"
-              label="Work Center"
+              label={t`Work Center`}
               isOptional
               processId={processData.processId}
               isConfigured={rulesByField.has(key("workCenterId"))}
@@ -1241,7 +1252,7 @@ function OperationForm({
                 configurable && !temporaryItems[item.id]
                   ? () => {
                       onConfigure({
-                        label: "Work Center",
+                        label: t`Work Center`,
                         field: key("workCenterId"),
                         code: rulesByField.get(key("workCenterId"))?.code,
                         defaultValue: processData.workCenterId,
@@ -1273,7 +1284,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Setup" />
-                <Label>Setup</Label>
+                <Label>
+                  <Trans>Setup</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData.setupTime ?? 0) > 0 && (
@@ -1285,7 +1298,7 @@ function OperationForm({
                 <IconButton
                   icon={<LuChevronRight />}
                   aria-label={
-                    setupDisclosure.isOpen ? "Collapse Setup" : "Expand Setup"
+                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
                   }
                   variant="ghost"
                   size="md"
@@ -1306,7 +1319,7 @@ function OperationForm({
             >
               <UnitHint
                 name="setupHint"
-                label="Setup"
+                label={t`Setup`}
                 value={processData.setupUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -1319,7 +1332,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="setupTime"
-                label="Setup Time"
+                label={t`Setup Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.setupTime}
                 onChange={(newValue) =>
@@ -1333,7 +1347,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Setup Time",
+                          label: t`Setup Time`,
                           field: key("setupTime"),
                           code: rulesByField.get(key("setupTime"))?.code,
                           defaultValue: processData.setupTime,
@@ -1347,7 +1361,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="setupUnit"
-                label="Setup Unit"
+                label={t`Setup Unit`}
+                isOptional={false}
                 hint={processData.setupUnitHint}
                 value={processData.setupUnit}
                 onChange={(newValue) => {
@@ -1361,7 +1376,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Setup Unit",
+                          label: t`Setup Unit`,
                           field: key("setupUnit"),
                           code: rulesByField.get(key("setupUnit"))?.code,
                           defaultValue: processData.setupUnit,
@@ -1384,7 +1399,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Labor" />
-                <Label>Labor</Label>
+                <Label>
+                  <Trans>Labor</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData.laborTime ?? 0) > 0 && (
@@ -1396,7 +1413,7 @@ function OperationForm({
                 <IconButton
                   icon={<LuChevronRight />}
                   aria-label={
-                    laborDisclosure.isOpen ? "Collapse Labor" : "Expand Labor"
+                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
                   }
                   variant="ghost"
                   size="md"
@@ -1417,7 +1434,7 @@ function OperationForm({
             >
               <UnitHint
                 name="laborHint"
-                label="Labor"
+                label={t`Labor`}
                 value={processData.laborUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -1430,7 +1447,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="laborTime"
-                label="Labor Time"
+                label={t`Labor Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.laborTime}
                 onChange={(newValue) =>
@@ -1444,7 +1462,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Labor Time",
+                          label: t`Labor Time`,
                           field: key("laborTime"),
                           code: rulesByField.get(key("laborTime"))?.code,
                           defaultValue: processData.laborTime,
@@ -1458,7 +1476,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="laborUnit"
-                label="Labor Unit"
+                label={t`Labor Unit`}
+                isOptional={false}
                 hint={processData.laborUnitHint}
                 value={processData.laborUnit}
                 onChange={(newValue) => {
@@ -1472,7 +1491,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Labor Unit",
+                          label: t`Labor Unit`,
                           field: key("laborUnit"),
                           code: rulesByField.get(key("laborUnit"))?.code,
                           defaultValue: processData.laborUnit,
@@ -1494,7 +1513,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Machine" />
-                <Label>Machine</Label>
+                <Label>
+                  <Trans>Machine</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData?.machineTime ?? 0) > 0 && (
@@ -1507,8 +1528,8 @@ function OperationForm({
                   icon={<LuChevronRight />}
                   aria-label={
                     machineDisclosure.isOpen
-                      ? "Collapse Machine"
-                      : "Expand Machine"
+                      ? t`Collapse Machine`
+                      : t`Expand Machine`
                   }
                   variant="ghost"
                   size="md"
@@ -1529,7 +1550,7 @@ function OperationForm({
             >
               <UnitHint
                 name="machineHint"
-                label="Machine"
+                label={t`Machine`}
                 value={processData.machineUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -1542,7 +1563,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="machineTime"
-                label="Machine Time"
+                label={t`Machine Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.machineTime}
                 onChange={(newValue) =>
@@ -1556,7 +1578,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Machine Time",
+                          label: t`Machine Time`,
                           field: key("machineTime"),
                           code: rulesByField.get(key("machineTime"))?.code,
                           defaultValue: processData.machineTime,
@@ -1570,7 +1592,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="machineUnit"
-                label="Machine Unit"
+                label={t`Machine Unit`}
+                isOptional={false}
                 hint={processData.machineUnitHint}
                 value={processData.machineUnit}
                 onChange={(newValue) => {
@@ -1584,7 +1607,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Machine Unit",
+                          label: t`Machine Unit`,
                           field: key("machineUnit"),
                           code: rulesByField.get(key("machineUnit"))?.code,
                           defaultValue: processData.machineUnit,
@@ -1642,7 +1665,7 @@ function OperationForm({
             >
               <Procedure
                 name="procedureId"
-                label="Procedure"
+                label={t`Procedure`}
                 processId={processData.processId}
                 value={processData.procedureId}
                 isConfigured={rulesByField.has(key("procedureId"))}
@@ -1650,7 +1673,7 @@ function OperationForm({
                   configurable && !temporaryItems[item.id]
                     ? () => {
                         onConfigure({
-                          label: "Procedure",
+                          label: t`Procedure`,
                           field: key("procedureId"),
                           code: rulesByField.get(key("procedureId"))?.code,
                           defaultValue: processData.procedureId,
@@ -1716,6 +1739,7 @@ function AttributesForm({
   onConfigure?: (c: Configuration) => void;
   itemMentions: { id: string; label: string }[];
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<typeof newMethodOperationParameterAction>();
   const sortOrderFetcher = useFetcher<{ success: boolean }>();
   const [type, setType] = useState<OperationStep["type"]>("Task");
@@ -1790,7 +1814,7 @@ function AttributesForm({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -1805,9 +1829,11 @@ function AttributesForm({
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add steps to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add steps to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding steps.
+          <Trans>Please save the operation before adding steps.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -1854,7 +1880,7 @@ function AttributesForm({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <SelectControlled
                   name="type"
-                  label="Type"
+                  label={t`Type`}
                   options={typeOptions}
                   value={type}
                   onChange={(option) => {
@@ -1863,7 +1889,7 @@ function AttributesForm({
                     }
                   }}
                 />
-                <Input name="name" label="Name" />
+                <Input name="name" label={t`Name`} />
               </div>
 
               <VStack spacing={2} className="w-full col-span-2">
@@ -1883,7 +1909,7 @@ function AttributesForm({
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                   <UnitOfMeasure
                     name="unitOfMeasureCode"
-                    label="Unit of Measure"
+                    label={t`Unit of Measure`}
                   />
 
                   <ToggleGroup
@@ -1905,7 +1931,7 @@ function AttributesForm({
                   {numericControls.includes("min") && (
                     <Number
                       name="minValue"
-                      label="Minimum"
+                      label={t`Minimum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -1915,7 +1941,7 @@ function AttributesForm({
                   {numericControls.includes("max") && (
                     <Number
                       name="maxValue"
-                      label="Maximum"
+                      label={t`Maximum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -1925,7 +1951,7 @@ function AttributesForm({
                 </div>
               )}
               {type === "List" && (
-                <ArrayInput name="listValues" label="List Options" />
+                <ArrayInput name="listValues" label={t`List Options`} />
               )}
 
               <Submit
@@ -2034,6 +2060,7 @@ function AttributesListItem({
   dragControls?: DragControls;
   itemMentions: { id: string; label: string }[];
 }) {
+  const { t } = useLingui();
   const {
     name,
     unitOfMeasureCode,
@@ -2096,7 +2123,7 @@ function AttributesListItem({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -2139,7 +2166,7 @@ function AttributesListItem({
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
               <SelectControlled
                 name="type"
-                label="Type"
+                label={t`Type`}
                 options={typeOptions}
                 onChange={(option) => {
                   if (option) {
@@ -2147,7 +2174,7 @@ function AttributesListItem({
                   }
                 }}
               />
-              <Input name="name" label="Name" />
+              <Input name="name" label={t`Name`} />
             </div>
 
             <VStack spacing={2} className="w-full col-span-2">
@@ -2167,7 +2194,7 @@ function AttributesListItem({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <UnitOfMeasure
                   name="unitOfMeasureCode"
-                  label="Unit of Measure"
+                  label={t`Unit of Measure`}
                 />
 
                 <ToggleGroup
@@ -2189,7 +2216,7 @@ function AttributesListItem({
                 {numericControls.includes("min") && (
                   <Number
                     name="minValue"
-                    label="Minimum"
+                    label={t`Minimum`}
                     formatOptions={{
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 10
@@ -2201,7 +2228,7 @@ function AttributesListItem({
                       configurable && typeof onConfigure === "function"
                         ? () => {
                             onConfigure({
-                              label: "Minimum",
+                              label: t`Minimum`,
                               field: getFieldKey(
                                 `attribute:${id}:minValue`,
                                 operationId
@@ -2225,7 +2252,7 @@ function AttributesListItem({
                 {numericControls.includes("max") && (
                   <Number
                     name="maxValue"
-                    label="Maximum"
+                    label={t`Maximum`}
                     formatOptions={{
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 10
@@ -2237,7 +2264,7 @@ function AttributesListItem({
                       configurable && typeof onConfigure === "function"
                         ? () => {
                             onConfigure({
-                              label: "Maximum",
+                              label: t`Maximum`,
                               field: getFieldKey(
                                 `attribute:${id}:maxValue`,
                                 operationId
@@ -2261,7 +2288,7 @@ function AttributesListItem({
               </div>
             )}
             {type === "List" && (
-              <ArrayInput name="listValues" label="List Options" />
+              <ArrayInput name="listValues" label={t`List Options`} />
             )}
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
@@ -2280,7 +2307,7 @@ function AttributesListItem({
         <div className="flex flex-1 justify-between items-center w-full">
           <HStack spacing={4} className="w-1/2">
             <IconButton
-              aria-label="Drag handle"
+              aria-label={t`Drag handle`}
               icon={<LuGripVertical />}
               variant="ghost"
               disabled={isDisabled}
@@ -2347,7 +2374,7 @@ function AttributesListItem({
                   <TooltipTrigger>
                     <div className="flex flex-col items-center justify-center gap-1 text-emerald-500">
                       <LuSquareFunction
-                        aria-label="Configured"
+                        aria-label={t`Configured`}
                         className="size-4 "
                       />
                       <span className="text-xxs font-mono uppercase">
@@ -2390,7 +2417,7 @@ function AttributesListItem({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <IconButton
-                    aria-label="Open menu"
+                    aria-label={t`Open menu`}
                     icon={<LuEllipsisVertical />}
                     variant="ghost"
                   />
@@ -2446,15 +2473,18 @@ function ParametersForm({
   rulesByField: Map<string, ConfigurationRule>;
   onConfigure?: (c: Configuration) => void;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<typeof newMethodOperationParameterAction>();
 
   if (isDisabled && temporaryItems[operationId]) {
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add parameters to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add parameters to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding parameters.
+          <Trans>Please save the operation before adding parameters.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -2483,10 +2513,10 @@ function ParametersForm({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <Input
                   name="key"
-                  label="Key"
+                  label={t`Key`}
                   autoFocus={parameters.length === 0}
                 />
-                <Input name="value" label="Value" />
+                <Input name="value" label={t`Value`} />
               </div>
               <Submit
                 leftIcon={<LuCirclePlus />}
@@ -2546,6 +2576,7 @@ function ParametersListItem({
   onConfigure?: (c: Configuration) => void;
   isDisabled?: boolean;
 }) {
+  const { t } = useLingui();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -2592,10 +2623,10 @@ function ParametersListItem({
           <Hidden name="operationId" />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-              <Input name="key" label="Key" />
+              <Input name="key" label={t`Key`} />
               <Input
                 name="value"
-                label="Value"
+                label={t`Value`}
                 isConfigured={isConfigured}
                 onConfigure={
                   configurable && typeof onConfigure === "function"
@@ -2649,7 +2680,7 @@ function ParametersListItem({
                   <TooltipTrigger>
                     <div className="flex flex-col items-center justify-center gap-1 text-emerald-500">
                       <LuSquareFunction
-                        aria-label="Configured"
+                        aria-label={t`Configured`}
                         className="size-4 "
                       />
                       <span className="text-xxs font-mono uppercase">
@@ -2681,7 +2712,7 @@ function ParametersListItem({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <IconButton
-                    aria-label="Open menu"
+                    aria-label={t`Open menu`}
                     icon={<LuEllipsisVertical />}
                     variant="ghost"
                   />
@@ -2731,15 +2762,18 @@ function ToolsForm({
   tools: OperationTool[];
   temporaryItems: TemporaryItems;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<typeof newMethodOperationToolAction>();
 
   if (isDisabled && temporaryItems[operationId]) {
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add tools to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add tools to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding tools.
+          <Trans>Please save the operation before adding tools.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -2768,10 +2802,10 @@ function ToolsForm({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <Tool
                   name="toolId"
-                  label="Tool"
+                  label={t`Tool`}
                   autoFocus={tools.length === 0}
                 />
-                <Number name="quantity" label="Quantity" />
+                <Number name="quantity" label={t`Quantity`} />
               </div>
 
               <Submit
@@ -2823,6 +2857,7 @@ function ToolsListItem({
   className?: string;
   isDisabled?: boolean;
 }) {
+  const { t } = useLingui();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -2867,8 +2902,8 @@ function ToolsListItem({
           <Hidden name="operationId" />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-              <Tool name="toolId" label="Tool" autoFocus />
-              <Number name="quantity" label="Quantity" />
+              <Tool name="toolId" label={t`Tool`} autoFocus />
+              <Number name="quantity" label={t`Quantity`} />
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
@@ -2914,7 +2949,7 @@ function ToolsListItem({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <IconButton
-                    aria-label="Open menu"
+                    aria-label={t`Open menu`}
                     icon={<LuEllipsisVertical />}
                     variant="ghost"
                   />

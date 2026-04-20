@@ -1,11 +1,15 @@
 import type { Database } from "@carbon/database";
 import { SalesOrderEmail } from "@carbon/documents/email";
-import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
+import { trigger } from "@carbon/jobs";
 import { redis } from "@carbon/kv";
-import { getCompanyPrivateBucket } from "@carbon/utils";
+import {
+  createPrivateSignedUrlWithFallbackDetailed,
+  getCompanyPrivateBucket
+} from "@carbon/utils";
+import type { CalendarDate } from "@internationalized/date";
+import { startOfWeek } from "@internationalized/date";
 import { renderAsync } from "@react-email/components";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { tasks } from "@trigger.dev/sdk";
 import type { LoaderFunctionArgs } from "react-router";
 import { getPaymentTermsList } from "~/modules/accounting";
 import {
@@ -16,6 +20,7 @@ import {
 } from "~/modules/sales";
 import { getCompany } from "~/modules/settings";
 import { getUser } from "~/modules/users/users.server";
+import { getDatabaseClient } from "~/services/database.server";
 import { stripSpecialCharacters } from "~/utils/string";
 import { upsertDocument } from "../documents/documents.service";
 import type { CustomFieldsTableType } from "../settings";
@@ -118,7 +123,7 @@ export async function generateAndAttachSalesOrderPdf(args: {
   serviceRole: SupabaseClient<Database>;
   /** The pdf loader imported from the sales-order pdf route */
   pdfLoader: (args: LoaderFunctionArgs) => Promise<Response>;
-}): Promise<{ file: ArrayBuffer; fileName: string }> {
+}): Promise<{ file: ArrayBuffer; fileName: string; documentFilePath: string }> {
   const {
     routeArgs,
     salesOrderId,
@@ -179,7 +184,7 @@ export async function generateAndAttachSalesOrderPdf(args: {
     throw new Error("Failed to create document record");
   }
 
-  return { file, fileName };
+  return { file, fileName, documentFilePath };
 }
 
 /**
@@ -194,7 +199,7 @@ export async function sendSalesOrderEmail(args: {
   userId: string;
   customerContactId: string;
   cc?: string[];
-  file: ArrayBuffer;
+  documentFilePath: string;
   fileName: string;
   serviceRole: SupabaseClient<Database>;
   locales: string[];
@@ -205,7 +210,7 @@ export async function sendSalesOrderEmail(args: {
     userId,
     customerContactId,
     cc: ccSelections,
-    file,
+    documentFilePath,
     fileName,
     serviceRole,
     locales
@@ -269,22 +274,141 @@ export async function sendSalesOrderEmail(args: {
 
   const html = await renderAsync(emailTemplate);
   const text = await renderAsync(emailTemplate, { plainText: true });
+  const signedUrlResult = await createPrivateSignedUrlWithFallbackDetailed({
+    companyId,
+    requestedBucket: getCompanyPrivateBucket(companyId),
+    objectPath: documentFilePath,
+    expiresIn: 3600,
+    createSignedUrl: async (physicalBucket, objectPath, expiresIn) => {
+      const { data, error } = await serviceRole.storage
+        .from(physicalBucket)
+        .createSignedUrl(objectPath, expiresIn);
 
-  await tasks.trigger<typeof sendEmailResendTask>("send-email-resend", {
+      return {
+        signedUrl: data?.signedUrl ?? null,
+        error: error ?? null
+      };
+    }
+  });
+
+  for (const bucketError of signedUrlResult.errors) {
+    console.error("Failed to create sales order attachment signed URL", {
+      companyId,
+      salesOrderId,
+      documentFilePath,
+      physicalBucket: bucketError.physicalBucket,
+      error: bucketError.error
+    });
+  }
+
+  await trigger("send-email", {
     to: [seller.data.email, customer.data.contact.email!],
     cc: ccSelections?.length ? ccSelections : undefined,
     from: seller.data.email,
     subject: `Order ${salesOrder.data.salesOrderId} from ${company.data.name}`,
     html,
     text,
-    attachments: [
-      {
-        content: Buffer.from(file).toString("base64"),
-        filename: fileName
-      }
-    ],
+    attachments: signedUrlResult.signedUrl
+      ? [
+          {
+            path: signedUrlResult.signedUrl,
+            filename: fileName
+          }
+        ]
+      : undefined,
     companyId
   });
 
   return { success: true };
+}
+
+export async function getOrCreatePeriods(
+  today: CalendarDate,
+  weeksToProject: number
+) {
+  const start = startOfWeek(today, "en-US");
+
+  // Generate weekly date ranges
+  const ranges: { startDate: string; endDate: string }[] = [];
+  let currentStart = start;
+  for (let i = 0; i < weeksToProject; i++) {
+    const periodEnd = currentStart.add({ days: 6 });
+    ranges.push({
+      startDate: currentStart.toString(),
+      endDate: periodEnd.toString()
+    });
+    currentStart = periodEnd.add({ days: 1 });
+  }
+
+  const db = getDatabaseClient();
+
+  // Check which periods already exist
+  const existingPeriods = await db
+    .selectFrom("period")
+    .selectAll()
+    .where(
+      "startDate",
+      "in",
+      ranges.map((r) => r.startDate)
+    )
+    .where("periodType", "=", "Week")
+    .execute();
+
+  if (existingPeriods.length === ranges.length) {
+    return existingPeriods.map(toPlainPeriod);
+  }
+
+  // Find missing periods
+  const existingStartDates = new Set(
+    existingPeriods.map((p) => dateToString(p.startDate))
+  );
+
+  const periodsToCreate = ranges.filter(
+    (r) => !existingStartDates.has(r.startDate)
+  );
+
+  // Create missing periods in a transaction
+  const created = await db.transaction().execute(async (trx) => {
+    return await trx
+      .insertInto("period")
+      .values(
+        periodsToCreate.map((p) => ({
+          startDate: p.startDate,
+          endDate: p.endDate,
+          periodType: "Week" as const,
+          createdAt: new Date().toISOString()
+        }))
+      )
+      .returningAll()
+      .execute();
+  });
+
+  return [...existingPeriods, ...created].map(toPlainPeriod);
+}
+
+/** Convert a pg DATE value (Date object or string) to an ISO date string. */
+function dateToString(value: Date | string): string {
+  if (value instanceof Date) {
+    // Use local date parts to avoid timezone shift from toISOString()
+    const y = value.getFullYear();
+    const m = String(value.getMonth() + 1).padStart(2, "0");
+    const d = String(value.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  return String(value);
+}
+
+/** Return a plain JSON-safe object with only the fields consumers need. */
+function toPlainPeriod(p: {
+  id: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  periodType: string;
+}) {
+  return {
+    id: String(p.id),
+    startDate: dateToString(p.startDate),
+    endDate: dateToString(p.endDate),
+    periodType: p.periodType
+  };
 }

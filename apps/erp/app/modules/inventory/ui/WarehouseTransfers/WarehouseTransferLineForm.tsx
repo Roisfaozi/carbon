@@ -11,6 +11,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { useFetcher, useParams } from "react-router";
 import { z } from "zod";
@@ -20,7 +21,7 @@ import {
   Hidden,
   Item,
   Number,
-  Shelf,
+  StorageUnit,
   Submit,
   TextArea
 } from "~/components/Form";
@@ -40,8 +41,8 @@ const warehouseTransferLineFormValidator = z.discriminatedUnion("type", [
     toLocationId: z.string().min(1),
     itemId: z.string().min(1),
     quantity: zfd.numeric(z.number().min(0.0001)),
-    fromShelfId: zfd.text(z.string().optional()),
-    toShelfId: zfd.text(z.string().optional()),
+    fromStorageUnitId: zfd.text(z.string().optional()),
+    toStorageUnitId: zfd.text(z.string().optional()),
     notes: zfd.text(z.string().optional())
   }),
   z.object({
@@ -52,8 +53,8 @@ const warehouseTransferLineFormValidator = z.discriminatedUnion("type", [
     fromLocationId: z.string().min(1),
     toLocationId: z.string().min(1),
     quantity: zfd.numeric(z.number().min(0.0001)),
-    fromShelfId: zfd.text(z.string().optional()),
-    toShelfId: zfd.text(z.string().optional()),
+    fromStorageUnitId: zfd.text(z.string().optional()),
+    toStorageUnitId: zfd.text(z.string().optional()),
     notes: zfd.text(z.string().optional())
   })
 ]);
@@ -70,6 +71,7 @@ const WarehouseTransferLineForm = ({
   onClose
 }: WarehouseTransferLineFormProps) => {
   const permissions = usePermissions();
+  const { t } = useLingui();
   const { transferId } = useParams();
 
   if (!transferId) {
@@ -125,7 +127,7 @@ const WarehouseTransferLineForm = ({
         >
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? "Edit" : "New"} Transfer Line
+              {isEditing ? t`Edit Transfer Line` : t`New Transfer Line`}
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>
@@ -138,8 +140,9 @@ const WarehouseTransferLineForm = ({
             <VStack spacing={4}>
               <Item
                 name="itemId"
-                label="Item"
+                label={t`Item`}
                 type={itemType}
+                locationId={warehouseTransfer.fromLocationId}
                 onTypeChange={(t) => setItemType(t as MethodItemType)}
                 value={itemId}
                 onChange={(value) => {
@@ -148,23 +151,23 @@ const WarehouseTransferLineForm = ({
               />
               <Number
                 name="quantity"
-                label="Quantity"
+                label={t`Quantity`}
                 minValue={0.0001}
                 step={0.0001}
               />
-              <Shelf
-                name="fromShelfId"
-                label="From Shelf"
+              <StorageUnit
+                name="fromStorageUnitId"
+                label={t`From Storage Unit`}
                 itemId={itemId ?? undefined}
                 locationId={warehouseTransfer.fromLocationId}
               />
-              <Shelf
-                name="toShelfId"
-                label="To Shelf"
+              <StorageUnit
+                name="toStorageUnitId"
+                label={t`To Storage Unit`}
                 itemId={itemId ?? undefined}
                 locationId={warehouseTransfer.toLocationId}
               />
-              <TextArea name="notes" label="Notes" rows={3} />
+              <TextArea name="notes" label={t`Notes`} rows={3} />
               <CustomFormFields table="warehouseTransferLine" />
             </VStack>
           </DrawerBody>
@@ -178,7 +181,7 @@ const WarehouseTransferLineForm = ({
                 Save
               </Submit>
               <Button size="md" variant="solid" onClick={onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
             </HStack>
           </DrawerFooter>

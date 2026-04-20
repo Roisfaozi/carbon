@@ -14,8 +14,11 @@ dist-ssr
 server/dist
 public/dist
 vite.config.ts.timestamp*
-
+.mcp.json
 opencode.json
+
+# Lingui compiled catalogs
+packages/locale/locales/**/*.mjs
 
 scripts/migrations/data
 scripts/paperless-test.ts

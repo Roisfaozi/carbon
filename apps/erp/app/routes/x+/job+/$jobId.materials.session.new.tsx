@@ -18,7 +18,7 @@ import {
 } from "~/modules/inventory";
 import { getJob } from "~/modules/production";
 import { getNextSequence } from "~/modules/settings";
-import { getPeriods } from "~/modules/shared/shared.service";
+import { getOrCreatePeriods } from "~/modules/shared/shared.server";
 import { path } from "~/utils/path";
 
 const jobMaterialsSessionValidator = z.object({
@@ -36,7 +36,7 @@ const jobMaterialsSessionValidator = z.object({
           quantity: z.number().optional(),
           requiresSerialTracking: z.boolean(),
           requiresBatchTracking: z.boolean(),
-          shelfId: z.string().nullable().optional()
+          storageUnitId: z.string().nullable().optional()
         })
       );
       return itemsSchema.parse(parsed);
@@ -117,17 +117,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const periods = await getPeriods(client, {
-    startDate: startDate.toString(),
-    endDate: (jobStartDate ?? startDate.add({ weeks: 8 })).toString()
-  });
-
-  if (periods.error || !periods.data) {
-    return data(
-      { success: false, message: "Failed to get periods" },
-      await flash(request, error(periods.error, "Failed to get periods"))
-    );
-  }
+  const endDate = jobStartDate
+    ? new Date(String(jobStartDate))
+    : new Date(startDate.add({ weeks: 8 }).toString());
+  const weeksToProject = Math.max(
+    1,
+    Math.ceil(
+      (endDate.getTime() - new Date(startDate.toString()).getTime()) /
+        (7 * 24 * 60 * 60 * 1000)
+    )
+  );
+  const periods = await getOrCreatePeriods(
+    today(getLocalTimeZone()),
+    weeksToProject
+  );
 
   const transferItems = sessionItems.filter(
     (item) => item.action === "transfer"
@@ -145,13 +148,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     const transferLines = [];
 
     for await (const item of transferItems) {
-      if (!item.shelfId || !item.quantity || !item.id) {
+      if (!item.storageUnitId || !item.quantity || !item.id) {
         continue;
       }
 
-      // Find available sources for this item (excluding the target shelf)
+      // Find available sources for this item (excluding the target storage unit)
       const { data: availableSources, error: sourcesError } = await client.rpc(
-        "get_item_shelf_requirements_by_location_and_item",
+        "get_item_storage_unit_requirements_by_location_and_item",
         {
           company_id: companyId,
           location_id: locationId,
@@ -163,22 +166,25 @@ export async function action({ request, params }: ActionFunctionArgs) {
         continue;
       }
 
-      // Filter out the target shelf and only include shelves with available quantity
+      // Filter out the target storage unit and only include storage units with available quantity
       const validSources =
         availableSources?.filter(
           (source) =>
-            source.shelfId !== item.shelfId &&
-            source.quantityOnHandInShelf > source.quantityRequiredByShelf
+            source.storageUnitId !== item.storageUnitId &&
+            source.quantityOnHandInStorageUnit >
+              source.quantityRequiredByStorageUnit
         ) || [];
 
       if (validSources.length === 0) {
         continue;
       }
 
-      // Sort sources by available quantity (descending) to prioritize shelves with more stock
+      // Sort sources by available quantity (descending) to prioritize storage units with more stock
       validSources.sort((a, b) => {
-        const aAvailable = a.quantityOnHandInShelf - a.quantityRequiredByShelf;
-        const bAvailable = b.quantityOnHandInShelf - b.quantityRequiredByShelf;
+        const aAvailable =
+          a.quantityOnHandInStorageUnit - a.quantityRequiredByStorageUnit;
+        const bAvailable =
+          b.quantityOnHandInStorageUnit - b.quantityRequiredByStorageUnit;
         return bAvailable - aAvailable;
       });
 
@@ -189,14 +195,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
         if (remainingQuantity <= 0) break;
 
         const availableQuantity =
-          source.quantityOnHandInShelf - source.quantityRequiredByShelf;
+          source.quantityOnHandInStorageUnit -
+          source.quantityRequiredByStorageUnit;
         const transferQuantity = Math.min(remainingQuantity, availableQuantity);
 
         if (transferQuantity > 0) {
           const transferLine = {
             itemId: item.itemId, // Use the actual item ID, not the job material ID
-            fromShelfId: source.shelfId,
-            toShelfId: item.shelfId,
+            fromStorageUnitId: source.storageUnitId,
+            toStorageUnitId: item.storageUnitId,
             quantity: transferQuantity,
             requiresSerialTracking: item.requiresSerialTracking,
             requiresBatchTracking: item.requiresBatchTracking
@@ -380,16 +387,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
         // Helper function to find period ID
         const findPeriodId = (dueDate: string) => {
           const dueDateParsed = parseDate(dueDate);
-          const period = periods.data?.find((p) => {
+          const period = periods?.find((p) => {
             const startDate = parseDate(p.startDate);
             const endDate = parseDate(p.endDate);
             return dueDateParsed >= startDate && dueDateParsed <= endDate;
           });
 
           if (!period) {
-            if (periods.data && periods.data.length > 0) {
-              const firstPeriod = periods.data[0];
-              const lastPeriod = periods.data[periods.data.length - 1];
+            if (periods && periods.length > 0) {
+              const firstPeriod = periods[0];
+              const lastPeriod = periods[periods.length - 1];
               const firstStartDate = parseDate(firstPeriod.startDate);
               const lastEndDate = parseDate(lastPeriod.endDate);
 
@@ -399,7 +406,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
                 return lastPeriod.id;
               }
             }
-            return periods.data?.[0]?.id || "";
+            return periods?.[0]?.id || "";
           }
 
           return period.id;
@@ -512,7 +519,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         // Find the correct period based on the production order due date
         const findPeriodId = (dueDate: string) => {
           const dueDateParsed = parseDate(dueDate);
-          const period = periods.data?.find((p) => {
+          const period = periods?.find((p) => {
             const startDate = parseDate(p.startDate);
             const endDate = parseDate(p.endDate);
             return dueDateParsed >= startDate && dueDateParsed <= endDate;
@@ -521,9 +528,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
           // If no matching period found, use the first period if due date is before it,
           // or the last period if due date is after all periods
           if (!period) {
-            if (periods.data && periods.data.length > 0) {
-              const firstPeriod = periods.data[0];
-              const lastPeriod = periods.data[periods.data.length - 1];
+            if (periods && periods.length > 0) {
+              const firstPeriod = periods[0];
+              const lastPeriod = periods[periods.length - 1];
               const firstStartDate = parseDate(firstPeriod.startDate);
               const lastEndDate = parseDate(lastPeriod.endDate);
 
@@ -533,7 +540,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
                 return lastPeriod.id;
               }
             }
-            return periods.data?.[0]?.id || "";
+            return periods?.[0]?.id || "";
           }
 
           return period.id;

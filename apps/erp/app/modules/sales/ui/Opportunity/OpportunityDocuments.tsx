@@ -28,6 +28,7 @@ import {
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
 import { useDndContext, useDraggable } from "@dnd-kit/core";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -99,7 +100,9 @@ const OpportunityDocuments = ({
       <Card>
         <HStack className="justify-between items-start">
           <CardHeader>
-            <CardTitle>Files</CardTitle>
+            <CardTitle>
+              <Trans>Files</Trans>
+            </CardTitle>
           </CardHeader>
           <CardAction>
             {!isReadOnlyProp && (
@@ -115,9 +118,15 @@ const OpportunityDocuments = ({
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
-                <Th>Size</Th>
-                <Th>Created</Th>
+                <Th>
+                  <Trans>Name</Trans>
+                </Th>
+                <Th>
+                  <Trans>Size</Trans>
+                </Th>
+                <Th>
+                  <Trans>Created</Trans>
+                </Th>
                 <Th></Th>
               </Tr>
             </Thead>
@@ -155,14 +164,14 @@ const OpportunityDocuments = ({
                             <DropdownMenuItem
                               onClick={() => download(attachment)}
                             >
-                              Download
+                              <Trans>Download</Trans>
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               destructive
                               disabled={!effectiveCanDelete}
                               onClick={() => deleteAttachment(attachment)}
                             >
-                              Delete
+                              <Trans>Delete</Trans>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -176,7 +185,7 @@ const OpportunityDocuments = ({
                     colSpan={24}
                     className="py-8 text-muted-foreground text-center"
                   >
-                    No files uploaded
+                    <Trans>No files uploaded</Trans>
                   </Td>
                 </Tr>
               )}
@@ -286,6 +295,7 @@ export const useOpportunityDocuments = ({
   opportunityId,
   type
 }: OpportunityDocumentFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const { company } = useUser();
   const { carbon } = useCarbon();
@@ -331,10 +341,10 @@ export const useOpportunityDocuments = ({
         return;
       }
 
-      toast.success(`${attachment.name} deleted successfully`);
+      toast.success(t`${attachment.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [carbon?.storage, company.id, companyPrivateBucket, getPath, revalidator]
+    [carbon?.storage, company.id, companyPrivateBucket, getPath, revalidator, t]
   );
 
   const download = useCallback(
@@ -355,11 +365,11 @@ export const useOpportunityDocuments = ({
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error("Error downloading file");
+        toast.error(t`Error downloading file`);
         console.error(error);
       }
     },
-    [companyPrivateBucket, getPath]
+    [companyPrivateBucket, getPath, t]
   );
 
   const createDocumentRecord = useCallback(
@@ -392,13 +402,13 @@ export const useOpportunityDocuments = ({
   const upload = useCallback(
     async (files: File[]) => {
       if (!carbon) {
-        toast.error("Carbon client not available");
+        toast.error(t`Carbon client not available`);
         return;
       }
 
       for (const file of files) {
         const fileName = getPath(file);
-        toast.info(`Uploading ${file.name}`);
+        toast.info(t`Uploading ${file.name}`);
 
         const fileUpload = await carbon.storage
           .from(companyPrivateBucket)
@@ -408,9 +418,9 @@ export const useOpportunityDocuments = ({
           });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          toast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
-          toast.success(`Uploaded: ${file.name}`);
+          toast.success(t`Uploaded: ${file.name}`);
           createDocumentRecord({
             path: fileUpload.data.path,
             name: file.name,
@@ -420,7 +430,14 @@ export const useOpportunityDocuments = ({
       }
       revalidator.revalidate();
     },
-    [companyPrivateBucket, getPath, createDocumentRecord, carbon, revalidator]
+    [
+      companyPrivateBucket,
+      getPath,
+      createDocumentRecord,
+      carbon,
+      revalidator,
+      t
+    ]
   );
 
   return {
@@ -452,7 +469,7 @@ const OpportunityDocumentForm = (props: OpportunityDocumentFormProps) => {
       onChange={uploadFiles}
       multiple
     >
-      New
+      <Trans>New</Trans>
     </File>
   );
 };

@@ -14,6 +14,7 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
@@ -61,6 +62,7 @@ const MaintenanceDispatchForm = ({
   initialValues,
   failureModes = []
 }: MaintenanceDispatchFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const {
     company: { id: companyId }
@@ -123,12 +125,18 @@ const MaintenanceDispatchForm = ({
       >
         <CardHeader>
           <CardTitle>
-            {isEditing ? "Edit" : "New"} Maintenance Dispatch
+            {isEditing ? (
+              <Trans>Edit Maintenance Dispatch</Trans>
+            ) : (
+              <Trans>New Maintenance Dispatch</Trans>
+            )}
           </CardTitle>
           {!isEditing && (
             <CardDescription>
-              Create a new maintenance dispatch to track equipment repairs and
-              maintenance activities
+              <Trans>
+                Create a new maintenance dispatch to track equipment repairs and
+                maintenance activities
+              </Trans>
             </CardDescription>
           )}
         </CardHeader>
@@ -139,7 +147,9 @@ const MaintenanceDispatchForm = ({
           <VStack>
             <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 md:grid-cols-2">
               <div className="md:col-span-2 flex flex-col gap-2 w-full">
-                <Label>Description</Label>
+                <Label>
+                  <Trans>Description</Trans>
+                </Label>
                 <Editor
                   initialValue={content}
                   onUpload={onUploadImage}
@@ -151,7 +161,7 @@ const MaintenanceDispatchForm = ({
               </div>
               <Select
                 name="priority"
-                label="Priority"
+                label={t`Priority`}
                 options={maintenanceDispatchPriority.map((priority) => ({
                   value: priority,
                   label: (
@@ -164,7 +174,7 @@ const MaintenanceDispatchForm = ({
               />
               <Select
                 name="source"
-                label="Source"
+                label={t`Source`}
                 options={maintenanceSource.map((source) => ({
                   value: source,
                   label: <MaintenanceSource source={source} />
@@ -172,17 +182,17 @@ const MaintenanceDispatchForm = ({
               />
               <Select
                 name="severity"
-                label="Severity"
+                label={t`Severity`}
                 options={maintenanceSeverity.map((severity) => ({
                   value: severity,
                   label: <MaintenanceSeverity severity={severity} />
                 }))}
               />
-              <WorkCenter name="workCenterId" label="Work Center" />
-              <Location name="locationId" label="Location" />
+              <WorkCenter name="workCenterId" label={t`Work Center`} />
+              <Location name="locationId" label={t`Location`} />
               <Select
                 name="oeeImpact"
-                label="OEE Impact"
+                label={t`OEE Impact`}
                 options={oeeImpact.map((impact) => ({
                   value: impact,
                   label: <MaintenanceOeeImpact oeeImpact={impact} />
@@ -195,13 +205,16 @@ const MaintenanceDispatchForm = ({
               />
               <DateTimePicker
                 name="plannedStartTime"
-                label="Planned Start Time"
+                label={t`Planned Start Time`}
               />
-              <DateTimePicker name="plannedEndTime" label="Planned End Time" />
+              <DateTimePicker
+                name="plannedEndTime"
+                label={t`Planned End Time`}
+              />
               {showFailureModes ? (
                 <Select
                   name="suspectedFailureModeId"
-                  label="Suspected Failure Mode"
+                  label={t`Suspected Failure Mode`}
                   options={failureModes.map((mode) => ({
                     value: mode.id,
                     label: mode.name
@@ -215,7 +228,9 @@ const MaintenanceDispatchForm = ({
           </VStack>
         </CardContent>
         <CardFooter>
-          <Submit isDisabled={isDisabled}>Save</Submit>
+          <Submit isDisabled={isDisabled}>
+            <Trans>Save</Trans>
+          </Submit>
         </CardFooter>
       </ValidatedForm>
     </Card>

@@ -32,6 +32,7 @@ import {
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
 import { useCallback } from "react";
@@ -55,6 +56,7 @@ const useJobDocuments = ({
   itemId?: string | null;
 }) => {
   const permissions = usePermissions();
+  const { t } = useLingui();
   const revalidator = useRevalidator();
   const { carbon } = useCarbon();
   const { company } = useUser();
@@ -102,10 +104,10 @@ const useJobDocuments = ({
         return;
       }
 
-      toast.success(`${file.name} deleted successfully`);
+      toast.success(t`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator]
+    [company.id, companyPrivateBucket, getPath, carbon?.storage, revalidator, t]
   );
 
   const deleteModel = useCallback(async () => {
@@ -116,17 +118,17 @@ const useJobDocuments = ({
       .update({ modelUploadId: null })
       .eq("id", jobId);
     if (error) {
-      toast.error("Error removing model from job");
+      toast.error(t`Error removing model from job`);
       return;
     }
-    toast.success("Model removed from job");
+    toast.success(t`Model removed from job`);
     revalidator.revalidate();
-  }, [carbon, jobId, revalidator]);
+  }, [carbon, jobId, revalidator, t]);
 
   const downloadModel = useCallback(
     async (model: ModelUpload) => {
       if (!model.modelPath || !model.modelName) {
-        toast.error("Model data is missing");
+        toast.error(t`Model data is missing`);
         return;
       }
 
@@ -143,12 +145,12 @@ const useJobDocuments = ({
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error("Error downloading file");
+        toast.error(t`Error downloading file`);
         console.error(error);
       }
     },
 
-    [companyPrivateBucket]
+    [companyPrivateBucket, t]
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -171,7 +173,7 @@ const useJobDocuments = ({
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error("Error downloading file");
+        toast.error(t`Error downloading file`);
         console.error(error);
       }
     },
@@ -218,12 +220,12 @@ const useJobDocuments = ({
   const upload = useCallback(
     async (files: File[], bucket: "job" | "parts" = "job") => {
       if (!carbon) {
-        toast.error("Carbon client not available");
+        toast.error(t`Carbon client not available`);
         return;
       }
 
       if (bucket === "parts" && !itemId) {
-        toast.error("Cannot upload to parts bucket without item ID");
+        toast.error(t`Cannot upload to parts bucket without item ID`);
         return;
       }
 
@@ -238,7 +240,7 @@ const useJobDocuments = ({
           });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          toast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
           createDocumentRecord({
             path: fileUpload.data.path,
@@ -256,7 +258,8 @@ const useJobDocuments = ({
       createDocumentRecord,
       carbon,
       revalidator,
-      itemId
+      itemId,
+      t
     ]
   );
 
@@ -266,19 +269,19 @@ const useJobDocuments = ({
       targetBucket: "job" | "parts"
     ) => {
       if (!carbon) {
-        toast.error("Carbon client not available");
+        toast.error(t`Carbon client not available`);
         return;
       }
 
       if (targetBucket === "parts" && !itemId) {
-        toast.error("Cannot move to parts bucket without item ID");
+        toast.error(t`Cannot move to parts bucket without item ID`);
         return;
       }
 
       const currentBucket = file.bucket === "parts" ? "parts" : "job";
 
       if (currentBucket === targetBucket) {
-        toast.error("File is already in the selected bucket");
+        toast.error(t`File is already in the selected bucket`);
         return;
       }
 
@@ -303,7 +306,7 @@ const useJobDocuments = ({
         }
 
         if (!downloadData) {
-          toast.error("Failed to download file for moving");
+          toast.error(t`Failed to download file for moving`);
           return;
         }
 
@@ -316,7 +319,7 @@ const useJobDocuments = ({
           });
 
         if (uploadError) {
-          toast.error("Failed to upload file to new location");
+          toast.error(t`Failed to upload file to new location`);
           return;
         }
 
@@ -325,7 +328,7 @@ const useJobDocuments = ({
           .remove([sourcePath]);
 
         if (deleteError) {
-          toast.error("Failed to delete file from old location");
+          toast.error(t`Failed to delete file from old location`);
           return;
         }
 
@@ -336,11 +339,11 @@ const useJobDocuments = ({
         );
         revalidator.revalidate();
       } catch (error) {
-        toast.error("Error moving file");
+        toast.error(t`Error moving file`);
         console.error(error);
       }
     },
-    [carbon, company.id, companyPrivateBucket, itemId, getPath, revalidator]
+    [carbon, company.id, companyPrivateBucket, itemId, getPath, revalidator, t]
   );
 
   return {
@@ -378,6 +381,7 @@ const JobDocuments = ({
     company: { id: companyId }
   } = useUser();
   const companyPrivateBucket = getCompanyPrivateBucket(companyId);
+  const { t } = useLingui();
   const {
     canDelete,
     canUpdate,
@@ -420,7 +424,9 @@ const JobDocuments = ({
       <Card className="flex-grow">
         <HStack className="justify-between items-start">
           <CardHeader>
-            <CardTitle>Files</CardTitle>
+            <CardTitle>
+              <Trans>Files</Trans>
+            </CardTitle>
           </CardHeader>
           <CardAction>
             {!isReadOnly && (
@@ -471,14 +477,16 @@ const JobDocuments = ({
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <IconButton
-                            aria-label="More"
+                            aria-label={t`More`}
                             icon={<LuEllipsisVertical />}
                             variant="secondary"
                           />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem asChild>
-                            <Link to={getModelPath(modelUpload)}>View</Link>
+                            <Link to={getModelPath(modelUpload)}>
+                              <Trans>View</Trans>
+                            </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => downloadModel(modelUpload)}
@@ -569,7 +577,7 @@ const JobDocuments = ({
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <IconButton
-                              aria-label="More"
+                              aria-label={t`More`}
                               icon={<LuEllipsisVertical />}
                               variant="secondary"
                             />

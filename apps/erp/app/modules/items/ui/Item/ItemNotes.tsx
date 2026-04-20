@@ -13,6 +13,7 @@ import {
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { usePermissions, useUser } from "~/hooks";
@@ -36,6 +37,7 @@ const ItemNotes = ({
   const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { carbon } = useCarbon();
   const permissions = usePermissions();
+  const { t } = useLingui();
 
   const [notes, setInternalNotes] = useState(initialNotes ?? {});
 
@@ -48,7 +50,7 @@ const ItemNotes = ({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -80,7 +82,9 @@ const ItemNotes = ({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Notes</CardTitle>
+          <CardTitle>
+            <Trans>Notes</Trans>
+          </CardTitle>
           <CardDescription>{subTitle}</CardDescription>
         </CardHeader>
 

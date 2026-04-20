@@ -43,6 +43,7 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
@@ -81,6 +82,7 @@ const GaugeCalibrationRecordForm = ({
   type = "drawer",
   onClose
 }: GaugeCalibrationRecordFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const {
     company: { id: companyId }
@@ -123,7 +125,7 @@ const GaugeCalibrationRecordForm = ({
       .eq("id", gaugeId)
       .single();
     if (!result?.data) {
-      toast.error("Gauge not found");
+      toast.error(t`Gauge not found`);
       setSelectedGauge(null);
       setLoading(false);
       return;
@@ -158,7 +160,7 @@ const GaugeCalibrationRecordForm = ({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -193,8 +195,8 @@ const GaugeCalibrationRecordForm = ({
             <ModalDrawerHeader>
               <ModalDrawerTitle>
                 {isEditing
-                  ? "Edit Gauge Calibration Record"
-                  : "New Gauge Calibration Record"}
+                  ? t`Edit Gauge Calibration Record`
+                  : t`New Gauge Calibration Record`}
               </ModalDrawerTitle>
             </ModalDrawerHeader>
             <ModalDrawerBody>
@@ -208,7 +210,7 @@ const GaugeCalibrationRecordForm = ({
                     <HStack className="w-full justify-between">
                       <CardHeader>
                         <CardTitle>
-                          {selectedGauge?.gaugeId ?? "No Gauge Selected"}
+                          {selectedGauge?.gaugeId ?? t`No Gauge Selected`}
                         </CardTitle>
                         {selectedGauge?.description && (
                           <CardDescription>
@@ -228,7 +230,7 @@ const GaugeCalibrationRecordForm = ({
                           variant="secondary"
                           onClick={gaugeSelectionModal.onOpen}
                         >
-                          Select Gauge
+                          <Trans>Select Gauge</Trans>
                         </Button>
                       </CardAction>
                     </HStack>
@@ -241,7 +243,7 @@ const GaugeCalibrationRecordForm = ({
                                 <div className="flex items-center gap-2">
                                   <LuHash className="text-muted-foreground" />
                                   <span className="font-medium">
-                                    Model Number:
+                                    <Trans>Model Number:</Trans>
                                   </span>
                                   <span>
                                     {selectedGauge.modelNumber || "N/A"}
@@ -252,7 +254,7 @@ const GaugeCalibrationRecordForm = ({
                                 <div className="flex items-center gap-2">
                                   <LuHash className="text-muted-foreground" />
                                   <span className="font-medium">
-                                    Serial Number:
+                                    <Trans>Serial Number:</Trans>
                                   </span>
                                   <span>
                                     {selectedGauge.serialNumber || "N/A"}
@@ -263,12 +265,16 @@ const GaugeCalibrationRecordForm = ({
                             <div className="flex flex-col gap-4">
                               <div className="flex items-center gap-2">
                                 <LuShield className="text-muted-foreground" />
-                                <span className="font-medium">Role:</span>
+                                <span className="font-medium">
+                                  <Trans>Role:</Trans>
+                                </span>
                                 <GaugeRole role={selectedGauge.gaugeRole} />
                               </div>
                               <div className="flex items-center gap-2">
                                 <LuShapes className="text-muted-foreground" />
-                                <span className="font-medium">Type:</span>
+                                <span className="font-medium">
+                                  <Trans>Type:</Trans>
+                                </span>
                                 <Enumerable
                                   value={
                                     gaugeTypes.find(
@@ -285,21 +291,21 @@ const GaugeCalibrationRecordForm = ({
                     </CardContent>
                   </Loading>
                 </Card>
-                <DatePicker name="dateCalibrated" label="Date Calibrated" />
+                <DatePicker name="dateCalibrated" label={t`Date Calibrated`} />
                 <Supplier
                   name="supplierId"
-                  label="Calibration Supplier"
+                  label={t`Calibration Supplier`}
                   isOptional
                 />
-                <Boolean name="requiresAction" label="Requires Action" />
+                <Boolean name="requiresAction" label={t`Requires Action`} />
                 <Boolean
                   name="requiresAdjustment"
-                  label="Requires Adjustment"
+                  label={t`Requires Adjustment`}
                 />
-                <Boolean name="requiresRepair" label="Requires Repair" />
+                <Boolean name="requiresRepair" label={t`Requires Repair`} />
                 <Number
                   name="temperature"
-                  label="Temperature"
+                  label={t`Temperature`}
                   formatOptions={{
                     maximumFractionDigits: 2,
                     style: "unit",
@@ -308,7 +314,7 @@ const GaugeCalibrationRecordForm = ({
                 />
                 <Number
                   name="humidity"
-                  label="Humidity"
+                  label={t`Humidity`}
                   formatOptions={{
                     maximumFractionDigits: 2,
                     style: "percent",
@@ -317,7 +323,7 @@ const GaugeCalibrationRecordForm = ({
                 />
                 <Input
                   name="measurementStandard"
-                  label="Measurement Standard"
+                  label={t`Measurement Standard`}
                 />
                 <span className="text-xs font-medium text-muted-foreground">
                   Calibration Attempts
@@ -330,13 +336,13 @@ const GaugeCalibrationRecordForm = ({
                           <Td>
                             <Number
                               name={`calibrationAttempts[${index}].reference`}
-                              label="Reference"
+                              label={t`Reference`}
                             />
                           </Td>
                           <Td>
                             <Number
                               name={`calibrationAttempts[${index}].actual`}
-                              label="Actual"
+                              label={t`Actual`}
                             />
                           </Td>
                         </Tr>
@@ -344,14 +350,14 @@ const GaugeCalibrationRecordForm = ({
                       <Tr>
                         <Td colSpan={2} className="text-right">
                           <Button onClick={addAttempt} className="mr-2">
-                            Add
+                            <Trans>Add</Trans>
                           </Button>
                           {numAttempts > 0 ? (
                             <Button
                               onClick={removeAttempt}
                               variant="destructive"
                             >
-                              Remove
+                              <Trans>Remove</Trans>
                             </Button>
                           ) : null}
                         </Td>
@@ -359,9 +365,11 @@ const GaugeCalibrationRecordForm = ({
                     </Tbody>
                   </Table>
                 </Card>
-                <Employee name="approvedBy" label="Approved By" />
+                <Employee name="approvedBy" label={t`Approved By`} />
                 <div className="flex flex-col gap-2 w-full">
-                  <Label>Notes</Label>
+                  <Label>
+                    <Trans>Notes</Trans>
+                  </Label>
                   <Editor
                     initialValue={notes}
                     onUpload={onUploadImage}
@@ -385,10 +393,12 @@ const GaugeCalibrationRecordForm = ({
               <HStack>
                 {onClose && (
                   <Button size="md" variant="solid" onClick={onClose}>
-                    Cancel
+                    <Trans>Cancel</Trans>
                   </Button>
                 )}
-                <Submit isDisabled={isDisabled}>Save</Submit>
+                <Submit isDisabled={isDisabled}>
+                  <Trans>Save</Trans>
+                </Submit>
               </HStack>
             </ModalDrawerFooter>
           </ValidatedForm>
@@ -403,7 +413,9 @@ const GaugeCalibrationRecordForm = ({
         >
           <ModalContent>
             <ModalHeader>
-              <ModalTitle>Select Gauge</ModalTitle>
+              <ModalTitle>
+                <Trans>Select Gauge</Trans>
+              </ModalTitle>
             </ModalHeader>
             <ModalBody>
               <VStack className="w-full">
@@ -436,9 +448,11 @@ const GaugeCalibrationRecordForm = ({
                     gaugeSelectionModal.onClose();
                   }}
                 >
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
-                <Button onClick={gaugeSelectionModal.onClose}>Confirm</Button>
+                <Button onClick={gaugeSelectionModal.onClose}>
+                  <Trans>Confirm</Trans>
+                </Button>
               </ModalFooter>
             </ModalBody>
           </ModalContent>

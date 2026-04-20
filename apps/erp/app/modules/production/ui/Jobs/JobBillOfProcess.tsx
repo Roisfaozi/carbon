@@ -55,6 +55,7 @@ import {
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
 import type { DragControls } from "framer-motion";
 import {
@@ -196,10 +197,11 @@ function makeItems(
   operations: Operation[],
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
-  urlParams: { [key: string]: string }
+  urlParams: { [key: string]: string },
+  t: ReturnType<typeof useLingui>["t"]
 ): ItemWithData[] {
   return operations.map((operation) =>
-    makeItem(operation, tags, temporaryItems, urlParams)
+    makeItem(operation, tags, temporaryItems, urlParams, t)
   );
 }
 
@@ -207,7 +209,8 @@ function makeItem(
   operation: Operation,
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
-  urlParams: { [key: string]: string }
+  urlParams: { [key: string]: string },
+  t: ReturnType<typeof useLingui>["t"]
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -281,18 +284,20 @@ function makeItem(
                     operation.operationSupplierProcessId ?? "",
                   ...urlParams
                 }).toString()}`}
-                title="Create Issue"
+                title={t`Create Issue`}
               >
                 <IconButton
                   icon={<LuShieldX />}
                   variant="secondary"
-                  aria-label="Create Issue"
+                  aria-label={t`Create Issue`}
                   size="sm"
                 ></IconButton>
               </Link>
             </TooltipTrigger>
             <TooltipContent>
-              <span>Create Issue</span>
+              <span>
+                <Trans>Create Issue</Trans>
+              </span>
             </TooltipContent>
           </Tooltip>
         </HStack>
@@ -383,6 +388,7 @@ const JobBillOfProcess = ({
   salesOrderLineId,
   customerId
 }: JobBillOfProcessProps) => {
+  const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { carbon, accessToken } = useCarbon();
   const sortOrderFetcher = useFetcher<{}>();
@@ -465,11 +471,17 @@ const JobBillOfProcess = ({
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
 
-  const items = makeItems(operations, tags, temporaryItems, {
-    itemId,
-    salesOrderLineId,
-    customerId
-  }).map((item) => ({
+  const items = makeItems(
+    operations,
+    tags,
+    temporaryItems,
+    {
+      itemId,
+      salesOrderLineId,
+      customerId
+    },
+    t
+  ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
   }));
@@ -721,7 +733,7 @@ const JobBillOfProcess = ({
     const tabs = [
       {
         id: 0,
-        label: "Details",
+        label: t`Details`,
         content: (
           <div className="flex w-full flex-col pr-2 py-2">
             <motion.div
@@ -759,7 +771,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 1,
-        label: "Instructions",
+        label: t`Instructions`,
         disabled:
           item.id in temporaryItems || item.data.operationType === "Outside",
         content: (
@@ -801,7 +813,9 @@ const JobBillOfProcess = ({
           item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
-            <span>Params</span>
+            <span>
+              <Trans>Params</Trans>
+            </span>
             {parameters.length > 0 && <Count count={parameters.length} />}
           </span>
         ),
@@ -824,7 +838,9 @@ const JobBillOfProcess = ({
           item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
-            <span>Steps</span>
+            <span>
+              <Trans>Steps</Trans>
+            </span>
             {steps.length > 0 && <Count count={steps.length} />}
           </span>
         ),
@@ -848,7 +864,9 @@ const JobBillOfProcess = ({
           item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
-            <span>Tools</span>
+            <span>
+              <Trans>Tools</Trans>
+            </span>
             {tools.length > 0 && <Count count={tools.length} />}
           </span>
         ),
@@ -869,7 +887,7 @@ const JobBillOfProcess = ({
         id: 5,
         disabled:
           item.id in temporaryItems || item.data.operationType === "Outside",
-        label: "Events",
+        label: t`Events`,
         content: (
           <div className="flex w-full flex-col pr-2 py-6 min-h-[300px]">
             <motion.div
@@ -896,7 +914,7 @@ const JobBillOfProcess = ({
         id: 6,
         disabled:
           item.id in temporaryItems || item.data.operationType === "Outside",
-        label: "Chat",
+        label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
       }
     ];
@@ -1002,7 +1020,9 @@ const JobBillOfProcess = ({
     <Card>
       <HStack className="justify-between">
         <CardHeader>
-          <CardTitle>Bill of Process</CardTitle>
+          <CardTitle>
+            <Trans>Bill of Process</Trans>
+          </CardTitle>
         </CardHeader>
 
         <CardAction>
@@ -1016,7 +1036,7 @@ const JobBillOfProcess = ({
             }
             onClick={onAddItem}
           >
-            Add Operation
+            <Trans>Add Operation</Trans>
           </Button>
         </CardAction>
       </HStack>
@@ -1049,6 +1069,7 @@ function StepsForm({
   materials: JobMaterial[];
 }) {
   const fetcher = useFetcher<typeof newJobOperationParameterAction>();
+  const { t } = useLingui();
   const sortOrderFetcher = useFetcher<{ success: boolean }>();
   const [type, setType] = useState<OperationStep["type"]>("Task");
   const [description, setDescription] = useState<JSONContent>({});
@@ -1143,7 +1164,7 @@ function StepsForm({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -1158,7 +1179,9 @@ function StepsForm({
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add steps to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add steps to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
           Please save the operation before adding steps.
         </AlertDescription>
@@ -1206,7 +1229,7 @@ function StepsForm({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <SelectControlled
                   name="type"
-                  label="Type"
+                  label={t`Type`}
                   options={typeOptions}
                   value={type}
                   onChange={(option) => {
@@ -1215,11 +1238,13 @@ function StepsForm({
                     }
                   }}
                 />
-                <Input name="name" label="Name" />
+                <Input name="name" label={t`Name`} />
               </div>
 
               <VStack spacing={2} className="w-full col-span-2">
-                <Label>Description</Label>
+                <Label>
+                  <Trans>Description</Trans>
+                </Label>
                 <Editor
                   initialValue={description}
                   onUpload={onUploadImage}
@@ -1235,7 +1260,7 @@ function StepsForm({
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                   <UnitOfMeasure
                     name="unitOfMeasureCode"
-                    label="Unit of Measure"
+                    label={t`Unit of Measure`}
                   />
 
                   <ToggleGroup
@@ -1257,7 +1282,7 @@ function StepsForm({
                   {numericControls.includes("min") && (
                     <Number
                       name="minValue"
-                      label="Minimum"
+                      label={t`Minimum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -1267,7 +1292,7 @@ function StepsForm({
                   {numericControls.includes("max") && (
                     <Number
                       name="maxValue"
-                      label="Maximum"
+                      label={t`Maximum`}
                       formatOptions={{
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 10
@@ -1277,7 +1302,7 @@ function StepsForm({
                 </div>
               )}
               {type === "List" && (
-                <ArrayInput name="listValues" label="List Options" />
+                <ArrayInput name="listValues" label={t`List Options`} />
               )}
 
               <Submit
@@ -1394,6 +1419,7 @@ function StepsListItem({
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
   const fetcher = useFetcher<typeof editJobOperationStepAction>();
+  const { t } = useLingui();
   const [description, setDescription] = useState<JSONContent>(() => {
     if (!attribute.description) return {};
     // Handle both object and string formats
@@ -1449,7 +1475,7 @@ function StepsListItem({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -1486,7 +1512,7 @@ function StepsListItem({
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
               <SelectControlled
                 name="type"
-                label="Type"
+                label={t`Type`}
                 options={typeOptions}
                 onChange={(option) => {
                   if (option) {
@@ -1494,11 +1520,13 @@ function StepsListItem({
                   }
                 }}
               />
-              <Input name="name" label="Name" />
+              <Input name="name" label={t`Name`} />
             </div>
 
             <VStack spacing={2} className="w-full col-span-2">
-              <Label>Description</Label>
+              <Label>
+                <Trans>Description</Trans>
+              </Label>
               <Editor
                 initialValue={description}
                 onUpload={onUploadImage}
@@ -1514,7 +1542,7 @@ function StepsListItem({
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
                 <UnitOfMeasure
                   name="unitOfMeasureCode"
-                  label="Unit of Measure"
+                  label={t`Unit of Measure`}
                 />
 
                 <ToggleGroup
@@ -1536,7 +1564,7 @@ function StepsListItem({
                 {numericControls.includes("min") && (
                   <Number
                     name="minValue"
-                    label="Minimum"
+                    label={t`Minimum`}
                     formatOptions={{
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 10
@@ -1546,7 +1574,7 @@ function StepsListItem({
                 {numericControls.includes("max") && (
                   <Number
                     name="maxValue"
-                    label="Maximum"
+                    label={t`Maximum`}
                     formatOptions={{
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 10
@@ -1556,7 +1584,7 @@ function StepsListItem({
               </div>
             )}
             {type === "List" && (
-              <ArrayInput name="listValues" label="List Options" />
+              <ArrayInput name="listValues" label={t`List Options`} />
             )}
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
@@ -1576,7 +1604,7 @@ function StepsListItem({
           <div className="flex flex-1 justify-between items-center w-full">
             <HStack spacing={4} className="w-1/2">
               <IconButton
-                aria-label="Drag handle"
+                aria-label={t`Drag handle`}
                 icon={<LuGripVertical />}
                 variant="ghost"
                 disabled={isDisabled}
@@ -1651,7 +1679,7 @@ function StepsListItem({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <IconButton
-                    aria-label="Open menu"
+                    aria-label={t`Open menu`}
                     icon={<LuEllipsisVertical />}
                     variant="ghost"
                   />
@@ -1839,12 +1867,15 @@ function ParametersForm({
   temporaryItems: TemporaryItems;
 }) {
   const fetcher = useFetcher<typeof newJobOperationParameterAction>();
+  const { t } = useLingui();
 
   if (isDisabled && temporaryItems[operationId]) {
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add parameters to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add parameters to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
           Please save the operation before adding parameters.
         </AlertDescription>
@@ -1874,10 +1905,10 @@ function ParametersForm({
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
               <Input
                 name="key"
-                label="Key"
+                label={t`Key`}
                 autoFocus={parameters.length === 0}
               />
-              <Input name="value" label="Value" />
+              <Input name="value" label={t`Value`} />
             </div>
             <Submit
               leftIcon={<LuCirclePlus />}
@@ -1923,6 +1954,7 @@ function ParametersListItem({
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
   const fetcher = useFetcher<typeof editJobOperationParameterAction>();
+  const { t } = useLingui();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
@@ -1961,8 +1993,8 @@ function ParametersListItem({
           <Hidden name="operationId" />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-              <Input name="key" label="Key" />
-              <Input name="value" label="Value" />
+              <Input name="key" label={t`Key`} />
+              <Input name="value" label={t`Value`} />
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
@@ -2000,7 +2032,7 @@ function ParametersListItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="Open menu"
+                  aria-label={t`Open menu`}
                   icon={<LuEllipsisVertical />}
                   variant="ghost"
                 />
@@ -2062,6 +2094,7 @@ function OperationForm({
   temporaryItems: TemporaryItems;
 }) {
   const { jobId } = useParams();
+  const { t } = useLingui();
   const { company } = useUser();
   if (!jobId) throw new Error("jobId not found");
 
@@ -2272,15 +2305,15 @@ function OperationForm({
       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
         <Process
           name="processId"
-          label="Process"
+          label={t`Process`}
           onChange={(value) => {
             onProcessChange(value?.value as string);
           }}
         />
         <Select
           name="operationOrder"
-          label="Operation Order"
-          placeholder="Operation Order"
+          label={t`Operation Order`}
+          placeholder={t`Operation Order`}
           options={methodOperationOrders.map((o) => ({
             value: o,
             label: o
@@ -2288,8 +2321,8 @@ function OperationForm({
         />
         <SelectControlled
           name="operationType"
-          label="Operation Type"
-          placeholder="Operation Type"
+          label={t`Operation Type`}
+          placeholder={t`Operation Type`}
           options={operationTypes.map((o) => ({
             value: o,
             label: o
@@ -2309,7 +2342,7 @@ function OperationForm({
 
         <InputControlled
           name="description"
-          label="Description"
+          label={t`Description`}
           value={processData.description}
           onChange={(newValue) => {
             setProcessData((d) => ({ ...d, description: newValue }));
@@ -2321,7 +2354,7 @@ function OperationForm({
           <>
             <SupplierProcess
               name="operationSupplierProcessId"
-              label="Supplier"
+              label={t`Supplier`}
               processId={processData.processId}
               isOptional
               onChange={(value) => {
@@ -2332,7 +2365,7 @@ function OperationForm({
             />
             <NumberControlled
               name="operationMinimumCost"
-              label="Minimum Cost"
+              label={t`Minimum Cost`}
               minValue={0}
               value={processData.operationMinimumCost}
               formatOptions={{
@@ -2348,7 +2381,7 @@ function OperationForm({
             />
             <NumberControlled
               name="operationUnitCost"
-              label="Unit Cost"
+              label={t`Unit Cost`}
               minValue={0}
               value={processData.operationUnitCost}
               formatOptions={{
@@ -2364,7 +2397,7 @@ function OperationForm({
             />
             <NumberControlled
               name="operationLeadTime"
-              label="Lead Time"
+              label={t`Lead Time`}
               minValue={0}
               value={processData.operationLeadTime}
               onChange={(newValue) =>
@@ -2378,7 +2411,7 @@ function OperationForm({
         ) : (
           <WorkCenter
             name="workCenterId"
-            label="Work Center"
+            label={t`Work Center`}
             autoSelectSingleOption={Boolean(processData.processId)}
             locationId={locationId}
             isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
@@ -2401,7 +2434,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Setup" />
-                <Label>Setup</Label>
+                <Label>
+                  <Trans>Setup</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData.setupTime ?? 0) > 0 && (
@@ -2413,7 +2448,7 @@ function OperationForm({
                 <IconButton
                   icon={<LuChevronRight />}
                   aria-label={
-                    setupDisclosure.isOpen ? "Collapse Setup" : "Expand Setup"
+                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
                   }
                   variant="ghost"
                   size="md"
@@ -2434,7 +2469,7 @@ function OperationForm({
             >
               <UnitHint
                 name="setupHint"
-                label="Setup"
+                label={t`Setup`}
                 value={processData.setupUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -2447,7 +2482,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="setupTime"
-                label="Setup Time"
+                label={t`Setup Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.setupTime}
                 onChange={(newValue) =>
@@ -2459,7 +2495,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="setupUnit"
-                label="Setup Unit"
+                label={t`Setup Unit`}
+                isOptional={false}
                 hint={processData.setupUnitHint}
                 value={processData.setupUnit}
                 onChange={(newValue) => {
@@ -2479,7 +2516,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Labor" />
-                <Label>Labor</Label>
+                <Label>
+                  <Trans>Labor</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData.laborTime ?? 0) > 0 && (
@@ -2491,7 +2530,7 @@ function OperationForm({
                 <IconButton
                   icon={<LuChevronRight />}
                   aria-label={
-                    laborDisclosure.isOpen ? "Collapse Labor" : "Expand Labor"
+                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
                   }
                   variant="ghost"
                   size="md"
@@ -2512,7 +2551,7 @@ function OperationForm({
             >
               <UnitHint
                 name="laborHint"
-                label="Labor"
+                label={t`Labor`}
                 value={processData.laborUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -2525,7 +2564,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="laborTime"
-                label="Labor Time"
+                label={t`Labor Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.laborTime}
                 onChange={(newValue) =>
@@ -2537,7 +2577,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="laborUnit"
-                label="Labor Unit"
+                label={t`Labor Unit`}
+                isOptional={false}
                 hint={processData.laborUnitHint}
                 value={processData.laborUnit}
                 onChange={(newValue) => {
@@ -2557,7 +2598,9 @@ function OperationForm({
             >
               <HStack>
                 <TimeTypeIcon type="Machine" />
-                <Label>Machine</Label>
+                <Label>
+                  <Trans>Machine</Trans>
+                </Label>
               </HStack>
               <HStack>
                 {(processData.machineTime ?? 0) > 0 && (
@@ -2570,8 +2613,8 @@ function OperationForm({
                   icon={<LuChevronRight />}
                   aria-label={
                     machineDisclosure.isOpen
-                      ? "Collapse Machine"
-                      : "Expand Machine"
+                      ? t`Collapse Machine`
+                      : t`Expand Machine`
                   }
                   variant="ghost"
                   size="md"
@@ -2592,7 +2635,7 @@ function OperationForm({
             >
               <UnitHint
                 name="machineHint"
-                label="Machine"
+                label={t`Machine`}
                 value={processData.machineUnitHint}
                 onChange={(hint) => {
                   setProcessData((d) => ({
@@ -2605,7 +2648,8 @@ function OperationForm({
               />
               <NumberControlled
                 name="machineTime"
-                label="Machine Time"
+                label={t`Machine Time`}
+                isOptional={false}
                 minValue={0}
                 value={processData.machineTime}
                 onChange={(newValue) =>
@@ -2617,7 +2661,8 @@ function OperationForm({
               />
               <StandardFactor
                 name="machineUnit"
-                label="Machine Unit"
+                label={t`Machine Unit`}
+                isOptional={false}
                 hint={processData.machineUnitHint}
                 value={processData.machineUnit}
                 onChange={(newValue) => {
@@ -2666,7 +2711,7 @@ function OperationForm({
             >
               <NumberControlled
                 name="laborRate"
-                label="Labor Rate"
+                label={t`Labor Rate`}
                 minValue={0}
                 value={processData.laborRate}
                 formatOptions={{
@@ -2682,7 +2727,7 @@ function OperationForm({
               />
               <NumberControlled
                 name="machineRate"
-                label="Machine Rate"
+                label={t`Machine Rate`}
                 minValue={0}
                 value={processData.machineRate}
                 formatOptions={{
@@ -2698,7 +2743,7 @@ function OperationForm({
               />
               <NumberControlled
                 name="overheadRate"
-                label="Overhead Rate"
+                label={t`Overhead Rate`}
                 minValue={0}
                 value={processData.overheadRate}
                 formatOptions={{
@@ -2757,7 +2802,7 @@ function OperationForm({
             >
               <Procedure
                 name="procedureId"
-                label="Procedure"
+                label={t`Procedure`}
                 processId={processData.processId}
                 value={processData.procedureId}
                 onChange={(value) => {
@@ -2811,7 +2856,9 @@ function OperationForm({
         }}
       >
         <motion.div layout className="ml-auto mr-1 pt-2">
-          <Submit isDisabled={isDisabled}>Save</Submit>
+          <Submit isDisabled={isDisabled}>
+            <Trans>Save</Trans>
+          </Submit>
         </motion.div>
       </motion.div>
     </ValidatedForm>
@@ -2855,14 +2902,18 @@ function ProcedureSyncModal({
           }}
         >
           <ModalHeader>
-            <ModalTitle>Are you sure?</ModalTitle>
+            <ModalTitle>
+              <Trans>Are you sure?</Trans>
+            </ModalTitle>
           </ModalHeader>
           <ModalBody className="py-4">
             <Hidden name="operationId" />
             <Hidden name="procedureId" />
             <Alert variant="warning">
               <LuTriangleAlert className="h-4 w-4" />
-              <AlertTitle>Potential Data Loss</AlertTitle>
+              <AlertTitle>
+                <Trans>Potential Data Loss</Trans>
+              </AlertTitle>
               <AlertDescription>
                 Syncing the procedure will update the operation with the new
                 work instructions, steps, and parameters. Any steps that are not
@@ -2949,6 +3000,7 @@ function ToolsListItem({
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
   const fetcher = useFetcher<typeof editJobOperationToolAction>();
+  const { t } = useLingui();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
@@ -2989,8 +3041,8 @@ function ToolsListItem({
           <Hidden name="operationId" />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-              <Tool name="toolId" label="Tool" autoFocus />
-              <Number name="quantity" label="Quantity" />
+              <Tool name="toolId" label={t`Tool`} autoFocus />
+              <Number name="quantity" label={t`Quantity`} />
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
@@ -3035,7 +3087,7 @@ function ToolsListItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="Open menu"
+                  aria-label={t`Open menu`}
                   icon={<LuEllipsisVertical />}
                   variant="ghost"
                 />
@@ -3085,12 +3137,15 @@ function ToolsForm({
   temporaryItems: TemporaryItems;
 }) {
   const fetcher = useFetcher<typeof newJobOperationToolAction>();
+  const { t } = useLingui();
 
   if (isDisabled && temporaryItems[operationId]) {
     return (
       <Alert className="max-w-[420px] mx-auto my-8">
         <LuTriangleAlert />
-        <AlertTitle>Cannot add tools to unsaved operation</AlertTitle>
+        <AlertTitle>
+          <Trans>Cannot add tools to unsaved operation</Trans>
+        </AlertTitle>
         <AlertDescription>
           Please save the operation before adding tools.
         </AlertDescription>
@@ -3118,8 +3173,8 @@ function ToolsForm({
           <Hidden name="operationId" />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-              <Tool name="toolId" label="Tool" autoFocus />
-              <Number name="quantity" label="Quantity" />
+              <Tool name="toolId" label={t`Tool`} autoFocus />
+              <Number name="quantity" label={t`Quantity`} />
             </div>
 
             <Submit
@@ -3164,6 +3219,7 @@ function OperationChat({ jobOperationId }: { jobOperationId: string }) {
   const user = useUser();
   const [employees] = usePeople();
   const [messages, setMessages] = useState<Message[]>([]);
+  const { t } = useLingui();
   const [isLoading, setIsLoading] = useState(false);
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { carbon, accessToken } = useCarbon();
@@ -3341,14 +3397,14 @@ function OperationChat({ jobOperationId }: { jobOperationId: string }) {
         <form className="flex gap-2" onSubmit={handleSubmit}>
           <InputField
             className="flex-1"
-            placeholder="Type a message..."
+            placeholder={t`Type a message...`}
             name="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
           <Button
             className="h-10"
-            aria-label="Send"
+            aria-label={t`Send`}
             type="submit"
             leftIcon={<LuSend />}
           >

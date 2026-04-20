@@ -3,11 +3,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { SalesInvoiceEmail } from "@carbon/documents/email";
 import { validator } from "@carbon/form";
-import type { sendEmailResendTask } from "@carbon/jobs/trigger/send-email-resend";
-import { getCompanyPrivateBucket } from "@carbon/utils";
+import { trigger } from "@carbon/jobs";
+import {
+  createPrivateSignedUrlWithFallbackDetailed,
+  getCompanyPrivateBucket
+} from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
 import { FunctionRegion } from "@supabase/supabase-js";
-import { tasks } from "@trigger.dev/sdk";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs } from "react-router";
 import { getPaymentTermsList } from "~/modules/accounting";
@@ -43,6 +45,7 @@ export async function action(args: ActionFunctionArgs) {
 
   let file: ArrayBuffer;
   let fileName: string;
+  let documentFilePath: string;
 
   const setPendingState = await client
     .from("salesInvoice")
@@ -143,7 +146,7 @@ export async function action(args: ActionFunctionArgs) {
         .slice(0, -5)}.pdf`
     );
 
-    const documentFilePath = `${companyId}/opportunity/${salesInvoice.data.opportunityId}/${fileName}`;
+    documentFilePath = `${companyId}/opportunity/${salesInvoice.data.opportunityId}/${fileName}`;
     const companyPrivateBucket = getCompanyPrivateBucket(companyId);
 
     const documentFileUpload = await serviceRole.storage
@@ -297,21 +300,52 @@ export async function action(args: ActionFunctionArgs) {
 
         const html = await renderAsync(emailTemplate);
         const text = await renderAsync(emailTemplate, { plainText: true });
+        const signedUrlResult =
+          await createPrivateSignedUrlWithFallbackDetailed({
+            companyId,
+            requestedBucket: getCompanyPrivateBucket(companyId),
+            objectPath: documentFilePath,
+            expiresIn: 3600,
+            createSignedUrl: async (physicalBucket, objectPath, expiresIn) => {
+              const { data, error } = await serviceRole.storage
+                .from(physicalBucket)
+                .createSignedUrl(objectPath, expiresIn);
 
-        await tasks.trigger<typeof sendEmailResendTask>("send-email-resend", {
-          // @ts-expect-error TS2322 - TODO: fix type
-          to: [seller.data.email, customer.data.contact.email],
+              return {
+                signedUrl: data?.signedUrl ?? null,
+                error: error ?? null
+              };
+            }
+          });
+
+        for (const bucketError of signedUrlResult.errors) {
+          console.error(
+            "Failed to create sales invoice attachment signed URL",
+            {
+              companyId,
+              invoiceId,
+              documentFilePath,
+              physicalBucket: bucketError.physicalBucket,
+              error: bucketError.error
+            }
+          );
+        }
+
+        await trigger("send-email", {
+          to: [seller.data.email, customer.data.contact.email!],
           cc: ccSelections?.length ? ccSelections : undefined,
           from: seller.data.email,
           subject: `Invoice ${salesInvoice.data.invoiceId} from ${company.data.name}`,
           html,
           text,
-          attachments: [
-            {
-              content: Buffer.from(file).toString("base64"),
-              filename: fileName
-            }
-          ],
+          attachments: signedUrlResult.signedUrl
+            ? [
+                {
+                  path: signedUrlResult.signedUrl,
+                  filename: fileName
+                }
+              ]
+            : undefined,
           companyId
         });
         // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration

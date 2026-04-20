@@ -20,6 +20,7 @@ import {
   ModalTitle,
   toast
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import {
   LuCheck,
@@ -40,10 +41,9 @@ import { useRouteData } from "~/hooks";
 import type { StockTransfer, StockTransferLine } from "~/modules/inventory";
 import {
   getStockTransfer,
-  isStockTransferLocked,
   stockTransferLineScanValidator
 } from "~/modules/inventory";
-import { getItemShelfQuantities } from "~/modules/items";
+import { getItemStorageUnitQuantities } from "~/modules/items";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -61,9 +61,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const transfer = await getStockTransfer(viewClient, id);
   await requireUnlocked({
     request,
-    isLocked: isStockTransferLocked(transfer.data?.status),
+    isLocked: transfer.data?.status === "Completed",
     redirectTo: path.to.stockTransfer(id),
-    message: "Cannot modify a locked stock transfer. Reopen it first."
+    message: "Cannot pick from a completed stock transfer."
   });
 
   const payload = await request.json();
@@ -83,31 +83,33 @@ export async function action({ request, params }: ActionFunctionArgs) {
     trackedEntityId
   } = validated.data;
 
-  const [stockTransferLine, itemShelfQuantities] = await Promise.all([
+  const [stockTransferLine, itemStorageUnitQuantities] = await Promise.all([
     client.from("stockTransferLines").select("*").eq("id", lineId!).single(),
-    getItemShelfQuantities(client, itemId, companyId, locationId)
+    getItemStorageUnitQuantities(client, itemId, companyId, locationId)
   ]);
 
-  if (stockTransferLine.error || itemShelfQuantities.error) {
+  if (stockTransferLine.error || itemStorageUnitQuantities.error) {
     return data(
       {
         success: false,
-        message: "Failed to load stock transfer line or item shelf quantities"
+        message:
+          "Failed to load stock transfer line or item storage unit quantities"
       },
       await flash(
         request,
         error(
-          stockTransferLine.error || itemShelfQuantities.error,
-          "Failed to load stock transfer line or item shelf quantities"
+          stockTransferLine.error || itemStorageUnitQuantities.error,
+          "Failed to load stock transfer line or item storage unit quantities"
         )
       )
     );
   }
 
-  const currentShelfId =
-    itemShelfQuantities.data
+  const currentStorageUnitId =
+    itemStorageUnitQuantities.data
       ?.sort((a, b) => b.quantity - a.quantity)
-      .find((q) => q.trackedEntityId === trackedEntityId)?.shelfId ?? null;
+      .find((q) => q.trackedEntityId === trackedEntityId)?.storageUnitId ??
+    null;
 
   // Determine the type of transfer based on tracking requirements
   const transferType = stockTransferLine.data?.requiresBatchTracking
@@ -122,7 +124,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     trackedEntityId,
     quantity:
       transferType === "batch" ? (stockTransferLine.data?.quantity ?? 1) : 1,
-    fromShelfId: currentShelfId,
+    fromStorageUnitId: currentStorageUnitId,
     locationId: locationId,
     userId,
     companyId
@@ -174,6 +176,7 @@ export default function StockTransferScan() {
     navigate(path.to.stockTransfer(stockTransferLine.stockTransferId!));
 
   const { carbon } = useCarbon();
+  const { t } = useLingui();
   const [isLoading, setIsLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState<boolean | null>(null);
@@ -221,7 +224,7 @@ export default function StockTransferScan() {
         (line) => line.trackedEntityId === trackedEntityId
       )
     ) {
-      setValidationError("Tracked entity already picked");
+      setValidationError(t`Tracked entity already picked`);
       setIsValid(false);
       return;
     }
@@ -239,14 +242,17 @@ export default function StockTransferScan() {
         .single();
 
       if (result?.error || !result?.data) {
-        setValidationError("Serial number not found");
+        setValidationError(t`Serial number not found`);
         setIsValid(false);
       } else if (result.data.status !== "Available") {
-        setValidationError(`Entity is ${result.data.status}`);
+        const status = result.data.status;
+        setValidationError(t`Entity is ${status}`);
         setIsValid(false);
       } else if (result.data.sourceDocumentId !== stockTransferLine.itemId!) {
+        const scannedItem = result.data.sourceDocumentReadableId;
+        const expectedItem = stockTransferLine.itemReadableId;
         setValidationError(
-          `Item ${result.data.sourceDocumentReadableId} is not the same as the item ${stockTransferLine.itemReadableId}`
+          t`Item ${scannedItem} is not the same as the item ${expectedItem}`
         );
         setIsValid(false);
       } else {
@@ -256,7 +262,7 @@ export default function StockTransferScan() {
       }
       // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
     } catch (error) {
-      setValidationError("Error validating serial number");
+      setValidationError(t`Error validating serial number`);
       setIsValid(false);
     } finally {
       setIsLoading(false);
@@ -307,7 +313,7 @@ export default function StockTransferScan() {
           <ModalHeader>
             <ModalTitle>{stockTransferLine?.itemReadableId}</ModalTitle>
             <ModalDescription>
-              Scan the tracking ID for this line
+              <Trans>Scan the tracking ID for this line</Trans>
             </ModalDescription>
           </ModalHeader>
           <ModalBody>
@@ -332,7 +338,7 @@ export default function StockTransferScan() {
                   onBlur={handleBlur}
                   onKeyDown={handleKeyDown}
                   autoFocus
-                  placeholder="Enter or scan serial number"
+                  placeholder={t`Enter or scan serial number`}
                   className={cn(
                     validationError && "border-destructive",
                     isValid && "border-emerald-500"
@@ -359,7 +365,7 @@ export default function StockTransferScan() {
               isDisabled={fetcher.state !== "idle"}
               onClick={() => onClose()}
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
             <Button
               leftIcon={<LuCircleCheck />}
@@ -367,7 +373,7 @@ export default function StockTransferScan() {
               isDisabled={fetcher.state !== "idle"}
               onClick={() => validateTrackedEntity(serialNumber)}
             >
-              Pick
+              <Trans>Pick</Trans>
             </Button>
           </ModalFooter>
         </ModalContent>

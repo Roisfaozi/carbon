@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
   getPurchaseOrderStatus,
-  listPrivateObjectsWithFallback
+  listPrivateObjectsWithFallbackDetailed
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type {
@@ -551,7 +551,7 @@ export async function getSupplierInteractionDocuments(
   companyId: string,
   interactionId: string
 ) {
-  const result = await listPrivateObjectsWithFallback({
+  const result = await listPrivateObjectsWithFallbackDetailed({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/supplier-interaction/${interactionId}`,
@@ -560,7 +560,17 @@ export async function getSupplierInteractionDocuments(
     getItemKey: (item) => item.name
   });
 
-  return result.map((f) => ({ ...f, bucket: "supplier-interaction" }));
+  for (const bucketError of result.errors) {
+    console.error("Failed to list supplier interaction documents", {
+      companyId,
+      interactionId,
+      physicalBucket: bucketError.physicalBucket,
+      prefix: `${companyId}/supplier-interaction/${interactionId}`,
+      error: bucketError.error
+    });
+  }
+
+  return result.data.map((f) => ({ ...f, bucket: "supplier-interaction" }));
 }
 
 export async function getSupplierInteractionLineDocuments(
@@ -568,7 +578,7 @@ export async function getSupplierInteractionLineDocuments(
   companyId: string,
   lineId: string
 ) {
-  const result = await listPrivateObjectsWithFallback({
+  const result = await listPrivateObjectsWithFallbackDetailed({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/supplier-interaction-line/${lineId}`,
@@ -577,7 +587,20 @@ export async function getSupplierInteractionLineDocuments(
     getItemKey: (item) => item.name
   });
 
-  return result.map((f) => ({ ...f, bucket: "supplier-interaction-line" }));
+  for (const bucketError of result.errors) {
+    console.error("Failed to list supplier interaction line documents", {
+      companyId,
+      lineId,
+      physicalBucket: bucketError.physicalBucket,
+      prefix: `${companyId}/supplier-interaction-line/${lineId}`,
+      error: bucketError.error
+    });
+  }
+
+  return result.data.map((f) => ({
+    ...f,
+    bucket: "supplier-interaction-line"
+  }));
 }
 
 export async function getSupplierLocations(

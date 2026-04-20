@@ -1,9 +1,8 @@
 import { assertIsPost, notFound } from "@carbon/auth";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import type { notifyTask } from "@carbon/jobs/trigger/notify";
+import { trigger } from "@carbon/jobs";
 import { NotificationEvent } from "@carbon/notifications";
 import { getCompanyPrivateBucket } from "@carbon/utils";
-import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs } from "react-router";
 import {
   convertQuoteToOrder,
@@ -128,7 +127,7 @@ export async function action(args: ActionFunctionArgs) {
 
       if (companySettings.data?.digitalQuoteNotificationGroup?.length) {
         try {
-          await tasks.trigger<typeof notifyTask>("notify", {
+          await trigger("notify", {
             companyId: companySettings.data.id,
             documentId: quote.data.id,
             event: NotificationEvent.DigitalQuoteResponse,
@@ -212,7 +211,7 @@ export async function action(args: ActionFunctionArgs) {
 
       if (companySettings.data?.digitalQuoteNotificationGroup?.length) {
         try {
-          await tasks.trigger<typeof notifyTask>("notify", {
+          await trigger("notify", {
             companyId: companySettings.data.id,
             documentId: quote.data.id,
             event: NotificationEvent.DigitalQuoteResponse,

@@ -37,6 +37,7 @@ import {
 } from "@carbon/react";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import { getItemReadableId, labelSizes } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useState } from "react";
 import {
   LuCheck,
@@ -56,7 +57,7 @@ import {
 } from "react-router";
 import { Empty, ItemThumbnail } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
-import { useShelves } from "~/components/Form/Shelf";
+import { useStorageUnits } from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
 import { useRouteData } from "~/hooks";
@@ -194,7 +195,7 @@ const ShipmentLines = () => {
         }
       | {
           lineId: string;
-          field: "shelfId";
+          field: "storageUnitId";
           value: string;
         }) => {
       const formData = new FormData();
@@ -220,7 +221,9 @@ const ShipmentLines = () => {
       <Card>
         <HStack className="justify-between items-start">
           <CardHeader>
-            <CardTitle>Shipment Lines</CardTitle>
+            <CardTitle>
+              <Trans>Shipment Lines</Trans>
+            </CardTitle>
           </CardHeader>
         </HStack>
 
@@ -318,10 +321,11 @@ function ShipmentLineItem({
       }
     | {
         lineId: string;
-        field: "shelfId";
+        field: "storageUnitId";
         value: string;
       }) => Promise<void>;
 }) {
+  const { t } = useLingui();
   const [items] = useItems();
   const item = items.find((p) => p.id === line.itemId);
   const unitsOfMeasure = useUnitOfMeasure();
@@ -347,7 +351,7 @@ function ShipmentLineItem({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
-                aria-label="Line options"
+                aria-label={t`Line options`}
                 variant="secondary"
                 icon={<LuEllipsisVertical />}
                 size="sm"
@@ -359,7 +363,7 @@ function ShipmentLineItem({
                 onClick={splitDisclosure.onOpen}
               >
                 <DropdownMenuIcon icon={<LuSplit />} />
-                Split shipment line
+                {t`Split shipment line`}
               </DropdownMenuItem>
               <DropdownMenuItem
                 destructive
@@ -367,7 +371,7 @@ function ShipmentLineItem({
                 onClick={deleteDisclosure.onOpen}
               >
                 <DropdownMenuIcon icon={<LuTrash />} />
-                Delete shipment line
+                {t`Delete shipment line`}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -491,16 +495,16 @@ function ShipmentLineItem({
           </HStack>
           {line.fulfillment?.type !== "Job" &&
             shipment?.sourceDocument !== "Purchase Order" && (
-              <Shelf
+              <StorageUnit
                 locationId={line.locationId}
-                shelfId={line.shelfId}
+                storageUnitId={line.storageUnitId}
                 itemId={line.itemId}
                 isReadOnly={isReadOnly}
-                onChange={(shelf) => {
+                onChange={(storageUnit) => {
                   onUpdate({
                     lineId: line.id!,
-                    field: "shelfId",
-                    value: shelf
+                    field: "storageUnitId",
+                    value: storageUnit
                   });
                 }}
               />
@@ -561,10 +565,11 @@ function BatchForm({
     value
   }: {
     lineId: string;
-    field: "shelfId";
+    field: "storageUnitId";
     value: string;
   }) => Promise<void>;
 }) {
+  const { t } = useLingui();
   const submit = useSubmit();
   const [values, setValues] = useState<{
     number: string;
@@ -634,26 +639,26 @@ function BatchForm({
     }
   }, [line.shippedQuantity]);
 
-  const getShelfFromBatchNumber = async (trackedEntityId: string) => {
+  const getStorageUnitFromBatchNumber = async (trackedEntityId: string) => {
     if (!carbon) return;
 
     const response = await carbon
       .from("itemLedger")
-      .select("shelfId")
+      .select("storageUnitId")
       .eq("trackedEntityId", trackedEntityId)
       .order("createdAt", { ascending: false })
       .single();
 
-    if (response?.data?.shelfId) {
+    if (response?.data?.storageUnitId) {
       onUpdate({
         lineId: line.id!,
-        field: "shelfId",
-        value: response.data.shelfId
+        field: "storageUnitId",
+        value: response.data.storageUnitId
       });
     }
   };
 
-  // Fetch the latest shelf for the selected batch number
+  // Fetch the latest storage unit for the selected batch number
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
     if (values.number && values.number.trim()) {
@@ -662,7 +667,7 @@ function BatchForm({
         batchNumbers?.data ?? []
       );
       if (resolved) {
-        getShelfFromBatchNumber(resolved.id);
+        getStorageUnitFromBatchNumber(resolved.id);
       }
     }
   }, [values.number]);
@@ -811,7 +816,7 @@ function BatchForm({
           <div className="flex flex-col gap-1">
             <InputGroup isDisabled={isReadOnly}>
               <Input
-                placeholder="Batch number"
+                placeholder={t`Batch number`}
                 value={values.number}
                 onChange={(e) => {
                   setValues({
@@ -1121,6 +1126,7 @@ function SplitShipmentLineModal({
   line: ShipmentLine;
   onClose: () => void;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<{ success: boolean }>();
   useEffect(() => {
     if (fetcher.data?.success) {
@@ -1152,7 +1158,7 @@ function SplitShipmentLineModal({
               name="locationId"
               value={line.locationId ?? ""}
             />
-            <Number name="quantity" label="Quantity" minValue={0.0001} />
+            <Number name="quantity" label={t`Quantity`} minValue={0.0001} />
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
@@ -1166,29 +1172,34 @@ function SplitShipmentLineModal({
   );
 }
 
-function Shelf({
+function StorageUnit({
   locationId,
-  shelfId,
+  storageUnitId,
   itemId,
   isReadOnly,
   onChange
 }: {
   locationId: string | null;
-  shelfId: string | null;
+  storageUnitId: string | null;
   itemId: string | null;
   isReadOnly: boolean;
-  onChange: (shelf: string) => void;
+  onChange: (storageUnit: string) => void;
 }) {
-  const { options } = useShelves(locationId ?? undefined, itemId ?? undefined);
+  const { options } = useStorageUnits(
+    locationId ?? undefined,
+    itemId ?? undefined
+  );
 
   if (!locationId) return null;
 
   return (
     <VStack spacing={1} className="min-w-[140px] text-sm">
-      <label className="text-xs text-muted-foreground">Shelf</label>
+      <label className="text-xs text-muted-foreground">
+        <Trans>Storage Unit</Trans>
+      </label>
       <div className="py-1">
         <Combobox
-          value={shelfId ?? undefined}
+          value={storageUnitId ?? undefined}
           onChange={(newValue) => {
             onChange(newValue);
           }}

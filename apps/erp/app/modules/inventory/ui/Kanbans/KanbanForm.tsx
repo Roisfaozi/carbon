@@ -13,6 +13,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import type { z } from "zod";
 import { Enumerable } from "~/components/Enumerable";
@@ -22,7 +23,7 @@ import {
   Location,
   Number,
   SequenceOrCustomId,
-  Shelf,
+  StorageUnit,
   Submit,
   Supplier,
   UnitOfMeasure
@@ -43,13 +44,14 @@ type KanbanFormProps = {
 };
 
 const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
+  const { t } = useLingui();
   const [selectedReplenishmentSystem, setSelectedReplenishmentSystem] =
     useState<string>(initialValues.replenishmentSystem || "Buy");
 
   const isEditing = !!initialValues.id;
 
-  const [shelfId, setShelfId] = useState<string | null>(
-    initialValues.shelfId || null
+  const [storageUnitId, setStorageUnitId] = useState<string | null>(
+    initialValues.storageUnitId || null
   );
   const [itemType, setItemType] = useState<MethodItemType | "Item">("Item");
   const [itemId, setItemId] = useState<string>(initialValues.itemId || "");
@@ -73,7 +75,7 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
 
     setItemId(value.value);
 
-    const [item, shelf] = await Promise.all([
+    const [item, storageUnit] = await Promise.all([
       carbon
         .from("item")
         .select("replenishmentSystem, unitOfMeasureCode")
@@ -81,19 +83,19 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
         .single(),
       carbon
         .from("pickMethod")
-        .select("defaultShelfId")
+        .select("defaultStorageUnitId")
         .eq("itemId", value.value)
         .eq("companyId", company.id)
         .eq("locationId", locationId)
         .maybeSingle()
     ]);
     if (item.error) {
-      toast.error("Failed to load item details");
+      toast.error(t`Failed to load item details`);
       return;
     }
     setSelectedReplenishmentSystem(item.data?.replenishmentSystem || "Buy");
-    if (shelf.data?.defaultShelfId) {
-      setShelfId(shelf.data.defaultShelfId);
+    if (storageUnit.data?.defaultStorageUnitId) {
+      setStorageUnitId(storageUnit.data.defaultStorageUnitId);
     }
 
     // Set inventory unit of measure from item
@@ -166,7 +168,7 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
 
   const onLocationChange = (value: { value: string } | null) => {
     setLocationId(value?.value || "");
-    setShelfId(null);
+    setStorageUnitId(null);
   };
 
   return (
@@ -180,12 +182,12 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
         >
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? "Edit Kanban" : "New Kanban"}
+              {isEditing ? t`Edit Kanban` : t`New Kanban`}
             </DrawerTitle>
             <DrawerDescription>
               {isEditing
-                ? "Update the kanban information for scan-based replenishment."
-                : "Create a new kanban card for scan-based replenishment."}
+                ? t`Update the kanban information for scan-based replenishment.`
+                : t`Create a new kanban card for scan-based replenishment.`}
             </DrawerDescription>
           </DrawerHeader>
           <DrawerBody>
@@ -200,8 +202,9 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
               <div className="grid grid-cols-1 gap-4 w-full">
                 <Item
                   name="itemId"
-                  label="Item"
+                  label={t`Item`}
                   type={itemType}
+                  locationId={locationId || undefined}
                   onTypeChange={(t) => setItemType(t as MethodItemType)}
                   onChange={onItemChange}
                   isReadOnly={isEditing}
@@ -209,15 +212,15 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
 
                 <Number
                   name="quantity"
-                  label="Quantity"
+                  label={t`Quantity`}
                   minValue={1}
-                  helperText="The quantity of the item to be reordered on scan-based replenishment."
+                  helperText={t`The quantity of the item to be reordered on scan-based replenishment.`}
                 />
 
                 <SelectControlled
                   value={selectedReplenishmentSystem}
                   name="replenishmentSystem"
-                  label="Replenishment System"
+                  label={t`Replenishment System`}
                   onChange={(value) => {
                     if (value) {
                       setSelectedReplenishmentSystem(value.value);
@@ -235,14 +238,14 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
                   <>
                     <Supplier
                       name="supplierId"
-                      label="Supplier"
+                      label={t`Supplier`}
                       value={supplierId}
                       onChange={onSupplierChange}
                     />
 
                     <UnitOfMeasure
                       name="purchaseUnitOfMeasureCode"
-                      label="Purchase Unit of Measure"
+                      label={t`Purchase Unit of Measure`}
                       value={purchaseUnitOfMeasureCode}
                       onChange={(value) => {
                         if (
@@ -259,30 +262,30 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
 
                     <ConversionFactor
                       name="conversionFactor"
-                      label="Conversion Factor"
+                      label={t`Conversion Factor`}
                       inventoryCode={inventoryUnitOfMeasureCode}
                       purchasingCode={purchaseUnitOfMeasureCode}
                       value={conversionFactor}
                       onChange={setConversionFactor}
-                      helperText="Number of inventory units per purchase unit"
+                      helperText={t`Number of inventory units per purchase unit`}
                     />
                   </>
                 )}
 
                 <Location
                   name="locationId"
-                  label="Location"
+                  label={t`Location`}
                   onChange={onLocationChange}
                   isReadOnly={isEditing}
                 />
 
-                <Shelf
-                  name="shelfId"
-                  label="Shelf"
+                <StorageUnit
+                  name="storageUnitId"
+                  label={t`Storage Unit`}
                   locationId={locationId}
-                  value={shelfId ?? undefined}
+                  value={storageUnitId ?? undefined}
                   onChange={(value) => {
-                    if (value) setShelfId(value?.id ?? null);
+                    if (value) setStorageUnitId(value?.id ?? null);
                   }}
                 />
 
@@ -290,7 +293,7 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
                   <>
                     <Boolean
                       name="autoRelease"
-                      label="Auto Release"
+                      label={t`Auto Release`}
                       value={autoRelease}
                       onChange={(value) => {
                         setAutoRelease(value);
@@ -298,25 +301,25 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
                           setAutoStartJob(false);
                         }
                       }}
-                      description="Automatically release the job when the kanban is scanned"
+                      description={t`Automatically release the job when the kanban is scanned`}
                     />
                     <Boolean
                       name="autoStartJob"
-                      label="Auto Start Job"
+                      label={t`Auto Start Job`}
                       value={autoStartJob}
                       onChange={setAutoStartJob}
                       isDisabled={!autoRelease}
                       description={
                         autoRelease
-                          ? "Automatically start the job when the kanban is scanned"
-                          : "Auto release must be enabled to start a job automatically"
+                          ? t`Automatically start the job when the kanban is scanned`
+                          : t`Auto release must be enabled to start a job automatically`
                       }
                     />
                     <SequenceOrCustomId
                       name="completedBarcodeOverride"
-                      label="Completion Barcode"
+                      label={t`Completion Barcode`}
                       table="kanban"
-                      placeholder="Auto-generated QR Code"
+                      placeholder={t`Auto-generated QR Code`}
                     />
                   </>
                 )}
@@ -326,10 +329,14 @@ const KanbanForm = ({ initialValues, onClose }: KanbanFormProps) => {
           <DrawerFooter>
             <HStack>
               <Button type="button" variant="ghost" onClick={onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <Submit withBlocker={false}>
-                {isEditing ? "Update" : "Create"} Kanban
+                {isEditing ? (
+                  <Trans>Update Kanban</Trans>
+                ) : (
+                  <Trans>Create Kanban</Trans>
+                )}
               </Submit>
             </HStack>
           </DrawerFooter>

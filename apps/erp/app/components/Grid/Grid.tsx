@@ -12,6 +12,7 @@ import {
   VStack
 } from "@carbon/react";
 import { clamp } from "@carbon/utils";
+import { Trans } from "@lingui/react/macro";
 import type { ColumnDef, ColumnOrderState } from "@tanstack/react-table";
 import {
   flexRender,
@@ -278,12 +279,30 @@ const Grid = <T extends object>({
 
         if (shiftKey) direction = [-direction[0], -direction[1]];
         const [x1, y1] = navigate(direction, code === "Tab");
+
+        // Commit any in-flight edit before navigating. Editors (NumberField,
+        // DatePicker, etc.) commit their value on blur — without this, Tab's
+        // preventDefault keeps focus on the input until it unmounts and the
+        // onChange never fires, silently dropping the typed value.
+        if (
+          isEditing &&
+          document.activeElement instanceof HTMLElement &&
+          document.activeElement !== document.body
+        ) {
+          document.activeElement.blur();
+        }
+
         setSelectedCell({
           row: y1,
           column: x1
         });
+        // On Tab, carry edit mode into the next editable cell so typing
+        // continues naturally. Otherwise (Enter) drop out of edit mode.
         if (isEditing) {
-          setIsEditing(false);
+          const carryEdit = Boolean(
+            canEdit && code === "Tab" && isColumnEditable(x1)
+          );
+          setIsEditing(carryEdit);
         }
       } else if (code in navigationCodes) {
         // arrow key navigation should't work if we're editing
@@ -390,7 +409,7 @@ const Grid = <T extends object>({
               <Tr className="h-10 hover:bg-muted/50">
                 <Td colSpan={24}>
                   <p className="text-muted-foreground text-center w-full">
-                    No Data
+                    <Trans>No Data</Trans>
                   </p>
                 </Td>
               </Tr>
@@ -403,7 +422,9 @@ const Grid = <T extends object>({
                 <Td colSpan={24}>
                   <HStack className="items-center h-6">
                     <LuCirclePlus className="text-muted-foreground h-4 w-4" />
-                    <span>New</span>
+                    <span>
+                      <Trans>New</Trans>
+                    </span>
                   </HStack>
                 </Td>
               </Tr>

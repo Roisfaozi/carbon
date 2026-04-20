@@ -11,6 +11,7 @@ import {
   useMount,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useEffect, useMemo, useState } from "react";
@@ -57,6 +58,7 @@ type JobMaterialsTableProps = {
 };
 const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
   const { jobId } = useParams();
+  const { t } = useLingui();
   if (!jobId) throw new Error("Job ID is required");
 
   const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
@@ -84,7 +86,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       quantity: number;
       requiresSerialTracking: boolean;
       requiresBatchTracking: boolean;
-      shelfId?: string;
+      storageUnitId?: string;
     }> = [];
 
     data.forEach((material) => {
@@ -96,42 +98,44 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
         return;
       }
 
-      const quantityRequiredByShelf = isRequired
-        ? material.quantityFromProductionOrderInShelf
-        : material.quantityFromProductionOrderInShelf +
+      const quantityRequiredByStorageUnit = isRequired
+        ? material.quantityFromProductionOrderInStorageUnit
+        : material.quantityFromProductionOrderInStorageUnit +
           material.estimatedQuantity;
 
       // Check if transfer is needed
-      const quantityOnHandInShelf = material.quantityOnHandInShelf;
-      const quantityInTransitToShelf = material.quantityInTransitToShelf;
-      const hasShelfQuantityFlag =
-        quantityOnHandInShelf + quantityInTransitToShelf <
-        quantityRequiredByShelf;
+      const quantityOnHandInStorageUnit = material.quantityOnHandInStorageUnit;
+      const quantityInTransitToStorageUnit =
+        material.quantityInTransitToStorageUnit;
+      const hasStorageUnitQuantityFlag =
+        quantityOnHandInStorageUnit + quantityInTransitToStorageUnit <
+        quantityRequiredByStorageUnit;
 
-      if (hasShelfQuantityFlag) {
+      if (hasStorageUnitQuantityFlag) {
         itemsToAdd.push({
           id: material.id, // Job material ID
           itemId: material.jobMaterialItemId, // Actual item ID
           itemReadableId: material.itemReadableId,
           description: material.description,
           action: "transfer",
-          quantity: quantityRequiredByShelf - quantityOnHandInShelf,
+          quantity: quantityRequiredByStorageUnit - quantityOnHandInStorageUnit,
           requiresSerialTracking: material.itemTrackingType === "Serial",
           requiresBatchTracking: material.itemTrackingType === "Batch",
-          shelfId: material.shelfId
+          storageUnitId: material.storageUnitId
         });
       }
 
       // Check if order is needed
       const quantityOnHand =
-        material.quantityOnHandInShelf + material.quantityOnHandNotInShelf;
+        material.quantityOnHandInStorageUnit +
+        material.quantityOnHandNotInStorageUnit;
 
       const incoming =
         material.quantityOnPurchaseOrder + material.quantityOnProductionOrder;
 
       const required =
-        material.quantityFromProductionOrderInShelf +
-        material.quantityFromProductionOrderNotInShelf +
+        material.quantityFromProductionOrderInStorageUnit +
+        material.quantityFromProductionOrderNotInStorageUnit +
         material.quantityOnSalesOrder;
 
       const hasTotalQuantityFlag = quantityOnHand + incoming - required < 0;
@@ -148,7 +152,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
             (quantityOnHand + incoming - required),
           requiresSerialTracking: material.itemTrackingType === "Serial",
           requiresBatchTracking: material.itemTrackingType === "Batch",
-          shelfId: material.shelfId
+          storageUnitId: material.storageUnitId
         });
       }
     });
@@ -163,7 +167,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
     return [
       {
         accessorKey: "readableIdWithRevision",
-        header: "Item",
+        header: t`Item`,
         cell: ({ row }) => (
           <HStack className="py-1">
             <ItemThumbnail
@@ -201,7 +205,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         accessorKey: "estimatedQuantity",
-        header: "Required",
+        header: t`Required`,
         cell: ({ row }) => formatter.format(row.original.estimatedQuantity),
         meta: {
           icon: <LuHash />
@@ -209,7 +213,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         id: "method",
-        header: "Method",
+        header: t`Method`,
         cell: ({ row }) => (
           <HStack>
             <Badge variant="secondary">
@@ -217,18 +221,18 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
                 type={row.original.methodType}
                 className="size-3 mr-1"
               />
-              {row.original.shelfName ??
+              {row.original.storageUnitName ??
                 (row.original.methodType === "Make to Order"
-                  ? "WIP"
-                  : "Default Shelf")}
+                  ? t`WIP`
+                  : t`Default Storage Unit`)}
             </Badge>
           </HStack>
         )
       },
 
       {
-        id: "quantityOnHandInShelf",
-        header: "On Shelf",
+        id: "quantityOnHandInStorageUnit",
+        header: t`On Storage Unit`,
         cell: ({ row }) => {
           const isInventoried =
             row.original.itemTrackingType !== "Non-Inventory";
@@ -240,33 +244,34 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
               </Badge>
             );
 
-          const quantityRequiredByShelf = isRequired
-            ? row.original.quantityFromProductionOrderInShelf
-            : row.original.quantityFromProductionOrderInShelf +
+          const quantityRequiredByStorageUnit = isRequired
+            ? row.original.quantityFromProductionOrderInStorageUnit
+            : row.original.quantityFromProductionOrderInStorageUnit +
               row.original.estimatedQuantity;
 
           if (row.original.methodType === "Make to Order") {
             return null;
           }
 
-          const quantityOnHandInShelf = row.original.quantityOnHandInShelf;
-          const quantityInTransitToShelf =
-            row.original.quantityInTransitToShelf;
-          const hasShelfQuantityFlag =
-            quantityOnHandInShelf + quantityInTransitToShelf <
-            quantityRequiredByShelf;
+          const quantityOnHandInStorageUnit =
+            row.original.quantityOnHandInStorageUnit;
+          const quantityInTransitToStorageUnit =
+            row.original.quantityInTransitToStorageUnit;
+          const hasStorageUnitQuantityFlag =
+            quantityOnHandInStorageUnit + quantityInTransitToStorageUnit <
+            quantityRequiredByStorageUnit;
 
           return (
             <HStack>
-              {hasShelfQuantityFlag ? (
+              {hasStorageUnitQuantityFlag ? (
                 <>
                   <span className="text-red-500">
-                    {formatter.format(quantityOnHandInShelf)}
+                    {formatter.format(quantityOnHandInStorageUnit)}
                   </span>
                   <LuFlag className="text-red-500" />
                 </>
               ) : (
-                <span>{formatter.format(quantityOnHandInShelf)}</span>
+                <span>{formatter.format(quantityOnHandInStorageUnit)}</span>
               )}
             </HStack>
           );
@@ -277,7 +282,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         id: "quantityOnHand",
-        header: "On Hand",
+        header: t`On Hand`,
         cell: ({ row }) => {
           if (
             row.original.itemTrackingType === "Non-Inventory" ||
@@ -286,16 +291,16 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
             return null;
           }
           const quantityOnHand =
-            row.original.quantityOnHandInShelf +
-            row.original.quantityOnHandNotInShelf;
+            row.original.quantityOnHandInStorageUnit +
+            row.original.quantityOnHandNotInStorageUnit;
 
           const incoming =
             row.original.quantityOnPurchaseOrder +
             row.original.quantityOnProductionOrder;
 
           const required =
-            row.original.quantityFromProductionOrderInShelf +
-            row.original.quantityFromProductionOrderNotInShelf +
+            row.original.quantityFromProductionOrderInStorageUnit +
+            row.original.quantityFromProductionOrderNotInStorageUnit +
             row.original.quantityOnSalesOrder;
 
           const hasTotalQuantityFlag = quantityOnHand + incoming - required < 0;
@@ -321,11 +326,11 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         id: "required",
-        header: "Required",
+        header: t`Required`,
         cell: ({ row }) =>
           formatter.format(
-            row.original.quantityFromProductionOrderInShelf +
-              row.original.quantityFromProductionOrderNotInShelf +
+            row.original.quantityFromProductionOrderInStorageUnit +
+              row.original.quantityFromProductionOrderNotInStorageUnit +
               row.original.quantityOnSalesOrder
           ),
         meta: {
@@ -334,7 +339,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         id: "incoming",
-        header: "Incoming",
+        header: t`Incoming`,
         cell: ({ row }) =>
           formatter.format(
             row.original.quantityOnPurchaseOrder +
@@ -346,9 +351,9 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
       },
       {
         id: "transfer",
-        header: "Transfer",
+        header: t`Transfer`,
         cell: ({ row }) =>
-          formatter.format(row.original.quantityInTransitToShelf),
+          formatter.format(row.original.quantityInTransitToStorageUnit),
         meta: {
           icon: <LuArrowLeftRight className="text-blue-600" />
         }
@@ -367,19 +372,19 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
         return null;
       }
 
-      const quantityRequiredByShelf = isRequired
-        ? row.quantityFromProductionOrderInShelf
-        : row.quantityFromProductionOrderInShelf + row.estimatedQuantity;
+      const quantityRequiredByStorageUnit = isRequired
+        ? row.quantityFromProductionOrderInStorageUnit
+        : row.quantityFromProductionOrderInStorageUnit + row.estimatedQuantity;
 
-      const quantityOnHandInShelf = row.quantityOnHandInShelf;
+      const quantityOnHandInStorageUnit = row.quantityOnHandInStorageUnit;
 
       const quantityOnHand =
-        row.quantityOnHandInShelf + row.quantityOnHandNotInShelf;
+        row.quantityOnHandInStorageUnit + row.quantityOnHandNotInStorageUnit;
       const incoming =
         row.quantityOnPurchaseOrder + row.quantityOnProductionOrder;
       const required =
-        row.quantityFromProductionOrderInShelf +
-        row.quantityFromProductionOrderNotInShelf +
+        row.quantityFromProductionOrderInStorageUnit +
+        row.quantityFromProductionOrderNotInStorageUnit +
         row.quantityOnSalesOrder;
 
       // Check if items are already in session
@@ -404,10 +409,11 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
                   itemReadableId: row.itemReadableId,
                   description: row.description,
                   action: "transfer",
-                  quantity: quantityRequiredByShelf - quantityOnHandInShelf,
+                  quantity:
+                    quantityRequiredByStorageUnit - quantityOnHandInStorageUnit,
                   requiresSerialTracking: row.itemTrackingType === "Serial",
                   requiresBatchTracking: row.itemTrackingType === "Batch",
-                  shelfId: row.shelfId
+                  storageUnitId: row.storageUnitId
                 });
               }
             }}
@@ -432,7 +438,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
                     (quantityOnHand + incoming - required),
                   requiresSerialTracking: row.itemTrackingType === "Serial",
                   requiresBatchTracking: row.itemTrackingType === "Batch",
-                  shelfId: row.shelfId
+                  storageUnitId: row.storageUnitId
                 });
               }
             }}
@@ -470,7 +476,7 @@ const JobMaterialsTable = memo(({ data, count }: JobMaterialsTableProps) => {
           ) : undefined
         }
         renderContextMenu={renderContextMenu}
-        title="Materials"
+        title={t`Materials`}
       />
       <StockTransferSessionWidget jobId={jobId} />
     </>
@@ -483,6 +489,7 @@ export default JobMaterialsTable;
 
 const StockTransferSessionWidget = ({ jobId }: { jobId: string }) => {
   const fetcher = useFetcher<Result>();
+  const { t } = useLingui();
 
   const [session, setStockTransferSession] = useStockTransferSession();
   const sessionItemsCount = useStockTransferSessionItemsCount();
@@ -574,7 +581,7 @@ const StockTransferSessionWidget = ({ jobId }: { jobId: string }) => {
             <IconButton
               variant="ghost"
               size="sm"
-              aria-label="Close"
+              aria-label={t`Close`}
               icon={<LuX className="size-4" />}
               onClick={() => setIsMinimized(true)}
             />
@@ -627,7 +634,7 @@ const StockTransferSessionWidget = ({ jobId }: { jobId: string }) => {
                               </div>
                               <IconButton
                                 variant="secondary"
-                                aria-label="Remove item"
+                                aria-label={t`Remove item`}
                                 icon={<LuTrash2 />}
                                 size="sm"
                                 onClick={() => onRemoveItem(item.id, "order")}
@@ -667,7 +674,7 @@ const StockTransferSessionWidget = ({ jobId }: { jobId: string }) => {
                               </div>
                               <IconButton
                                 variant="secondary"
-                                aria-label="Remove item"
+                                aria-label={t`Remove item`}
                                 icon={<LuTrash2 />}
                                 size="sm"
                                 onClick={() =>

@@ -18,6 +18,7 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import {
   LuArrowRight,
@@ -76,6 +77,7 @@ function StockTransferLineComponent({
   onDelete,
   permissions
 }: StockTransferLineProps) {
+  const { t } = useLingui();
   const navigate = useNavigate();
   const params = useParams();
   const { id } = params;
@@ -137,15 +139,15 @@ function StockTransferLineComponent({
         </HStack>
         <div className="flex flex-grow items-center justify-between gap-4 pl-4 w-1/2">
           <HStack spacing={4} className="text-left items-center">
-            {"fromShelfId" in line && (
+            {"fromStorageUnitId" in line && (
               <span className="text-base font-medium  whitespace-nowrap">
-                {line.fromShelfName ?? ""}
+                {line.fromStorageUnitName ?? ""}
               </span>
             )}
             <LuArrowRight className="size-4" />
-            {"toShelfId" in line && (
+            {"toStorageUnitId" in line && (
               <span className="text-base font-medium  whitespace-nowrap">
-                {line.toShelfName ?? ""}
+                {line.toStorageUnitName ?? ""}
               </span>
             )}
           </HStack>
@@ -180,7 +182,7 @@ function StockTransferLineComponent({
                   variant="secondary"
                   isDisabled={!isEditable}
                   icon={<LuEllipsisVertical />}
-                  aria-label="Line options"
+                  aria-label={t`Line options`}
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -197,7 +199,7 @@ function StockTransferLineComponent({
                     )}
                   >
                     <DropdownMenuIcon icon={<LuPencilLine />} />
-                    Edit Line
+                    <Trans>Edit Line</Trans>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -208,7 +210,7 @@ function StockTransferLineComponent({
                   onClick={() => onDelete(line)}
                 >
                   <DropdownMenuIcon icon={<LuTrash />} />
-                  Delete Line
+                  <Trans>Delete Line</Trans>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -256,14 +258,16 @@ export default function StockTransferLines() {
     );
     if (itemComparison !== 0) return itemComparison;
 
-    // Then sort by toShelfName
-    const toShelfComparison = (a.toShelfName ?? "").localeCompare(
-      b.toShelfName ?? ""
+    // Then sort by toStorageUnitName
+    const toStorageUnitComparison = (a.toStorageUnitName ?? "").localeCompare(
+      b.toStorageUnitName ?? ""
     );
-    if (toShelfComparison !== 0) return toShelfComparison;
+    if (toStorageUnitComparison !== 0) return toStorageUnitComparison;
 
-    // Finally sort by fromShelfName
-    return (a.fromShelfName ?? "").localeCompare(b.fromShelfName ?? "");
+    // Finally sort by fromStorageUnitName
+    return (a.fromStorageUnitName ?? "").localeCompare(
+      b.fromStorageUnitName ?? ""
+    );
   });
 
   const pickedQuantitiesById = new Map<string, number>();
@@ -323,7 +327,9 @@ export default function StockTransferLines() {
       <Card>
         <HStack className="justify-between items-center">
           <CardHeader>
-            <CardTitle>Stock Transfer Lines</CardTitle>
+            <CardTitle>
+              <Trans>Stock Transfer Lines</Trans>
+            </CardTitle>
             <CardDescription>
               <Enumerable
                 value={
@@ -342,7 +348,9 @@ export default function StockTransferLines() {
                 leftIcon={<LuCirclePlus />}
                 asChild
               >
-                <Link to={path.to.newStockTransferLine(id)}>Add Line</Link>
+                <Link to={path.to.newStockTransferLine(id)}>
+                  <Trans>Add Line</Trans>
+                </Link>
               </Button>
             )}
           </CardAction>

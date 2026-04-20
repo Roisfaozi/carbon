@@ -36,6 +36,7 @@ import {
   parseDate,
   today
 } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import {
@@ -65,7 +66,7 @@ import { RiProgress8Line } from "react-icons/ri";
 import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useNavigate, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { Location, Shelf } from "~/components/Form";
+import { Location, StorageUnit } from "~/components/Form";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import Select from "~/components/Select";
@@ -83,6 +84,23 @@ import JobStatus from "./JobStatus";
 
 const JobHeader = () => {
   const navigate = useNavigate();
+  const { t } = useLingui();
+  const getExplorerLabel = (type: string) => {
+    switch (type) {
+      case "materials":
+        return t`Materials`;
+      case "operations":
+        return t`Operations`;
+      case "step-records":
+        return t`Step Records`;
+      case "events":
+        return t`Production Events`;
+      case "quantities":
+        return t`Production Quantities`;
+      default:
+        return t`Job`;
+    }
+  };
   const permissions = usePermissions();
   const { jobId } = useParams();
   if (!jobId) throw new Error("jobId not found");
@@ -135,10 +153,10 @@ const JobHeader = () => {
 
   return (
     <>
-      <div className="flex flex-shrink-0 items-center justify-between p-2 bg-card border-b h-[50px] overflow-x-auto scrollbar-hide ">
+      <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
         <HStack>
           <IconButton
-            aria-label="Toggle Explorer"
+            aria-label={t`Toggle Explorer`}
             icon={<LuPanelLeft />}
             onClick={toggleExplorer}
             variant="ghost"
@@ -152,7 +170,7 @@ const JobHeader = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
-                aria-label="More options"
+                aria-label={t`More options`}
                 icon={<LuEllipsisVertical />}
                 variant="secondary"
                 size="sm"
@@ -382,7 +400,7 @@ const JobHeader = () => {
           </statusFetcher.Form>
 
           <IconButton
-            aria-label="Toggle Properties"
+            aria-label={t`Toggle Properties`}
             icon={<LuPanelRight />}
             onClick={toggleProperties}
             variant="ghost"
@@ -431,23 +449,6 @@ const JobHeader = () => {
 };
 
 export default JobHeader;
-
-function getExplorerLabel(type: string) {
-  switch (type) {
-    case "materials":
-      return "Materials";
-    case "operations":
-      return "Operations";
-    case "step-records":
-      return "Step Records";
-    case "events":
-      return "Production Events";
-    case "quantities":
-      return "Production Quantities";
-    default:
-      return "Job";
-  }
-}
 
 function getExplorerMenuIcon(type: string) {
   switch (type) {
@@ -666,13 +667,17 @@ export function JobStartModal({
         }
       >
         <ModalHeader>
-          <ModalTitle>Release Job {job?.jobId}</ModalTitle>
+          <ModalTitle>
+            <Trans>Release Job</Trans> {job?.jobId}
+          </ModalTitle>
         </ModalHeader>
         {loading ? (
           <ModalBody>
             <div className="flex flex-col h-[118px] w-full items-center justify-center gap-2">
               <Spinner className="size-8" />
-              <p className="text-sm">Validating job...</p>
+              <p className="text-sm">
+                <Trans>Validating job...</Trans>
+              </p>
             </div>
           </ModalBody>
         ) : (
@@ -682,20 +687,27 @@ export function JobStartModal({
                 {eachAssemblyHasAnOperation &&
                   eachOutsideOperationHasASupplier && (
                     <p className="text-sm">
-                      Are you sure you want to release this job? It will become
-                      available to the shop floor, and drive purchasing and
-                      production.
+                      <Trans>
+                        Are you sure you want to release this job? It will
+                        become available to the shop floor, and drive purchasing
+                        and production.
+                      </Trans>
                     </p>
                   )}
                 {hasOutsideOperations && eachOutsideOperationHasASupplier && (
                   <>
                     <Alert>
                       <LuShoppingCart />
-                      <AlertTitle>Purchase orders required</AlertTitle>
+                      <AlertTitle>
+                        <Trans>Purchase orders required</Trans>
+                      </AlertTitle>
                       <AlertDescription>
-                        A new purchase order will be created for each supplier.
-                        Alternatively, you can choose an existing draft purchase
-                        order for the supplier to add the outside operations to.
+                        <Trans>
+                          A new purchase order will be created for each
+                          supplier. Alternatively, you can choose an existing
+                          draft purchase order for the supplier to add the
+                          outside operations to.
+                        </Trans>
                       </AlertDescription>
                     </Alert>
                     {Object.entries(selectedPurchaseOrdersBySupplierId).map(
@@ -744,22 +756,30 @@ export function JobStartModal({
                 {!eachAssemblyHasAnOperation && (
                   <Alert variant="warning">
                     <LuTriangleAlert />
-                    <AlertTitle>Missing Operations</AlertTitle>
+                    <AlertTitle>
+                      <Trans>Missing Operations</Trans>
+                    </AlertTitle>
                     <AlertDescription>
-                      There are Bills of Processes associated with this job that
-                      have no operations. Please assign an operation to each
-                      make method before releasing it.
+                      <Trans>
+                        There are Bills of Processes associated with this job
+                        that have no operations. Please assign an operation to
+                        each make method before releasing it.
+                      </Trans>
                     </AlertDescription>
                   </Alert>
                 )}
                 {!eachOutsideOperationHasASupplier && hasOutsideOperations && (
                   <Alert variant="warning">
                     <LuTriangleAlert />
-                    <AlertTitle>Missing Suppliers</AlertTitle>
+                    <AlertTitle>
+                      <Trans>Missing Suppliers</Trans>
+                    </AlertTitle>
                     <AlertDescription>
-                      There are outside operations associated with this job that
-                      have no suppliers. Please assign a supplier to each
-                      outside operation before releasing it.
+                      <Trans>
+                        There are outside operations associated with this job
+                        that have no suppliers. Please assign a supplier to each
+                        outside operation before releasing it.
+                      </Trans>
                     </AlertDescription>
                   </Alert>
                 )}
@@ -768,7 +788,7 @@ export function JobStartModal({
 
             <ModalFooter>
               <Button variant="secondary" onClick={onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <fetcher.Form
                 onSubmit={onClose}
@@ -793,7 +813,7 @@ export function JobStartModal({
                   }
                   type="submit"
                 >
-                  Release Job
+                  <Trans>Release Job</Trans>
                 </Button>
               </fetcher.Form>
             </ModalFooter>
@@ -826,15 +846,19 @@ function JobCancelModal({
     >
       <ModalContent>
         <ModalHeader>
-          <ModalTitle>Cancel {job?.jobId}</ModalTitle>
+          <ModalTitle>
+            <Trans>Cancel</Trans> {job?.jobId}
+          </ModalTitle>
         </ModalHeader>
         <ModalBody>
-          Are you sure you want to cancel this job? It will no longer be
-          available on the shop floor.
+          <Trans>
+            Are you sure you want to cancel this job? It will no longer be
+            available on the shop floor.
+          </Trans>
         </ModalBody>
         <ModalFooter>
           <Button variant="secondary" onClick={onClose}>
-            Don't Cancel
+            <Trans>Don't Cancel</Trans>
           </Button>
           <fetcher.Form
             onSubmit={onClose}
@@ -843,7 +867,7 @@ function JobCancelModal({
           >
             <input type="hidden" name="status" value="Cancelled" />
             <Button variant="destructive" type="submit">
-              Cancel Job
+              <Trans>Cancel Job</Trans>
             </Button>
           </fetcher.Form>
         </ModalFooter>
@@ -862,9 +886,10 @@ function JobCompleteModal({
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
-  const [defaultShelfId, setDefaultShelfId] = useState<string | undefined>(
-    undefined
-  );
+  const { t } = useLingui();
+  const [defaultStorageUnitId, setDefaultStorageUnitId] = useState<
+    string | undefined
+  >(undefined);
 
   const [quantityComplete, setQuantityComplete] = useState<number>(
     job?.quantityComplete ?? 0
@@ -925,7 +950,9 @@ function JobCompleteModal({
     }
 
     flushSync(() => {
-      setDefaultShelfId(pickMethod.data?.defaultShelfId ?? undefined);
+      setDefaultStorageUnitId(
+        pickMethod.data?.defaultStorageUnitId ?? undefined
+      );
     });
 
     setLoading(false);
@@ -980,20 +1007,21 @@ function JobCompleteModal({
               salesOrderId: job.salesOrderId ?? undefined,
               salesOrderLineId: job.salesOrderLineId ?? undefined,
               locationId: job.locationId ?? undefined,
-              shelfId: job.shelfId ?? defaultShelfId ?? undefined
+              storageUnitId:
+                job.storageUnitId ?? defaultStorageUnitId ?? undefined
             }}
             fetcher={fetcher}
           >
             <ModalHeader>
               <ModalTitle>
                 {makeToOrder
-                  ? `Complete Job`
-                  : `Receive ${job.jobId} to Inventory`}
+                  ? t`Complete Job`
+                  : t`Receive ${job.jobId} to Inventory`}
               </ModalTitle>
               <ModalDescription>
                 {makeToOrder
-                  ? `This job will no longer be available on the shop floor.`
-                  : "This job will be received to inventory. It will no longer be available on the shop floor."}
+                  ? t`This job will no longer be available on the shop floor.`
+                  : t`This job will be received to inventory. It will no longer be available on the shop floor.`}
               </ModalDescription>
             </ModalHeader>
             <Hidden name="salesOrderId" />
@@ -1010,24 +1038,28 @@ function JobCompleteModal({
             {makeToOrder && (
               <>
                 <Hidden name="locationId" />
-                <Hidden name="shelfId" />
+                <Hidden name="storageUnitId" />
               </>
             )}
             <ModalBody>
               <VStack spacing={4}>
                 {!makeToOrder && (
                   <>
-                    <Location name="locationId" label="Location" isReadOnly />
-                    <Shelf
-                      name="shelfId"
+                    <Location
+                      name="locationId"
+                      label={t`Location`}
+                      isReadOnly
+                    />
+                    <StorageUnit
+                      name="storageUnitId"
                       locationId={job.locationId ?? undefined}
-                      label="Shelf"
+                      label={t`Storage Unit`}
                     />
                   </>
                 )}
                 <NumberControlled
                   name="quantityComplete"
-                  label="Quantity Completed"
+                  label={t`Quantity Completed`}
                   value={quantityComplete}
                   onChange={(value) => setQuantityComplete(value)}
                   isReadOnly={hasTrackedQuantity}
@@ -1037,12 +1069,14 @@ function JobCompleteModal({
                   <>
                     <Alert>
                       <LuPackage />
-                      <AlertTitle>Leftover Parts Detected</AlertTitle>
+                      <AlertTitle>
+                        <Trans>Leftover Parts Detected</Trans>
+                      </AlertTitle>
                       <AlertDescription>
-                        You completed {leftoverQuantity} more{" "}
-                        {leftoverQuantity === 1 ? "part" : "parts"} than the
-                        ordered quantity of {job.quantity}. What would you like
-                        to do with the extra parts?
+                        {t`You completed ${leftoverQuantity} more 
+                        ${leftoverQuantity === 1 ? "part" : "parts"} than the
+                        ordered quantity of ${job.quantity}. What would you like
+                        to do with the extra parts?`}
                       </AlertDescription>
                     </Alert>
 
@@ -1057,9 +1091,11 @@ function JobCompleteModal({
                           className="h-auto py-3"
                         >
                           <VStack spacing={1}>
-                            <span>Ship to Customer</span>
+                            <span>
+                              <Trans>Ship to Customer</Trans>
+                            </span>
                             <span className="text-xs opacity-70">
-                              Include extra parts in shipment
+                              <Trans>Include extra parts in shipment</Trans>
                             </span>
                           </VStack>
                         </Button>
@@ -1073,9 +1109,11 @@ function JobCompleteModal({
                         className="h-auto py-3"
                       >
                         <VStack spacing={1}>
-                          <span>Receive to Inventory</span>
+                          <span>
+                            <Trans>Receive to Inventory</Trans>
+                          </span>
                           <span className="text-xs opacity-70">
-                            Add to stock for future use
+                            <Trans>Add to stock for future use</Trans>
                           </span>
                         </VStack>
                       </Button>
@@ -1089,9 +1127,11 @@ function JobCompleteModal({
                           className="h-auto py-3"
                         >
                           <VStack spacing={1}>
-                            <span>Split</span>
+                            <span>
+                              <Trans>Split</Trans>
+                            </span>
                             <span className="text-xs opacity-70">
-                              Ship some, stock some
+                              <Trans>Ship some, stock some</Trans>
                             </span>
                           </VStack>
                         </Button>
@@ -1105,9 +1145,11 @@ function JobCompleteModal({
                         className="h-auto py-3"
                       >
                         <VStack spacing={1}>
-                          <span>Discard</span>
+                          <span>
+                            <Trans>Discard</Trans>
+                          </span>
                           <span className="text-xs opacity-70">
-                            No action needed
+                            <Trans>No action needed</Trans>
                           </span>
                         </VStack>
                       </Button>
@@ -1118,7 +1160,7 @@ function JobCompleteModal({
                         <div className="flex-1">
                           <NumberControlled
                             name="leftoverShipQuantity"
-                            label="Ship to Customer"
+                            label={t`Ship to Customer`}
                             value={leftoverShipQuantity}
                             onChange={(value) => {
                               const shipQty = Math.min(value, leftoverQuantity);
@@ -1134,7 +1176,7 @@ function JobCompleteModal({
                         <div className="flex-1">
                           <NumberControlled
                             name="leftoverReceiveQuantity"
-                            label="Receive to Inventory"
+                            label={t`Receive to Inventory`}
                             value={leftoverReceiveQuantity}
                             onChange={(value) => {
                               const receiveQty = Math.min(
@@ -1158,11 +1200,11 @@ function JobCompleteModal({
             </ModalBody>
             <ModalFooter>
               <Button variant="secondary" onClick={onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
 
               <Button type="submit" isDisabled={hasLeftover && !leftoverAction}>
-                Complete Job
+                <Trans>Complete Job</Trans>
               </Button>
             </ModalFooter>
           </ValidatedForm>

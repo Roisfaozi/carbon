@@ -4,6 +4,7 @@ import {
   buildCompanyPrivateStorageTarget,
   getCompanyPrivateBucket
 } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
 import { LuUpload } from "react-icons/lu";
@@ -12,6 +13,7 @@ import { useUser } from "~/hooks";
 import { path } from "~/utils/path";
 
 const DocumentCreateForm = () => {
+  const { t } = useLingui();
   const submit = useSubmit();
   const { carbon } = useCarbon();
   const {
@@ -21,7 +23,7 @@ const DocumentCreateForm = () => {
   const uploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       const file = e.target.files[0];
-      toast.info(`Uploading ${file.name}`);
+      toast.info(t`Uploading ${file.name}`);
       const target = buildCompanyPrivateStorageTarget({
         companyId,
         logicalFolder: "documents",
@@ -38,7 +40,7 @@ const DocumentCreateForm = () => {
 
       if (fileUpload.error) {
         console.error(fileUpload.error);
-        toast.error("Failed to upload file");
+        toast.error(t`Failed to upload file`);
       }
 
       if (fileUpload.data?.path) {
@@ -73,7 +75,7 @@ const DocumentCreateForm = () => {
 
   return (
     <File leftIcon={<LuUpload />} onChange={uploadFile}>
-      Upload
+      <Trans>Upload</Trans>
     </File>
   );
 };

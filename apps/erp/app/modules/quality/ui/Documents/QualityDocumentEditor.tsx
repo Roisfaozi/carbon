@@ -4,6 +4,7 @@ import { generateHTML, Input, toast, useDebounce } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useFetcher, useLoaderData, useParams } from "react-router";
@@ -16,6 +17,7 @@ export default function QualityDocumentEditor() {
   const { id } = useParams();
   if (!id) throw new Error("Could not find id");
 
+  const { t } = useLingui();
   const permissions = usePermissions();
   const loaderData = useLoaderData<typeof loader>();
 
@@ -73,7 +75,7 @@ export default function QualityDocumentEditor() {
       .upload(storagePath, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
     if (!result?.data) throw new Error("Failed to upload image");

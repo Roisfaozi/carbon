@@ -18,6 +18,7 @@ import {
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import type { z } from "zod";
@@ -28,7 +29,7 @@ import {
   Item,
   Location,
   NumberControlled,
-  Shelf,
+  StorageUnit,
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
@@ -59,6 +60,7 @@ const PurchaseInvoiceLineForm = ({
   type,
   onClose
 }: PurchaseInvoiceLineFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
 
@@ -89,7 +91,7 @@ const PurchaseInvoiceLineForm = ({
     purchaseUom: string;
     inventoryUom: string;
     conversionFactor: number;
-    shelfId: string | null;
+    storageUnitId: string | null;
     minimumOrderQuantity?: number;
     taxAmount: number;
     taxPercent: number;
@@ -104,7 +106,7 @@ const PurchaseInvoiceLineForm = ({
     purchaseUom: initialValues.purchaseUnitOfMeasureCode ?? "",
     inventoryUom: initialValues.inventoryUnitOfMeasureCode ?? "",
     conversionFactor: initialValues.conversionFactor ?? 1,
-    shelfId: initialValues.shelfId ?? "",
+    storageUnitId: initialValues.storageUnitId ?? "",
     minimumOrderQuantity: undefined,
     taxAmount: initialValues.supplierTaxAmount ?? 0,
     taxPercent: initialValues.taxPercent ?? 0,
@@ -176,7 +178,7 @@ const PurchaseInvoiceLineForm = ({
       inventoryUom: "",
       purchaseUom: "",
       conversionFactor: 1,
-      shelfId: "",
+      storageUnitId: "",
       minimumOrderQuantity: undefined,
       taxAmount: 0,
       taxPercent: 0,
@@ -212,7 +214,7 @@ const PurchaseInvoiceLineForm = ({
             .maybeSingle(),
           carbon
             .from("pickMethod")
-            .select("defaultShelfId")
+            .select("defaultStorageUnitId")
             .eq("itemId", itemId)
             .eq("companyId", company.id)
             .eq("locationId", locationId!)
@@ -253,7 +255,7 @@ const PurchaseInvoiceLineForm = ({
             supplierPart?.data?.conversionFactor ??
             itemReplenishment?.conversionFactor ??
             1,
-          shelfId: inventory.data?.defaultShelfId ?? null,
+          storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
           taxAmount: 0,
           taxPercent: 0,
           priceBreaks: breaks,
@@ -279,9 +281,9 @@ const PurchaseInvoiceLineForm = ({
 
     setLocationId(newLocation.value);
     if (!itemData.itemId) return;
-    const shelf = await carbon
+    const storageUnit = await carbon
       .from("pickMethod")
-      .select("defaultShelfId")
+      .select("defaultStorageUnitId")
       .eq("itemId", itemData.itemId)
       .eq("companyId", company.id)
       .eq("locationId", newLocation.value)
@@ -289,7 +291,7 @@ const PurchaseInvoiceLineForm = ({
 
     setItemData((d) => ({
       ...d,
-      shelfId: shelf?.data?.defaultShelfId ?? ""
+      storageUnitId: storageUnit?.data?.defaultStorageUnitId ?? ""
     }));
   };
 
@@ -375,6 +377,7 @@ const PurchaseInvoiceLineForm = ({
                     label={itemType}
                     // @ts-ignore
                     type={itemType}
+                    locationId={locationId}
                     replenishmentSystem="Buy"
                     onChange={(value) => {
                       onItemChange(value?.value as string);
@@ -383,7 +386,9 @@ const PurchaseInvoiceLineForm = ({
                   />
 
                   <FormControl className="col-span-2">
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel isOptional>
+                      <Trans>Description</Trans>
+                    </FormLabel>
                     <Input
                       value={itemData.description}
                       onChange={(e) =>
@@ -402,7 +407,7 @@ const PurchaseInvoiceLineForm = ({
                       <NumberControlled
                         minValue={itemData.minimumOrderQuantity}
                         name="quantity"
-                        label="Quantity"
+                        label={t`Quantity`}
                         value={itemData.quantity}
                         onChange={(value) => {
                           const exchangeRate =
@@ -422,7 +427,7 @@ const PurchaseInvoiceLineForm = ({
 
                       <UnitOfMeasure
                         name="purchaseUnitOfMeasureCode"
-                        label="Unit of Measure"
+                        label={t`Unit of Measure`}
                         value={itemData.purchaseUom}
                         onChange={(newValue) => {
                           if (newValue) {
@@ -448,7 +453,7 @@ const PurchaseInvoiceLineForm = ({
 
                       <NumberControlled
                         name="supplierUnitPrice"
-                        label="Supplier Unit Price"
+                        label={t`Supplier Unit Price`}
                         value={itemData.supplierUnitPrice}
                         formatOptions={{
                           style: "currency",
@@ -465,7 +470,7 @@ const PurchaseInvoiceLineForm = ({
                       />
                       <NumberControlled
                         name="supplierShippingCost"
-                        label="Shipping"
+                        label={t`Shipping`}
                         value={itemData.supplierShippingCost}
                         minValue={0}
                         formatOptions={{
@@ -484,7 +489,7 @@ const PurchaseInvoiceLineForm = ({
 
                       <NumberControlled
                         name="supplierTaxAmount"
-                        label="Tax"
+                        label={t`Tax`}
                         value={itemData.taxAmount}
                         formatOptions={{
                           style: "currency",
@@ -506,20 +511,20 @@ const PurchaseInvoiceLineForm = ({
 
                       <Location
                         name="locationId"
-                        label="Location"
+                        label={t`Location`}
                         value={locationId}
                         onChange={onLocationChange}
                       />
-                      <Shelf
-                        name="shelfId"
-                        label="Shelf"
+                      <StorageUnit
+                        name="storageUnitId"
+                        label={t`Storage Unit`}
                         locationId={locationId}
-                        value={itemData.shelfId ?? undefined}
+                        value={itemData.storageUnitId ?? undefined}
                         onChange={(newValue) => {
                           if (newValue) {
                             setItemData((d) => ({
                               ...d,
-                              shelfId: newValue?.id
+                              storageUnitId: newValue?.id
                             }));
                           }
                         }}
@@ -528,7 +533,7 @@ const PurchaseInvoiceLineForm = ({
                   )}
                   <NumberControlled
                     name="taxPercent"
-                    label="Tax Percent"
+                    label={t`Tax Percent`}
                     value={itemData.taxPercent}
                     minValue={0}
                     maxValue={1}
@@ -555,7 +560,7 @@ const PurchaseInvoiceLineForm = ({
             </ModalCardBody>
             <ModalCardFooter>
               <Submit isDisabled={isDisabled} withBlocker={false}>
-                Save
+                <Trans>Save</Trans>
               </Submit>
             </ModalCardFooter>
           </ValidatedForm>

@@ -7,6 +7,7 @@ import {
   getCompanyPrivateBucket,
   listPrivateObjectsWithFallback
 } from "@carbon/utils";
+import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
@@ -29,7 +30,7 @@ import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: "Maintenance",
+  breadcrumb: msg`Maintenance`,
   to: path.to.maintenanceDispatches,
   module: "resources"
 };
@@ -126,7 +127,7 @@ export default function MaintenanceDispatchRoute() {
                   </VStack>
                 </div>
               }
-              properties={<MaintenanceDispatchProperties />}
+              properties={<MaintenanceDispatchProperties key={dispatchId} />}
             />
           </div>
         </div>

@@ -19,6 +19,7 @@ import {
 import { Editor } from "@carbon/react/Editor";
 import { getCompanyPrivateBucket } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { usePermissions, useUser } from "~/hooks";
@@ -50,6 +51,7 @@ const SupplierInteractionNotes = ({
   } = useUser();
   const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { carbon } = useCarbon();
+  const { t } = useLingui();
   const permissions = usePermissions();
   const isEmployee = permissions.is("employee");
   const [tab, setTab] = useState(isEmployee ? "internal" : "external");
@@ -69,7 +71,7 @@ const SupplierInteractionNotes = ({
       .upload(fileName, file);
 
     if (result?.error) {
-      toast.error("Failed to upload image");
+      toast.error(t`Failed to upload image`);
       throw new Error(result.error.message);
     }
 
@@ -126,8 +128,12 @@ const SupplierInteractionNotes = ({
             <CardAction>
               {["purchaseOrder"].includes(table) && isEmployee && (
                 <TabsList>
-                  <TabsTrigger value="internal">Internal</TabsTrigger>
-                  <TabsTrigger value="external">External</TabsTrigger>
+                  <TabsTrigger value="internal">
+                    <Trans>Internal</Trans>
+                  </TabsTrigger>
+                  <TabsTrigger value="external">
+                    <Trans>External</Trans>
+                  </TabsTrigger>
                 </TabsList>
               )}
             </CardAction>

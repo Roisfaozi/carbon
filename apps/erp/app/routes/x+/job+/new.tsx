@@ -3,13 +3,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import type { recalculateTask } from "@carbon/jobs/trigger/recalculate";
+import { trigger } from "@carbon/jobs";
 import { parseDate } from "@internationalized/date";
-import { tasks } from "@trigger.dev/sdk";
+import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
-import { getDefaultShelfForJob } from "~/modules/inventory";
+import { getDefaultStorageUnitForJob } from "~/modules/inventory";
 import { getItemReplenishment } from "~/modules/items";
 import {
   calculateJobPriority,
@@ -25,7 +25,7 @@ import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 export const handle: Handle = {
-  breadcrumb: "Jobs",
+  breadcrumb: msg`Jobs`,
   to: path.to.jobs,
   module: "production"
 };
@@ -95,7 +95,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  const shelfId = await getDefaultShelfForJob(
+  const storageUnitId = await getDefaultStorageUnitForJob(
     client,
     validation.data.itemId,
     validation.data.locationId,
@@ -117,7 +117,7 @@ export async function action({ request }: ActionFunctionArgs) {
     // @ts-expect-error TS2353 - TODO: fix type
     priority,
     scrapQuantity,
-    shelfId: shelfId ?? undefined,
+    storageUnitId: storageUnitId ?? undefined,
     startDate: d.dueDate
       ? parseDate(d.dueDate).subtract({ days: leadTime }).toString()
       : undefined,
@@ -156,7 +156,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  await tasks.trigger<typeof recalculateTask>("recalculate", {
+  await trigger("recalculate", {
     type: "jobRequirements",
     id,
     companyId,

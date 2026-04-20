@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback
+  listPrivateObjectsWithFallbackDetailed
 } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import type { FileObject } from "@supabase/storage-js";
@@ -14,7 +14,7 @@ import type { StorageItem } from "~/types";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
-import { getDefaultShelfForJob } from "../inventory";
+import { getDefaultStorageUnitForJob } from "../inventory";
 import type {
   operationParameterValidator,
   operationStepValidator,
@@ -149,7 +149,7 @@ export async function convertSalesOrderLinesToJobs(
           }
         }
 
-        const shelfId = await getDefaultShelfForJob(
+        const storageUnitId = await getDefaultStorageUnitForJob(
           client,
           line.itemId,
           locationId!,
@@ -179,7 +179,7 @@ export async function convertSalesOrderLinesToJobs(
           salesOrderId: salesOrderId ?? undefined,
           salesOrderLineId: line.id,
           scrapQuantity,
-          shelfId: shelfId ?? undefined,
+          storageUnitId: storageUnitId ?? undefined,
           unitOfMeasureCode: line.unitOfMeasureCode ?? "EA"
         };
 
@@ -723,7 +723,7 @@ export async function getJobDocuments(
   }
 ): Promise<StorageItem[]> {
   const listFiles = (objectPathPrefix: string) =>
-    listPrivateObjectsWithFallback({
+    listPrivateObjectsWithFallbackDetailed({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix,
@@ -746,14 +746,57 @@ export async function getJobDocuments(
       : Promise.resolve([])
   ]);
 
+  for (const bucketError of jobFiles.errors) {
+    console.error("Failed to list job documents", {
+      companyId,
+      jobId: job.id,
+      physicalBucket: bucketError.physicalBucket,
+      prefix: `${companyId}/job/${job.id}`,
+      error: bucketError.error
+    });
+  }
+
+  if (!Array.isArray(opportunityLineFiles)) {
+    for (const bucketError of opportunityLineFiles.errors) {
+      console.error("Failed to list opportunity line documents for job", {
+        companyId,
+        jobId: job.id,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/opportunity-line/${
+          job.salesOrderLineId || job.quoteLineId
+        }`,
+        error: bucketError.error
+      });
+    }
+  }
+
+  if (!Array.isArray(partsFiles)) {
+    for (const bucketError of partsFiles.errors) {
+      console.error("Failed to list part documents for job", {
+        companyId,
+        jobId: job.id,
+        itemId: job.itemId,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/parts/${job.itemId}`,
+        error: bucketError.error
+      });
+    }
+  }
+
   // Combine and return all sets of files with their respective buckets
   return [
-    ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
-    ...(opportunityLineFiles.map((f) => ({
+    ...(jobFiles.data.map((f) => ({ ...f, bucket: "job" })) || []),
+    ...((Array.isArray(opportunityLineFiles)
+      ? opportunityLineFiles
+      : opportunityLineFiles.data
+    ).map((f) => ({
       ...f,
       bucket: "opportunity-line"
     })) || []),
-    ...(partsFiles.map((f) => ({ ...f, bucket: "parts" })) || [])
+    ...((Array.isArray(partsFiles) ? partsFiles : partsFiles.data).map((f) => ({
+      ...f,
+      bucket: "parts"
+    })) || [])
   ];
 }
 
@@ -763,7 +806,7 @@ export const getPartDocuments = async (
   ...items: Array<{ itemId: string }>
 ) => {
   const getFile = async (id: string) => {
-    const files = await listPrivateObjectsWithFallback({
+    const result = await listPrivateObjectsWithFallbackDetailed({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/parts/${id}`,
@@ -772,7 +815,17 @@ export const getPartDocuments = async (
       getItemKey: (item: FileObject) => item.name
     });
 
-    return files.map((f) => ({ ...f, bucket: "parts", itemId: id }));
+    for (const bucketError of result.errors) {
+      console.error("Failed to list part documents", {
+        companyId,
+        itemId: id,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/parts/${id}`,
+        error: bucketError.error
+      });
+    }
+
+    return result.data.map((f) => ({ ...f, bucket: "parts", itemId: id }));
   };
 
   const elems = items.map((el) => getFile(el.itemId));
@@ -794,7 +847,7 @@ export async function getJobDocumentsWithItemId(
     const opportunityLine = job.salesOrderLineId || job.quoteLineId;
 
     const [opportunityLineFiles, jobFiles] = await Promise.all([
-      listPrivateObjectsWithFallback({
+      listPrivateObjectsWithFallbackDetailed({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/opportunity-line/${opportunityLine}`,
@@ -802,7 +855,7 @@ export async function getJobDocumentsWithItemId(
           client.storage.from(physicalBucket).list(prefix),
         getItemKey: (item: FileObject) => item.name
       }),
-      listPrivateObjectsWithFallback({
+      listPrivateObjectsWithFallbackDetailed({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,
@@ -812,18 +865,39 @@ export async function getJobDocumentsWithItemId(
       })
     ]);
 
+    for (const bucketError of opportunityLineFiles.errors) {
+      console.error("Failed to list opportunity line documents", {
+        companyId,
+        jobId: job.id,
+        opportunityLine,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/opportunity-line/${opportunityLine}`,
+        error: bucketError.error
+      });
+    }
+
+    for (const bucketError of jobFiles.errors) {
+      console.error("Failed to list job documents", {
+        companyId,
+        jobId: job.id,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/job/${job.id}`,
+        error: bucketError.error
+      });
+    }
+
     // Combine and return both sets of files
     return [
-      ...(opportunityLineFiles.map((f) => ({
+      ...(opportunityLineFiles.data.map((f) => ({
         ...f,
         bucket: "opportunity-line"
       })) || []),
-      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
+      ...(jobFiles.data.map((f) => ({ ...f, bucket: "job" })) || []),
       ...itemFiles
     ];
   } else {
     const [jobFiles] = await Promise.all([
-      listPrivateObjectsWithFallback({
+      listPrivateObjectsWithFallbackDetailed({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,
@@ -833,8 +907,18 @@ export async function getJobDocumentsWithItemId(
       })
     ]);
 
+    for (const bucketError of jobFiles.errors) {
+      console.error("Failed to list job documents", {
+        companyId,
+        jobId: job.id,
+        physicalBucket: bucketError.physicalBucket,
+        prefix: `${companyId}/job/${job.id}`,
+        error: bucketError.error
+      });
+    }
+
     return [
-      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
+      ...(jobFiles.data.map((f) => ({ ...f, bucket: "job" })) || []),
       ...itemFiles
     ];
   }
@@ -1053,7 +1137,7 @@ export async function getJobMaterialsByMethodId(
 ) {
   return client
     .from("jobMaterial")
-    .select("*")
+    .select("*, item(replenishmentSystem)")
     .eq("jobMakeMethodId", jobMakeMethodId)
     .order("order", { ascending: true });
 }
@@ -2175,7 +2259,7 @@ export async function upsertJob(
   job:
     | (Omit<z.infer<typeof jobValidator>, "id" | "jobId"> & {
         jobId: string;
-        shelfId?: string;
+        storageUnitId?: string;
         startDate?: string;
         companyId: string;
         createdBy: string;
@@ -3091,4 +3175,28 @@ export async function upsertDemandProjections(
     data: hasError ? null : toUpsert,
     error: hasError ? results.find((r) => r.error)?.error : null
   };
+}
+
+/**
+ * Trigger a job scheduling task via Inngest.
+ * Supports both initial scheduling and rescheduling.
+ */
+export async function triggerJobSchedule(
+  jobId: string,
+  companyId: string,
+  userId: string,
+  mode: "initial" | "reschedule" = "reschedule",
+  direction: "backward" | "forward" = "backward"
+) {
+  const { trigger } = await import("@carbon/jobs");
+
+  await trigger("schedule-job", {
+    jobId,
+    companyId,
+    userId,
+    mode,
+    direction
+  });
+
+  return { success: true };
 }

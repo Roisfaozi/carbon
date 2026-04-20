@@ -10,6 +10,7 @@ import {
   ModalTitle,
   VStack
 } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import type { FetcherWithComponents } from "react-router";
 import { SelectControlled, SupplierContact } from "~/components/Form";
@@ -30,8 +31,9 @@ const SupplierQuoteFinalizeModal = ({
   fetcher,
   action
 }: SupplierQuoteFinalizeModalProps) => {
+  const { t } = useLingui();
   const integrations = useIntegrations();
-  const canEmail = integrations.has("resend");
+  const canEmail = integrations.has("email");
 
   const [notificationType, setNotificationType] = useState(
     canEmail ? "Email" : "None"
@@ -69,15 +71,15 @@ const SupplierQuoteFinalizeModal = ({
             <VStack spacing={4}>
               {canEmail && (
                 <SelectControlled
-                  label="Send Via"
+                  label={t`Send Via`}
                   name="notification"
                   options={[
                     {
-                      label: "None",
+                      label: t`None`,
                       value: "None"
                     },
                     {
-                      label: "Email",
+                      label: t`Email`,
                       value: "Email"
                     }
                   ]}
@@ -97,9 +99,11 @@ const SupplierQuoteFinalizeModal = ({
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
-            <Button type="submit">Send</Button>
+            <Button type="submit">
+              <Trans>Send</Trans>
+            </Button>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>
