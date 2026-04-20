@@ -276,4 +276,33 @@ describe("storage helpers", () => {
       signedUrl: "https://example.com/legacy-file"
     });
   });
+
+  it("returns null signedUrl when signed url creation fails in all buckets", async () => {
+    const result = await createPrivateSignedUrlWithFallbackDetailed({
+      companyId: "cmp_123",
+      objectPath: "cmp_123/job/job_987/work-instruction.pdf",
+      requestedBucket: "cmp_123",
+      expiresIn: 3600,
+      createSignedUrl: async (physicalBucket) => ({
+        signedUrl: null,
+        error: { message: `Failed in ${physicalBucket}` }
+      })
+    });
+
+    expect(result).toEqual({
+      attemptedBuckets: ["cmp_123", "private"],
+      errors: [
+        {
+          physicalBucket: "cmp_123",
+          error: { message: "Failed in cmp_123" }
+        },
+        {
+          physicalBucket: "private",
+          error: { message: "Failed in private" }
+        }
+      ],
+      fallbackUsed: false,
+      signedUrl: null
+    });
+  });
 });

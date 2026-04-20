@@ -4,8 +4,8 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import {
+  createPrivateSignedUrlWithFallbackDetailed,
   getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets,
   tiptapToHTML
 } from "@carbon/utils";
 import type { JSONContent } from "@tiptap/react";
@@ -229,20 +229,37 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Send emails if we have any contacts (using same format as supplier quote send)
   if (emailsToSend.length > 0 && company.data && user.data) {
     const createSignedUrlWithFallback = async (objectPath: string) => {
-      for (const physicalBucket of getPrivateReadCandidateBuckets(
+      const result = await createPrivateSignedUrlWithFallbackDetailed({
         companyId,
-        getCompanyPrivateBucket(companyId)
-      )) {
-        const { data, error } = await client.storage
-          .from(physicalBucket)
-          .createSignedUrl(objectPath, 3600);
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPath,
+        expiresIn: 3600,
+        createSignedUrl: async (
+          physicalBucket,
+          currentObjectPath,
+          expiresIn
+        ) => {
+          const { data, error } = await client.storage
+            .from(physicalBucket)
+            .createSignedUrl(currentObjectPath, expiresIn);
 
-        if (!error && data?.signedUrl) {
-          return data.signedUrl;
+          return {
+            signedUrl: data?.signedUrl ?? null,
+            error: error ?? null
+          };
         }
+      });
+
+      for (const bucketError of result.errors) {
+        console.error("Failed to create attachment signed URL", {
+          companyId,
+          objectPath,
+          physicalBucket: bucketError.physicalBucket,
+          error: bucketError.error
+        });
       }
 
-      return null;
+      return result.signedUrl;
     };
 
     // Build attachments: RFQ-level documents + line-level documents
