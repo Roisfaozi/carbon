@@ -58977,6 +58977,8 @@ export type Database = {
           title: string
         }[]
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       storage_unit_block_location_change_with_children: {
         Args: { p_new: Json; p_old: Json; p_operation: string; p_table: string }
         Returns: undefined
@@ -59582,7 +59584,7 @@ export type Database = {
       purchaseInvoiceStatus:
         | "Draft"
         | "Pending"
-        | "Submitted"
+        | "Open"
         | "Return"
         | "Debit Note Issued"
         | "Paid"
@@ -59643,7 +59645,7 @@ export type Database = {
         | "Outbound Transfer"
         | "Manufacturing Consumption"
         | "Manufacturing Output"
-      receiptStatus: "Draft" | "Pending" | "Posted"
+      receiptStatus: "Draft" | "Pending" | "Posted" | "Voided"
       riskRegisterType: "Risk" | "Opportunity"
       riskSource:
         | "Customer"
@@ -60769,7 +60771,7 @@ export const Constants = {
       purchaseInvoiceStatus: [
         "Draft",
         "Pending",
-        "Submitted",
+        "Open",
         "Return",
         "Debit Note Issued",
         "Paid",
@@ -60837,7 +60839,7 @@ export const Constants = {
         "Manufacturing Consumption",
         "Manufacturing Output",
       ],
-      receiptStatus: ["Draft", "Pending", "Posted"],
+      receiptStatus: ["Draft", "Pending", "Posted", "Voided"],
       riskRegisterType: ["Risk", "Opportunity"],
       riskSource: [
         "Customer",

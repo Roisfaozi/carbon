@@ -1274,6 +1274,8 @@ export const path = {
     purchaseInvoiceRoot: `${x}/purchase-invoice`,
     purchaseInvoiceStatus: (id: string) =>
       generatePath(`${x}/purchase-invoice/${id}/status`),
+    purchaseInvoiceVoid: (id: string) =>
+      generatePath(`${x}/purchase-invoice/${id}/void`),
     purchaseInvoices: `${x}/purchasing/invoices`,
     purchaseOrder: (id: string) => generatePath(`${x}/purchase-order/${id}`),
     purchaseOrderDelivery: (id: string) =>
@@ -1372,6 +1374,7 @@ export const path = {
     receipts: `${x}/inventory/receipts`,
     receiptPost: (id: string) => generatePath(`${x}/receipt/${id}/post`),
     receiptRoot: `${x}/receipt`,
+    receiptVoid: (id: string) => generatePath(`${x}/receipt/${id}/void`),
     refreshSession: "/refresh-session",
     requiredAction: (id: string) =>
       generatePath(`${x}/quality/required-actions/${id}`),
@@ -1433,6 +1436,7 @@ export const path = {
     deletePriceOverride: (id: string) =>
       generatePath(`${x}/sales/price-list/delete/${id}`),
     newPriceOverride: `${x}/sales/price-list/new`,
+    duplicatePriceList: `${x}/sales/price-list/duplicate`,
     priceOverride: (id: string) => generatePath(`${x}/sales/price-list/${id}`),
     salesPricingRules: `${x}/sales/pricing-rules`,
     pricingRule: (id: string) => generatePath(`${x}/sales/pricing-rules/${id}`),

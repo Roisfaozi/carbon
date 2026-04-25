@@ -9,7 +9,6 @@ import {
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
-import { FunctionRegion } from "@supabase/supabase-js";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs } from "react-router";
 import { getPaymentTermsList } from "~/modules/accounting";
@@ -71,8 +70,7 @@ export async function action(args: ActionFunctionArgs) {
           invoiceId: invoiceId,
           userId: userId,
           companyId: companyId
-        },
-        region: FunctionRegion.UsEast1
+        }
       }
     );
 
@@ -104,9 +102,7 @@ export async function action(args: ActionFunctionArgs) {
     };
   }
 
-  const [salesInvoice] = await Promise.all([
-    getSalesInvoice(serviceRole, invoiceId)
-  ]);
+  const salesInvoice = await getSalesInvoice(serviceRole, invoiceId);
   if (salesInvoice.error) {
     return {
       success: false,

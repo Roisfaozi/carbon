@@ -118,8 +118,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         shipmentId: shipmentId,
         userId: userId,
         companyId: companyId
-      },
-      region: FunctionRegion.UsEast1
+      }
     });
 
     if (postShipment.error) {

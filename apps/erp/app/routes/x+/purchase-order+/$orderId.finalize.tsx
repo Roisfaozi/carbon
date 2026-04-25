@@ -11,7 +11,6 @@ import {
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import { renderAsync } from "@react-email/components";
-import { FunctionRegion } from "@supabase/supabase-js";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
@@ -193,8 +192,7 @@ export async function action(args: ActionFunctionArgs) {
           source: "purchaseOrder",
           updatePrices: true,
           updateLeadTimes: false
-        },
-        region: FunctionRegion.UsEast1
+        }
       }
     );
 

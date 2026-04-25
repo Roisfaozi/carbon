@@ -6,7 +6,6 @@ import {
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { FunctionRegion } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -68,8 +67,7 @@ export async function activateMethodVersion(
     body: {
       type: "methodVersionToActive",
       ...payload
-    },
-    region: FunctionRegion.UsEast1
+    }
   });
 }
 
@@ -95,8 +93,7 @@ export async function copyItem(
         steps: args.steps,
         workInstructions: args.workInstructions
       }
-    },
-    region: FunctionRegion.UsEast1
+    }
   });
 }
 
@@ -114,8 +111,7 @@ export async function copyMakeMethod(
       targetId: args.targetId,
       companyId: args.companyId,
       userId: args.userId
-    },
-    region: FunctionRegion.UsEast1
+    }
   });
 }
 
@@ -159,8 +155,7 @@ export async function createRevision(
         targetId: itemInsert.data.id,
         companyId: item.companyId,
         userId: createdBy
-      },
-      region: FunctionRegion.UsEast1
+      }
     });
   }
 
