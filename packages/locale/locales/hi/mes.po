@@ -144,7 +144,7 @@ msgstr "बैच {0} ({1} उपलब्ध)"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:182
 msgid "Batch is not available"
-msgstr "बैच उपलब्ध नहीं है"
+msgstr "बैच उपलब्ध नहीं है<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:502
@@ -192,7 +192,7 @@ msgstr "कार्बन लोगो"
 
 #: apps/mes/app/routes/x+/operations.tsx:470
 msgid "Cards"
-msgstr ""
+msgstr "कार्ड"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:473
 msgid "Chat"
@@ -277,7 +277,7 @@ msgstr "कॉलम: {0}"
 
 #: apps/mes/app/routes/x+/operations.tsx:447
 msgid "Columns"
-msgstr ""
+msgstr "कॉलम"
 
 #: apps/mes/app/components/AppSidebar.tsx:420
 msgid "Company"
@@ -417,7 +417,7 @@ msgstr "ईमेल पता"
 
 #: apps/mes/app/routes/x+/operations.tsx:450
 msgid "Empty work centers"
-msgstr ""
+msgstr "खाली कार्य केंद्र"
 
 #: apps/mes/app/components/EndShift.tsx:72
 #: apps/mes/app/components/EndShift.tsx:75
@@ -1068,7 +1068,7 @@ msgstr "एक आइटम चुनें और जारी करने क
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:317
 msgid "Select an item..."
-msgstr "एक आइटम चुनें..."
+msgstr "एक आइटम चुनें...<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:592
@@ -1097,7 +1097,7 @@ msgstr "सीरीज़"
 #. placeholder {0}: sn.readableId
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
 msgid "Serial {0}"
-msgstr "सीरियल {0}"
+msgstr "सीरियल {0}<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:382

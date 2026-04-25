@@ -144,7 +144,7 @@ msgstr "Charge {0} ({1} verfügbar)"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:182
 msgid "Batch is not available"
-msgstr "Charge ist nicht verfügbar"
+msgstr "Charge ist nicht verfügbar<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:502
@@ -192,7 +192,7 @@ msgstr "Carbon Logo"
 
 #: apps/mes/app/routes/x+/operations.tsx:470
 msgid "Cards"
-msgstr ""
+msgstr "Karten"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:473
 msgid "Chat"
@@ -277,7 +277,7 @@ msgstr "Spalte: {0}"
 
 #: apps/mes/app/routes/x+/operations.tsx:447
 msgid "Columns"
-msgstr ""
+msgstr "Spalten"
 
 #: apps/mes/app/components/AppSidebar.tsx:420
 msgid "Company"
@@ -417,7 +417,7 @@ msgstr "E-Mail-Adresse"
 
 #: apps/mes/app/routes/x+/operations.tsx:450
 msgid "Empty work centers"
-msgstr ""
+msgstr "Leere Arbeitszentren"
 
 #: apps/mes/app/components/EndShift.tsx:72
 #: apps/mes/app/components/EndShift.tsx:75
@@ -1068,7 +1068,7 @@ msgstr "Wählen Sie einen Artikel und geben Sie die auszugebende Menge an"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:317
 msgid "Select an item..."
-msgstr "Artikel auswählen..."
+msgstr "Artikel auswählen...<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:592
@@ -1097,7 +1097,7 @@ msgstr "Serie"
 #. placeholder {0}: sn.readableId
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
 msgid "Serial {0}"
-msgstr "Serie {0}"
+msgstr "Serie {0}<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:382

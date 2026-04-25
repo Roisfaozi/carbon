@@ -144,7 +144,7 @@ msgstr "バッチ {0}（{1} 利用可能）"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:182
 msgid "Batch is not available"
-msgstr "バッチは利用できません"
+msgstr "バッチは利用できません<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:502
@@ -192,7 +192,7 @@ msgstr "Carbonロゴ"
 
 #: apps/mes/app/routes/x+/operations.tsx:470
 msgid "Cards"
-msgstr ""
+msgstr "カード"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:473
 msgid "Chat"
@@ -277,7 +277,7 @@ msgstr "カラム: {0}"
 
 #: apps/mes/app/routes/x+/operations.tsx:447
 msgid "Columns"
-msgstr ""
+msgstr "列"
 
 #: apps/mes/app/components/AppSidebar.tsx:420
 msgid "Company"
@@ -417,7 +417,7 @@ msgstr "メールアドレス"
 
 #: apps/mes/app/routes/x+/operations.tsx:450
 msgid "Empty work centers"
-msgstr ""
+msgstr "空の作業センター"
 
 #: apps/mes/app/components/EndShift.tsx:72
 #: apps/mes/app/components/EndShift.tsx:75
@@ -1068,7 +1068,7 @@ msgstr "品目を選択し、払出数量を指定してください"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:317
 msgid "Select an item..."
-msgstr "品目を選択..."
+msgstr "品目を選択...<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:592
@@ -1097,7 +1097,7 @@ msgstr "シリアル"
 #. placeholder {0}: sn.readableId
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
 msgid "Serial {0}"
-msgstr "シリアル {0}"
+msgstr "シリアル {0}<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:382

@@ -144,7 +144,7 @@ msgstr "Partia {0} ({1} dostępnych)"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:182
 msgid "Batch is not available"
-msgstr "Partia jest niedostępna"
+msgstr "Partia jest niedostępna<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:502
@@ -192,7 +192,7 @@ msgstr "Logo Carbon"
 
 #: apps/mes/app/routes/x+/operations.tsx:470
 msgid "Cards"
-msgstr ""
+msgstr "Karty"
 
 #: apps/mes/app/components/JobOperation/JobOperation.tsx:473
 msgid "Chat"
@@ -277,7 +277,7 @@ msgstr "Kolumna: {0}"
 
 #: apps/mes/app/routes/x+/operations.tsx:447
 msgid "Columns"
-msgstr ""
+msgstr "Kolumny"
 
 #: apps/mes/app/components/AppSidebar.tsx:420
 msgid "Company"
@@ -417,7 +417,7 @@ msgstr "Adres e-mail"
 
 #: apps/mes/app/routes/x+/operations.tsx:450
 msgid "Empty work centers"
-msgstr ""
+msgstr "Puste centra pracy"
 
 #: apps/mes/app/components/EndShift.tsx:72
 #: apps/mes/app/components/EndShift.tsx:75
@@ -1068,7 +1068,7 @@ msgstr "Wybierz pozycję i określ ilość do wydania"
 
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:317
 msgid "Select an item..."
-msgstr "Wybierz pozycję..."
+msgstr "Wybierz pozycję...<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:592
@@ -1097,7 +1097,7 @@ msgstr "Seryjny"
 #. placeholder {0}: sn.readableId
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
 msgid "Serial {0}"
-msgstr "Seryjny {0}"
+msgstr "Seryjny {0}<<<<<<< Updated upstream"
 
 #. placeholder {0}: index + 1
 #: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:382
