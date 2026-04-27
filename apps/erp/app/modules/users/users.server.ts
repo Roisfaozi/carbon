@@ -4,6 +4,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash, requireAuthSession } from "@carbon/auth/session.server";
 import {
   deactivateCustomer,
+  deactivateEmployee,
   deactivateSupplier
 } from "@carbon/auth/users.server";
 import type { Database, Json } from "@carbon/database";
@@ -445,8 +446,7 @@ export async function createEmployeeAccount(
     if (isNewUser) {
       await deleteAuthAccount(serviceRole, userId);
     } else {
-      // Clean up the employee record that was successfully inserted
-      await deleteEmployee(serviceRole, userId, companyId);
+      await deactivateEmployee(serviceRole, userId, companyId);
     }
     return { success: false, message: jobInsert.error.message };
   }
@@ -455,11 +455,7 @@ export async function createEmployeeAccount(
     if (isNewUser) {
       await deleteAuthAccount(serviceRole, userId);
     } else {
-      // Clean up the employee and job records that were successfully inserted
-      await Promise.all([
-        deleteEmployee(serviceRole, userId, companyId),
-        deleteEmployeeJob(serviceRole, userId, companyId)
-      ]);
+      await deactivateEmployee(serviceRole, userId, companyId);
     }
     return { success: false, message: inviteInsert.error.message };
   }
@@ -724,30 +720,6 @@ export async function insertEmployee(
   employee: EmployeeInsert
 ) {
   return client.from("employee").insert([employee]).select("*").single();
-}
-
-async function deleteEmployee(
-  client: SupabaseClient<Database>,
-  userId: string,
-  companyId: string
-) {
-  return client
-    .from("employee")
-    .delete()
-    .eq("id", userId)
-    .eq("companyId", companyId);
-}
-
-async function deleteEmployeeJob(
-  client: SupabaseClient<Database>,
-  userId: string,
-  companyId: string
-) {
-  return client
-    .from("employeeJob")
-    .delete()
-    .eq("id", userId)
-    .eq("companyId", companyId);
 }
 
 export async function insertInvite(
