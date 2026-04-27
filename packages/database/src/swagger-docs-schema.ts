@@ -4749,195 +4749,6 @@ export default {
         tags: ["jobOperationsWithDependencies"]
       }
     },
-    "/searchIndex_EUPeRM3Kae6DBG3tra2deZ": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_EUPeRM3Kae6DBG3tra2deZ"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_EUPeRM3Kae6DBG3tra2deZ"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_EUPeRM3Kae6DBG3tra2deZ"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_EUPeRM3Kae6DBG3tra2deZ"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_EUPeRM3Kae6DBG3tra2deZ"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_EUPeRM3Kae6DBG3tra2deZ"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_EUPeRM3Kae6DBG3tra2deZ"]
-      }
-    },
     "/purchaseInvoicePriceChange": {
       get: {
         parameters: [
@@ -5958,6 +5769,204 @@ export default {
         tags: ["receipts"]
       }
     },
+    "/itemSamplingPlan": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.type"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.percentage"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/itemSamplingPlan"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["itemSamplingPlan"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.itemSamplingPlan"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["itemSamplingPlan"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.type"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.percentage"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["itemSamplingPlan"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.type"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.percentage"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemSamplingPlan.updatedBy"
+          },
+          {
+            $ref: "#/parameters/body.itemSamplingPlan"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["itemSamplingPlan"]
+      }
+    },
     "/purchaseOrderLocations": {
       get: {
         parameters: [
@@ -6094,195 +6103,6 @@ export default {
           }
         },
         tags: ["purchaseOrderLocations"]
-      }
-    },
-    "/searchIndex_S32bAHJrJi7z4Pktoac6xN": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_S32bAHJrJi7z4Pktoac6xN"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_S32bAHJrJi7z4Pktoac6xN"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_S32bAHJrJi7z4Pktoac6xN"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_S32bAHJrJi7z4Pktoac6xN"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_S32bAHJrJi7z4Pktoac6xN"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_S32bAHJrJi7z4Pktoac6xN"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_S32bAHJrJi7z4Pktoac6xN"]
       }
     },
     "/journal": {
@@ -13624,6 +13444,9 @@ export default {
             $ref: "#/parameters/rowFilter.itemLedger.comment"
           },
           {
+            $ref: "#/parameters/rowFilter.itemLedger.trackedEntityStatus"
+          },
+          {
             $ref: "#/parameters/select"
           },
           {
@@ -13734,6 +13557,9 @@ export default {
             $ref: "#/parameters/rowFilter.itemLedger.comment"
           },
           {
+            $ref: "#/parameters/rowFilter.itemLedger.trackedEntityStatus"
+          },
+          {
             $ref: "#/parameters/preferReturn"
           }
         ],
@@ -13796,6 +13622,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.itemLedger.comment"
+          },
+          {
+            $ref: "#/parameters/rowFilter.itemLedger.trackedEntityStatus"
           },
           {
             $ref: "#/parameters/body.itemLedger"
@@ -21126,6 +20955,231 @@ export default {
         tags: ["openJobMaterialLines"]
       }
     },
+    "/inboundInspectionHistory": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.defectsFound"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.outcome"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/inboundInspectionHistory"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["inboundInspectionHistory"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.inboundInspectionHistory"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["inboundInspectionHistory"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.defectsFound"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.outcome"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspectionHistory"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.defectsFound"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.outcome"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionHistory.createdBy"
+          },
+          {
+            $ref: "#/parameters/body.inboundInspectionHistory"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspectionHistory"]
+      }
+    },
     "/externalIntegrationMapping": {
       get: {
         parameters: [
@@ -25158,6 +25212,186 @@ export default {
         tags: ["period"]
       }
     },
+    "/nonConformanceItemTrackedEntity": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceItemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.quantity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/nonConformanceItemTrackedEntity"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["nonConformanceItemTrackedEntity"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.nonConformanceItemTrackedEntity"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["nonConformanceItemTrackedEntity"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceItemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.quantity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["nonConformanceItemTrackedEntity"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceItemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.quantity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceItemTrackedEntity.updatedBy"
+          },
+          {
+            $ref: "#/parameters/body.nonConformanceItemTrackedEntity"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["nonConformanceItemTrackedEntity"]
+      }
+    },
     "/jobOperationDependency": {
       get: {
         parameters: [
@@ -26629,6 +26863,204 @@ export default {
           }
         },
         tags: ["salesOrderFavorite"]
+      }
+    },
+    "/inboundInspectionSample": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/inboundInspectionSample"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["inboundInspectionSample"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.inboundInspectionSample"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["inboundInspectionSample"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspectionSample"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.trackedEntityId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.inspectedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspectionSample.updatedBy"
+          },
+          {
+            $ref: "#/parameters/body.inboundInspectionSample"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspectionSample"]
       }
     },
     "/materialFinishes": {
@@ -28509,195 +28941,6 @@ export default {
         tags: ["warehouse"]
       }
     },
-    "/searchIndex_87xR14oHMLgpGLQGc4AnUt": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_87xR14oHMLgpGLQGc4AnUt"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_87xR14oHMLgpGLQGc4AnUt"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_87xR14oHMLgpGLQGc4AnUt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_87xR14oHMLgpGLQGc4AnUt"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_87xR14oHMLgpGLQGc4AnUt"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_87xR14oHMLgpGLQGc4AnUt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_87xR14oHMLgpGLQGc4AnUt"]
-      }
-    },
     "/salesOrderCustomers": {
       get: {
         parameters: [
@@ -30310,9 +30553,6 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoice.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
-          },
-          {
             $ref: "#/parameters/rowFilter.purchaseInvoice.supplierId"
           },
           {
@@ -30398,6 +30638,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.purchaseInvoice.locationId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
           },
           {
             $ref: "#/parameters/select"
@@ -30465,9 +30708,6 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoice.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
-          },
-          {
             $ref: "#/parameters/rowFilter.purchaseInvoice.supplierId"
           },
           {
@@ -30553,6 +30793,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.purchaseInvoice.locationId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
           },
           {
             $ref: "#/parameters/preferReturn"
@@ -30574,9 +30817,6 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoice.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
-          },
-          {
             $ref: "#/parameters/rowFilter.purchaseInvoice.supplierId"
           },
           {
@@ -30664,6 +30904,9 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoice.locationId"
           },
           {
+            $ref: "#/parameters/rowFilter.purchaseInvoice.status"
+          },
+          {
             $ref: "#/parameters/body.purchaseInvoice"
           },
           {
@@ -30676,195 +30919,6 @@ export default {
           }
         },
         tags: ["purchaseInvoice"]
-      }
-    },
-    "/searchIndex_VaGcmY4pUrc7nKHotAH6Ku": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_VaGcmY4pUrc7nKHotAH6Ku"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_VaGcmY4pUrc7nKHotAH6Ku"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_VaGcmY4pUrc7nKHotAH6Ku"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_VaGcmY4pUrc7nKHotAH6Ku"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_VaGcmY4pUrc7nKHotAH6Ku"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_VaGcmY4pUrc7nKHotAH6Ku"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_VaGcmY4pUrc7nKHotAH6Ku"]
       }
     },
     "/userAttribute": {
@@ -37434,6 +37488,330 @@ export default {
         tags: ["fixture"]
       }
     },
+    "/inboundInspection": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptLineId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemReadableId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingPlanType"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.acceptanceNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.rejectionNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.codeLetter"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/inboundInspection"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["inboundInspection"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.inboundInspection"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["inboundInspection"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptLineId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemReadableId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingPlanType"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.acceptanceNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.rejectionNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.codeLetter"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspection"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptLineId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.receiptId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.itemReadableId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.supplierId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.lotSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingStandard"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.samplingPlanType"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.sampleSize"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.acceptanceNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.rejectionNumber"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.aql"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.inspectionLevel"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.severity"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.codeLetter"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.status"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.notes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.dispositionedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.inboundInspection.updatedBy"
+          },
+          {
+            $ref: "#/parameters/body.inboundInspection"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["inboundInspection"]
+      }
+    },
     "/userPermission": {
       get: {
         parameters: [
@@ -40993,10 +41371,10 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
           },
           {
             $ref: "#/parameters/select"
@@ -41064,10 +41442,10 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
           },
           {
             $ref: "#/parameters/preferReturn"
@@ -41089,10 +41467,10 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.invoiceId"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.createdAt"
+            $ref: "#/parameters/rowFilter.purchaseInvoiceStatusHistory.status"
           },
           {
             $ref: "#/parameters/body.purchaseInvoiceStatusHistory"
@@ -41107,195 +41485,6 @@ export default {
           }
         },
         tags: ["purchaseInvoiceStatusHistory"]
-      }
-    },
-    "/searchIndex_LkbVbjKfkhNUKHqV2mes8d": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_LkbVbjKfkhNUKHqV2mes8d"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_LkbVbjKfkhNUKHqV2mes8d"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_LkbVbjKfkhNUKHqV2mes8d"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_LkbVbjKfkhNUKHqV2mes8d"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_LkbVbjKfkhNUKHqV2mes8d"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_LkbVbjKfkhNUKHqV2mes8d"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_LkbVbjKfkhNUKHqV2mes8d"]
       }
     },
     "/accountingPeriod": {
@@ -51969,195 +52158,6 @@ export default {
         tags: ["materialTypes"]
       }
     },
-    "/searchIndex_USPpoeaKcnEMHdu3QKv6Bo": {
-      get: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.updatedAt"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/order"
-          },
-          {
-            $ref: "#/parameters/range"
-          },
-          {
-            $ref: "#/parameters/rangeUnit"
-          },
-          {
-            $ref: "#/parameters/offset"
-          },
-          {
-            $ref: "#/parameters/limit"
-          },
-          {
-            $ref: "#/parameters/preferCount"
-          }
-        ],
-        responses: {
-          "200": {
-            description: "OK",
-            schema: {
-              items: {
-                $ref: "#/definitions/searchIndex_USPpoeaKcnEMHdu3QKv6Bo"
-              },
-              type: "array"
-            }
-          },
-          "206": {
-            description: "Partial Content"
-          }
-        },
-        tags: ["searchIndex_USPpoeaKcnEMHdu3QKv6Bo"]
-      },
-      post: {
-        parameters: [
-          {
-            $ref: "#/parameters/body.searchIndex_USPpoeaKcnEMHdu3QKv6Bo"
-          },
-          {
-            $ref: "#/parameters/select"
-          },
-          {
-            $ref: "#/parameters/preferPost"
-          }
-        ],
-        responses: {
-          "201": {
-            description: "Created"
-          }
-        },
-        tags: ["searchIndex_USPpoeaKcnEMHdu3QKv6Bo"]
-      },
-      delete: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.updatedAt"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_USPpoeaKcnEMHdu3QKv6Bo"]
-      },
-      patch: {
-        parameters: [
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.id"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityType"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityId"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.title"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.description"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.link"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.tags"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.metadata"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.searchVector"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.createdAt"
-          },
-          {
-            $ref: "#/parameters/rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.updatedAt"
-          },
-          {
-            $ref: "#/parameters/body.searchIndex_USPpoeaKcnEMHdu3QKv6Bo"
-          },
-          {
-            $ref: "#/parameters/preferReturn"
-          }
-        ],
-        responses: {
-          "204": {
-            description: "No Content"
-          }
-        },
-        tags: ["searchIndex_USPpoeaKcnEMHdu3QKv6Bo"]
-      }
-    },
     "/user": {
       get: {
         parameters: [
@@ -58635,6 +58635,150 @@ export default {
         tags: ["supplier"]
       }
     },
+    "/nonConformanceInboundInspection": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/order"
+          },
+          {
+            $ref: "#/parameters/range"
+          },
+          {
+            $ref: "#/parameters/rangeUnit"
+          },
+          {
+            $ref: "#/parameters/offset"
+          },
+          {
+            $ref: "#/parameters/limit"
+          },
+          {
+            $ref: "#/parameters/preferCount"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/nonConformanceInboundInspection"
+              },
+              type: "array"
+            }
+          },
+          "206": {
+            description: "Partial Content"
+          }
+        },
+        tags: ["nonConformanceInboundInspection"]
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.nonConformanceInboundInspection"
+          },
+          {
+            $ref: "#/parameters/select"
+          },
+          {
+            $ref: "#/parameters/preferPost"
+          }
+        ],
+        responses: {
+          "201": {
+            description: "Created"
+          }
+        },
+        tags: ["nonConformanceInboundInspection"]
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["nonConformanceInboundInspection"]
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.id"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.nonConformanceId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.inboundInspectionId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.companyId"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdAt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceInboundInspection.createdBy"
+          },
+          {
+            $ref: "#/parameters/body.nonConformanceInboundInspection"
+          },
+          {
+            $ref: "#/parameters/preferReturn"
+          }
+        ],
+        responses: {
+          "204": {
+            description: "No Content"
+          }
+        },
+        tags: ["nonConformanceInboundInspection"]
+      }
+    },
     "/timeCardEntry": {
       get: {
         parameters: [
@@ -59623,6 +59767,9 @@ export default {
             $ref: "#/parameters/rowFilter.item.readableIdWithRevision"
           },
           {
+            $ref: "#/parameters/rowFilter.item.requiresInspection"
+          },
+          {
             $ref: "#/parameters/select"
           },
           {
@@ -59751,6 +59898,9 @@ export default {
             $ref: "#/parameters/rowFilter.item.readableIdWithRevision"
           },
           {
+            $ref: "#/parameters/rowFilter.item.requiresInspection"
+          },
+          {
             $ref: "#/parameters/preferReturn"
           }
         ],
@@ -59831,6 +59981,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.item.readableIdWithRevision"
+          },
+          {
+            $ref: "#/parameters/rowFilter.item.requiresInspection"
           },
           {
             $ref: "#/parameters/body.item"
@@ -65209,6 +65362,12 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.updateLeadTimesOnReceipt"
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.enforceInspectionFourEyes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.samplingStandard"
+          },
+          {
             $ref: "#/parameters/select"
           },
           {
@@ -65376,6 +65535,12 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.updateLeadTimesOnReceipt"
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.enforceInspectionFourEyes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.samplingStandard"
+          },
+          {
             $ref: "#/parameters/preferReturn"
           }
         ],
@@ -65495,6 +65660,12 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.companySettings.updateLeadTimesOnReceipt"
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.enforceInspectionFourEyes"
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.samplingStandard"
           },
           {
             $ref: "#/parameters/body.companySettings"
@@ -70302,20 +70473,20 @@ export default {
             in: "query",
             name: "",
             required: true,
-            type: "string",
-          },
+            type: "string"
+          }
         ],
         produces: [
           "application/json",
           "application/vnd.pgrst.object+json;nulls=stripped",
-          "application/vnd.pgrst.object+json",
+          "application/vnd.pgrst.object+json"
         ],
         responses: {
           "200": {
-            description: "OK",
-          },
+            description: "OK"
+          }
         },
-        tags: ["(rpc) show_trgm"],
+        tags: ["(rpc) show_trgm"]
       },
       post: {
         parameters: [
@@ -70327,29 +70498,29 @@ export default {
               properties: {
                 "": {
                   format: "text",
-                  type: "string",
-                },
+                  type: "string"
+                }
               },
               required: [""],
-              type: "object",
-            },
+              type: "object"
+            }
           },
           {
-            $ref: "#/parameters/preferParams",
-          },
+            $ref: "#/parameters/preferParams"
+          }
         ],
         produces: [
           "application/json",
           "application/vnd.pgrst.object+json;nulls=stripped",
-          "application/vnd.pgrst.object+json",
+          "application/vnd.pgrst.object+json"
         ],
         responses: {
           "200": {
-            description: "OK",
-          },
+            description: "OK"
+          }
         },
-        tags: ["(rpc) show_trgm"],
-      },
+        tags: ["(rpc) show_trgm"]
+      }
     },
     "/rpc/create_rfq_from_model_v1": {
       post: {
@@ -73061,14 +73232,14 @@ export default {
         produces: [
           "application/json",
           "application/vnd.pgrst.object+json;nulls=stripped",
-          "application/vnd.pgrst.object+json",
+          "application/vnd.pgrst.object+json"
         ],
         responses: {
           "200": {
-            description: "OK",
-          },
+            description: "OK"
+          }
         },
-        tags: ["(rpc) show_limit"],
+        tags: ["(rpc) show_limit"]
       },
       post: {
         parameters: [
@@ -73077,25 +73248,25 @@ export default {
             name: "args",
             required: true,
             schema: {
-              type: "object",
-            },
+              type: "object"
+            }
           },
           {
-            $ref: "#/parameters/preferParams",
-          },
+            $ref: "#/parameters/preferParams"
+          }
         ],
         produces: [
           "application/json",
           "application/vnd.pgrst.object+json;nulls=stripped",
-          "application/vnd.pgrst.object+json",
+          "application/vnd.pgrst.object+json"
         ],
         responses: {
           "200": {
-            description: "OK",
-          },
+            description: "OK"
+          }
         },
-        tags: ["(rpc) show_limit"],
-      },
+        tags: ["(rpc) show_limit"]
+      }
     },
     "/rpc/search_company_index": {
       post: {
@@ -76895,61 +77066,6 @@ export default {
       },
       type: "object"
     },
-    searchIndex_EUPeRM3Kae6DBG3tra2deZ: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
-        },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
-          type: "string"
-        }
-      },
-      type: "object"
-    },
     purchaseInvoicePriceChange: {
       required: [
         "id",
@@ -77452,6 +77568,83 @@ export default {
       },
       type: "object"
     },
+    itemSamplingPlan: {
+      required: [
+        "itemId",
+        "type",
+        "inspectionLevel",
+        "severity",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        itemId: {
+          description:
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `item.id`.<fk table='item' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        type: {
+          default: "All",
+          enum: ["All", "First", "Percentage", "AQL"],
+          format: 'public."samplingPlanType"',
+          type: "string"
+        },
+        sampleSize: {
+          format: "int32",
+          type: "integer"
+        },
+        percentage: {
+          format: "numeric",
+          type: "number"
+        },
+        aql: {
+          format: "numeric",
+          type: "number"
+        },
+        inspectionLevel: {
+          default: "II",
+          enum: ["I", "II", "III", "S1", "S2", "S3", "S4"],
+          format: 'public."inspectionLevel"',
+          type: "string"
+        },
+        severity: {
+          default: "Normal",
+          enum: ["Normal", "Tightened", "Reduced"],
+          format: 'public."inspectionSeverity"',
+          type: "string"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
     purchaseOrderLocations: {
       properties: {
         id: {
@@ -77585,61 +77778,6 @@ export default {
         },
         customerCountryName: {
           format: "text",
-          type: "string"
-        }
-      },
-      type: "object"
-    },
-    searchIndex_S32bAHJrJi7z4Pktoac6xN: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
-        },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
           type: "string"
         }
       },
@@ -81358,7 +81496,8 @@ export default {
             "Job Receipt",
             "Batch Split",
             "Purchase Order",
-            "Maintenance Consumption"
+            "Maintenance Consumption",
+            "Non-Conformance"
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string"
@@ -81423,6 +81562,11 @@ export default {
         },
         comment: {
           format: "text",
+          type: "string"
+        },
+        trackedEntityStatus: {
+          enum: ["Available", "Reserved", "On Hold", "Consumed", "Rejected"],
+          format: 'public."trackedEntityStatus"',
           type: "string"
         }
       },
@@ -84972,6 +85116,101 @@ export default {
       },
       type: "object"
     },
+    inboundInspectionHistory: {
+      required: [
+        "id",
+        "inboundInspectionId",
+        "itemId",
+        "samplingStandard",
+        "severity",
+        "lotSize",
+        "sampleSize",
+        "defectsFound",
+        "outcome",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string"
+        },
+        inboundInspectionId: {
+          description:
+            "Note:\nThis is a Foreign Key to `inboundInspection.id`.<fk table='inboundInspection' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        itemId: {
+          description:
+            "Note:\nThis is a Foreign Key to `item.id`.<fk table='item' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        supplierId: {
+          description:
+            "Note:\nThis is a Foreign Key to `supplier.id`.<fk table='supplier' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        samplingStandard: {
+          enum: ["ANSI_Z1_4", "ISO_2859_1"],
+          format: 'public."samplingStandard"',
+          type: "string"
+        },
+        severity: {
+          enum: ["Normal", "Tightened", "Reduced"],
+          format: 'public."inspectionSeverity"',
+          type: "string"
+        },
+        inspectionLevel: {
+          enum: ["I", "II", "III", "S1", "S2", "S3", "S4"],
+          format: 'public."inspectionLevel"',
+          type: "string"
+        },
+        aql: {
+          format: "numeric",
+          type: "number"
+        },
+        lotSize: {
+          format: "numeric",
+          type: "number"
+        },
+        sampleSize: {
+          format: "int32",
+          type: "integer"
+        },
+        defectsFound: {
+          format: "int32",
+          type: "integer"
+        },
+        outcome: {
+          format: "text",
+          type: "string"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
     externalIntegrationMapping: {
       required: [
         "id",
@@ -86582,6 +86821,77 @@ export default {
       },
       type: "object"
     },
+    nonConformanceItemTrackedEntity: {
+      required: [
+        "id",
+        "nonConformanceItemId",
+        "nonConformanceId",
+        "trackedEntityId",
+        "quantity",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string"
+        },
+        nonConformanceItemId: {
+          description:
+            "Note:\nThis is a Foreign Key to `nonConformanceItem.id`.<fk table='nonConformanceItem' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        nonConformanceId: {
+          description:
+            "Note:\nThis is a Foreign Key to `nonConformance.id`.<fk table='nonConformance' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        trackedEntityId: {
+          description:
+            "Note:\nThis is a Foreign Key to `trackedEntity.id`.<fk table='trackedEntity' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        quantity: {
+          default: 1,
+          format: "numeric",
+          type: "number"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
     jobOperationDependency: {
       required: [
         "operationId",
@@ -87143,6 +87453,85 @@ export default {
         userId: {
           description:
             "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
+    inboundInspectionSample: {
+      required: [
+        "id",
+        "inboundInspectionId",
+        "trackedEntityId",
+        "status",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string"
+        },
+        inboundInspectionId: {
+          description:
+            "Note:\nThis is a Foreign Key to `inboundInspection.id`.<fk table='inboundInspection' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        trackedEntityId: {
+          description:
+            "Note:\nThis is a Foreign Key to `trackedEntity.id`.<fk table='trackedEntity' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        status: {
+          default: "Pending",
+          enum: ["Pending", "Passed", "Failed"],
+          format: 'public."inboundInspectionSampleStatus"',
+          type: "string"
+        },
+        notes: {
+          format: "text",
+          type: "string"
+        },
+        inspectedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        inspectedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
           format: "text",
           type: "string"
         }
@@ -88098,61 +88487,6 @@ export default {
       },
       type: "object"
     },
-    searchIndex_87xR14oHMLgpGLQGc4AnUt: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
-        },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
-          type: "string"
-        }
-      },
-      type: "object"
-    },
     salesOrderCustomers: {
       properties: {
         id: {
@@ -88911,7 +89245,6 @@ export default {
       required: [
         "id",
         "invoiceId",
-        "status",
         "currencyCode",
         "exchangeRate",
         "subtotal",
@@ -88922,7 +89255,8 @@ export default {
         "companyId",
         "createdBy",
         "createdAt",
-        "supplierInteractionId"
+        "supplierInteractionId",
+        "status"
       ],
       properties: {
         id: {
@@ -88933,22 +89267,6 @@ export default {
         },
         invoiceId: {
           format: "text",
-          type: "string"
-        },
-        status: {
-          default: "Draft",
-          enum: [
-            "Draft",
-            "Pending",
-            "Open",
-            "Return",
-            "Debit Note Issued",
-            "Paid",
-            "Partially Paid",
-            "Overdue",
-            "Voided"
-          ],
-          format: 'public."purchaseInvoiceStatus"',
           type: "string"
         },
         supplierId: {
@@ -89096,60 +89414,21 @@ export default {
             "Note:\nThis is a Foreign Key to `location.id`.<fk table='location' column='id'/>",
           format: "text",
           type: "string"
-        }
-      },
-      type: "object"
-    },
-    searchIndex_VaGcmY4pUrc7nKHotAH6Ku: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
         },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
+        status: {
+          default: "Draft",
+          enum: [
+            "Draft",
+            "Pending",
+            "Open",
+            "Return",
+            "Debit Note Issued",
+            "Paid",
+            "Partially Paid",
+            "Overdue",
+            "Voided"
+          ],
+          format: 'public."purchaseInvoiceStatus"',
           type: "string"
         }
       },
@@ -92334,6 +92613,157 @@ export default {
       },
       type: "object"
     },
+    inboundInspection: {
+      required: [
+        "id",
+        "inboundInspectionId",
+        "receiptLineId",
+        "receiptId",
+        "itemId",
+        "lotSize",
+        "samplingStandard",
+        "samplingPlanType",
+        "sampleSize",
+        "acceptanceNumber",
+        "rejectionNumber",
+        "status",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string"
+        },
+        inboundInspectionId: {
+          format: "text",
+          type: "string"
+        },
+        receiptLineId: {
+          description:
+            "Note:\nThis is a Foreign Key to `receiptLine.id`.<fk table='receiptLine' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        receiptId: {
+          description:
+            "Note:\nThis is a Foreign Key to `receipt.id`.<fk table='receipt' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        itemId: {
+          description:
+            "Note:\nThis is a Foreign Key to `item.id`.<fk table='item' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        itemReadableId: {
+          format: "text",
+          type: "string"
+        },
+        supplierId: {
+          description:
+            "Note:\nThis is a Foreign Key to `supplier.id`.<fk table='supplier' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        lotSize: {
+          format: "numeric",
+          type: "number"
+        },
+        samplingStandard: {
+          enum: ["ANSI_Z1_4", "ISO_2859_1"],
+          format: 'public."samplingStandard"',
+          type: "string"
+        },
+        samplingPlanType: {
+          enum: ["All", "First", "Percentage", "AQL"],
+          format: 'public."samplingPlanType"',
+          type: "string"
+        },
+        sampleSize: {
+          format: "int32",
+          type: "integer"
+        },
+        acceptanceNumber: {
+          format: "int32",
+          type: "integer"
+        },
+        rejectionNumber: {
+          format: "int32",
+          type: "integer"
+        },
+        aql: {
+          format: "numeric",
+          type: "number"
+        },
+        inspectionLevel: {
+          enum: ["I", "II", "III", "S1", "S2", "S3", "S4"],
+          format: 'public."inspectionLevel"',
+          type: "string"
+        },
+        severity: {
+          enum: ["Normal", "Tightened", "Reduced"],
+          format: 'public."inspectionSeverity"',
+          type: "string"
+        },
+        codeLetter: {
+          format: "text",
+          type: "string"
+        },
+        status: {
+          default: "Pending",
+          enum: ["Pending", "In Progress", "Passed", "Failed", "Partial"],
+          format: 'public."inboundInspectionStatus"',
+          type: "string"
+        },
+        notes: {
+          format: "text",
+          type: "string"
+        },
+        dispositionedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        dispositionedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
     userPermission: {
       required: ["id"],
       properties: {
@@ -93737,7 +94167,7 @@ export default {
       type: "object"
     },
     purchaseInvoiceStatusHistory: {
-      required: ["id", "invoiceId", "status", "createdAt"],
+      required: ["id", "invoiceId", "createdAt", "status"],
       properties: {
         id: {
           default: "public.id()",
@@ -93749,6 +94179,11 @@ export default {
           description:
             "Note:\nThis is a Foreign Key to `purchaseInvoice.id`.<fk table='purchaseInvoice' column='id'/>",
           format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
           type: "string"
         },
         status: {
@@ -93764,66 +94199,6 @@ export default {
             "Voided"
           ],
           format: 'public."purchaseInvoiceStatus"',
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        }
-      },
-      type: "object"
-    },
-    searchIndex_LkbVbjKfkhNUKHqV2mes8d: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
-        },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
           type: "string"
         }
       },
@@ -94595,7 +94970,7 @@ export default {
         },
         status: {
           default: "Available",
-          enum: ["Available", "Reserved", "On Hold", "Consumed"],
+          enum: ["Available", "Reserved", "On Hold", "Consumed", "Rejected"],
           format: 'public."trackedEntityStatus"',
           type: "string"
         },
@@ -95683,7 +96058,8 @@ export default {
             "Job Receipt",
             "Batch Split",
             "Purchase Order",
-            "Maintenance Consumption"
+            "Maintenance Consumption",
+            "Non-Conformance"
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string"
@@ -99199,61 +99575,6 @@ export default {
       },
       type: "object"
     },
-    searchIndex_USPpoeaKcnEMHdu3QKv6Bo: {
-      required: ["id", "entityType", "entityId", "title", "link", "createdAt"],
-      properties: {
-        id: {
-          description: "Note:\nThis is a Primary Key.<pk/>",
-          format: "int64",
-          type: "integer"
-        },
-        entityType: {
-          format: "text",
-          type: "string"
-        },
-        entityId: {
-          format: "text",
-          type: "string"
-        },
-        title: {
-          format: "text",
-          type: "string"
-        },
-        description: {
-          default: "",
-          format: "text",
-          type: "string"
-        },
-        link: {
-          format: "text",
-          type: "string"
-        },
-        tags: {
-          format: "text[]",
-          items: {
-            type: "string"
-          },
-          type: "array"
-        },
-        metadata: {
-          format: "jsonb"
-        },
-        searchVector: {
-          format: "tsvector",
-          type: "string"
-        },
-        createdAt: {
-          default: "now()",
-          format: "timestamp with time zone",
-          type: "string"
-        },
-        updatedAt: {
-          format: "timestamp with time zone",
-          type: "string"
-        }
-      },
-      type: "object"
-    },
     user: {
       required: [
         "id",
@@ -102353,6 +102674,54 @@ export default {
       },
       type: "object"
     },
+    nonConformanceInboundInspection: {
+      required: [
+        "id",
+        "nonConformanceId",
+        "inboundInspectionId",
+        "companyId",
+        "createdAt",
+        "createdBy"
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string"
+        },
+        nonConformanceId: {
+          description:
+            "Note:\nThis is a Foreign Key to `nonConformance.id`.<fk table='nonConformance' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        inboundInspectionId: {
+          description:
+            "Note:\nThis is a Foreign Key to `inboundInspection.id`.<fk table='inboundInspection' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string"
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string"
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string"
+        }
+      },
+      type: "object"
+    },
     timeCardEntry: {
       required: [
         "id",
@@ -102881,7 +103250,8 @@ export default {
         "itemTrackingType",
         "active",
         "createdBy",
-        "createdAt"
+        "createdAt",
+        "requiresInspection"
       ],
       properties: {
         id: {
@@ -103002,6 +103372,11 @@ export default {
         readableIdWithRevision: {
           format: "text",
           type: "string"
+        },
+        requiresInspection: {
+          default: false,
+          format: "boolean",
+          type: "boolean"
         }
       },
       type: "object"
@@ -105590,7 +105965,9 @@ export default {
         "qualityIssueTarget",
         "consoleEnabled",
         "timeCardEnabled",
-        "updateLeadTimesOnReceipt"
+        "updateLeadTimesOnReceipt",
+        "enforceInspectionFourEyes",
+        "samplingStandard"
       ],
       properties: {
         id: {
@@ -105795,6 +106172,17 @@ export default {
           default: false,
           format: "boolean",
           type: "boolean"
+        },
+        enforceInspectionFourEyes: {
+          default: false,
+          format: "boolean",
+          type: "boolean"
+        },
+        samplingStandard: {
+          default: "ANSI_Z1_4",
+          enum: ["ANSI_Z1_4", "ISO_2859_1"],
+          format: 'public."samplingStandard"',
+          type: "string"
         }
       },
       type: "object"
@@ -108812,81 +109200,6 @@ export default {
       in: "query",
       type: "string"
     },
-    "body.searchIndex_EUPeRM3Kae6DBG3tra2deZ": {
-      name: "searchIndex_EUPeRM3Kae6DBG3tra2deZ",
-      description: "searchIndex_EUPeRM3Kae6DBG3tra2deZ",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_EUPeRM3Kae6DBG3tra2deZ"
-      }
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_EUPeRM3Kae6DBG3tra2deZ.updatedAt": {
-      name: "updatedAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
     "body.purchaseInvoicePriceChange": {
       name: "purchaseInvoicePriceChange",
       description: "purchaseInvoicePriceChange",
@@ -109421,6 +109734,87 @@ export default {
       in: "query",
       type: "string"
     },
+    "body.itemSamplingPlan": {
+      name: "itemSamplingPlan",
+      description: "itemSamplingPlan",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/itemSamplingPlan"
+      }
+    },
+    "rowFilter.itemSamplingPlan.itemId": {
+      name: "itemId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.type": {
+      name: "type",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.sampleSize": {
+      name: "sampleSize",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.percentage": {
+      name: "percentage",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.aql": {
+      name: "aql",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.inspectionLevel": {
+      name: "inspectionLevel",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.severity": {
+      name: "severity",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.itemSamplingPlan.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.purchaseOrderLocations": {
       name: "purchaseOrderLocations",
       description: "purchaseOrderLocations",
@@ -109618,81 +110012,6 @@ export default {
     },
     "rowFilter.purchaseOrderLocations.customerCountryName": {
       name: "customerCountryName",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "body.searchIndex_S32bAHJrJi7z4Pktoac6xN": {
-      name: "searchIndex_S32bAHJrJi7z4Pktoac6xN",
-      description: "searchIndex_S32bAHJrJi7z4Pktoac6xN",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_S32bAHJrJi7z4Pktoac6xN"
-      }
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_S32bAHJrJi7z4Pktoac6xN.updatedAt": {
-      name: "updatedAt",
       required: false,
       in: "query",
       type: "string"
@@ -113969,6 +114288,12 @@ export default {
       in: "query",
       type: "string"
     },
+    "rowFilter.itemLedger.trackedEntityStatus": {
+      name: "trackedEntityStatus",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.shippingTerm": {
       name: "shippingTerm",
       description: "shippingTerm",
@@ -117940,6 +118265,105 @@ export default {
       in: "query",
       type: "string"
     },
+    "body.inboundInspectionHistory": {
+      name: "inboundInspectionHistory",
+      description: "inboundInspectionHistory",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/inboundInspectionHistory"
+      }
+    },
+    "rowFilter.inboundInspectionHistory.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.inboundInspectionId": {
+      name: "inboundInspectionId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.itemId": {
+      name: "itemId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.supplierId": {
+      name: "supplierId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.samplingStandard": {
+      name: "samplingStandard",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.severity": {
+      name: "severity",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.inspectionLevel": {
+      name: "inspectionLevel",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.aql": {
+      name: "aql",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.lotSize": {
+      name: "lotSize",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.sampleSize": {
+      name: "sampleSize",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.defectsFound": {
+      name: "defectsFound",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.outcome": {
+      name: "outcome",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionHistory.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.externalIntegrationMapping": {
       name: "externalIntegrationMapping",
       description: "externalIntegrationMapping",
@@ -119801,6 +120225,75 @@ export default {
       in: "query",
       type: "string"
     },
+    "body.nonConformanceItemTrackedEntity": {
+      name: "nonConformanceItemTrackedEntity",
+      description: "nonConformanceItemTrackedEntity",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/nonConformanceItemTrackedEntity"
+      }
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.nonConformanceItemId": {
+      name: "nonConformanceItemId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.nonConformanceId": {
+      name: "nonConformanceId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.trackedEntityId": {
+      name: "trackedEntityId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.quantity": {
+      name: "quantity",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceItemTrackedEntity.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.jobOperationDependency": {
       name: "jobOperationDependency",
       description: "jobOperationDependency",
@@ -120436,6 +120929,87 @@ export default {
     },
     "rowFilter.salesOrderFavorite.userId": {
       name: "userId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "body.inboundInspectionSample": {
+      name: "inboundInspectionSample",
+      description: "inboundInspectionSample",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/inboundInspectionSample"
+      }
+    },
+    "rowFilter.inboundInspectionSample.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.inboundInspectionId": {
+      name: "inboundInspectionId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.trackedEntityId": {
+      name: "trackedEntityId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.status": {
+      name: "status",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.notes": {
+      name: "notes",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.inspectedBy": {
+      name: "inspectedBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.inspectedAt": {
+      name: "inspectedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspectionSample.updatedBy": {
+      name: "updatedBy",
       required: false,
       in: "query",
       type: "string"
@@ -121544,81 +122118,6 @@ export default {
       in: "query",
       type: "string"
     },
-    "body.searchIndex_87xR14oHMLgpGLQGc4AnUt": {
-      name: "searchIndex_87xR14oHMLgpGLQGc4AnUt",
-      description: "searchIndex_87xR14oHMLgpGLQGc4AnUt",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_87xR14oHMLgpGLQGc4AnUt"
-      }
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_87xR14oHMLgpGLQGc4AnUt.updatedAt": {
-      name: "updatedAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
     "body.salesOrderCustomers": {
       name: "salesOrderCustomers",
       description: "salesOrderCustomers",
@@ -122471,12 +122970,6 @@ export default {
       in: "query",
       type: "string"
     },
-    "rowFilter.purchaseInvoice.status": {
-      name: "status",
-      required: false,
-      in: "query",
-      type: "string"
-    },
     "rowFilter.purchaseInvoice.supplierId": {
       name: "supplierId",
       required: false,
@@ -122651,77 +123144,8 @@ export default {
       in: "query",
       type: "string"
     },
-    "body.searchIndex_VaGcmY4pUrc7nKHotAH6Ku": {
-      name: "searchIndex_VaGcmY4pUrc7nKHotAH6Ku",
-      description: "searchIndex_VaGcmY4pUrc7nKHotAH6Ku",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_VaGcmY4pUrc7nKHotAH6Ku"
-      }
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_VaGcmY4pUrc7nKHotAH6Ku.updatedAt": {
-      name: "updatedAt",
+    "rowFilter.purchaseInvoice.status": {
+      name: "status",
       required: false,
       in: "query",
       type: "string"
@@ -126337,6 +126761,171 @@ export default {
       in: "query",
       type: "string"
     },
+    "body.inboundInspection": {
+      name: "inboundInspection",
+      description: "inboundInspection",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/inboundInspection"
+      }
+    },
+    "rowFilter.inboundInspection.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.inboundInspectionId": {
+      name: "inboundInspectionId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.receiptLineId": {
+      name: "receiptLineId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.receiptId": {
+      name: "receiptId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.itemId": {
+      name: "itemId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.itemReadableId": {
+      name: "itemReadableId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.supplierId": {
+      name: "supplierId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.lotSize": {
+      name: "lotSize",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.samplingStandard": {
+      name: "samplingStandard",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.samplingPlanType": {
+      name: "samplingPlanType",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.sampleSize": {
+      name: "sampleSize",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.acceptanceNumber": {
+      name: "acceptanceNumber",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.rejectionNumber": {
+      name: "rejectionNumber",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.aql": {
+      name: "aql",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.inspectionLevel": {
+      name: "inspectionLevel",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.severity": {
+      name: "severity",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.codeLetter": {
+      name: "codeLetter",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.status": {
+      name: "status",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.notes": {
+      name: "notes",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.dispositionedBy": {
+      name: "dispositionedBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.dispositionedAt": {
+      name: "dispositionedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.inboundInspection.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.userPermission": {
       name: "userPermission",
       description: "userPermission",
@@ -127865,89 +128454,14 @@ export default {
       in: "query",
       type: "string"
     },
-    "rowFilter.purchaseInvoiceStatusHistory.status": {
-      name: "status",
-      required: false,
-      in: "query",
-      type: "string"
-    },
     "rowFilter.purchaseInvoiceStatusHistory.createdAt": {
       name: "createdAt",
       required: false,
       in: "query",
       type: "string"
     },
-    "body.searchIndex_LkbVbjKfkhNUKHqV2mes8d": {
-      name: "searchIndex_LkbVbjKfkhNUKHqV2mes8d",
-      description: "searchIndex_LkbVbjKfkhNUKHqV2mes8d",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_LkbVbjKfkhNUKHqV2mes8d"
-      }
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_LkbVbjKfkhNUKHqV2mes8d.updatedAt": {
-      name: "updatedAt",
+    "rowFilter.purchaseInvoiceStatusHistory.status": {
+      name: "status",
       required: false,
       in: "query",
       type: "string"
@@ -134104,81 +134618,6 @@ export default {
       in: "query",
       type: "string"
     },
-    "body.searchIndex_USPpoeaKcnEMHdu3QKv6Bo": {
-      name: "searchIndex_USPpoeaKcnEMHdu3QKv6Bo",
-      description: "searchIndex_USPpoeaKcnEMHdu3QKv6Bo",
-      required: false,
-      in: "body",
-      schema: {
-        $ref: "#/definitions/searchIndex_USPpoeaKcnEMHdu3QKv6Bo"
-      }
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.id": {
-      name: "id",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityType": {
-      name: "entityType",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.entityId": {
-      name: "entityId",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.title": {
-      name: "title",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.description": {
-      name: "description",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.link": {
-      name: "link",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.tags": {
-      name: "tags",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.metadata": {
-      name: "metadata",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.searchVector": {
-      name: "searchVector",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.createdAt": {
-      name: "createdAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
-    "rowFilter.searchIndex_USPpoeaKcnEMHdu3QKv6Bo.updatedAt": {
-      name: "updatedAt",
-      required: false,
-      in: "query",
-      type: "string"
-    },
     "body.user": {
       name: "user",
       description: "user",
@@ -137677,6 +138116,51 @@ export default {
       in: "query",
       type: "string"
     },
+    "body.nonConformanceInboundInspection": {
+      name: "nonConformanceInboundInspection",
+      description: "nonConformanceInboundInspection",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/nonConformanceInboundInspection"
+      }
+    },
+    "rowFilter.nonConformanceInboundInspection.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceInboundInspection.nonConformanceId": {
+      name: "nonConformanceId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceInboundInspection.inboundInspectionId": {
+      name: "inboundInspectionId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceInboundInspection.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceInboundInspection.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.nonConformanceInboundInspection.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string"
+    },
     "body.timeCardEntry": {
       name: "timeCardEntry",
       description: "timeCardEntry",
@@ -138363,6 +138847,12 @@ export default {
     },
     "rowFilter.item.readableIdWithRevision": {
       name: "readableIdWithRevision",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.item.requiresInspection": {
+      name: "requiresInspection",
       required: false,
       in: "query",
       type: "string"
@@ -141447,6 +141937,18 @@ export default {
     },
     "rowFilter.companySettings.updateLeadTimesOnReceipt": {
       name: "updateLeadTimesOnReceipt",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.companySettings.enforceInspectionFourEyes": {
+      name: "enforceInspectionFourEyes",
+      required: false,
+      in: "query",
+      type: "string"
+    },
+    "rowFilter.companySettings.samplingStandard": {
+      name: "samplingStandard",
       required: false,
       in: "query",
       type: "string"

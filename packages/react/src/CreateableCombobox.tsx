@@ -276,7 +276,7 @@ function VirtualizedCommand({
             value: "create"
           }
         ];
-  }, [options, search]);
+  }, [options, search, t]);
 
   const virtualizer = useVirtualizer({
     count: filteredOptions.length,
