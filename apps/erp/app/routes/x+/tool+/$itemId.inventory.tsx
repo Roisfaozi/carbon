@@ -10,6 +10,7 @@ import { useRouteData } from "~/hooks";
 import { InventoryDetails } from "~/modules/inventory";
 import type { ToolSummary, UnitOfMeasureListItem } from "~/modules/items";
 import {
+  getBomHasShelfLifeManagedInput,
   getItemQuantities,
   getItemShelfLife,
   getItemStorageUnitQuantities,
@@ -133,13 +134,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const shelfLife = await getItemShelfLife(client, itemId);
+  const [shelfLife, bomHasShelfLifeManagedInput] = await Promise.all([
+    getItemShelfLife(client, itemId),
+    getBomHasShelfLifeManagedInput(client, itemId, companyId)
+  ]);
 
   return {
     toolInventory: toolInventory.data,
     itemStorageUnitQuantities: itemStorageUnitQuantities.data,
     quantities: quantities.data,
     shelfLife: shelfLife.data,
+    bomHasShelfLifeManagedInput,
     itemId,
     locationId
   };
@@ -211,6 +216,7 @@ export default function ToolInventoryRoute() {
     itemStorageUnitQuantities,
     quantities,
     shelfLife,
+    bomHasShelfLifeManagedInput,
     itemId
   } = useLoaderData<typeof loader>();
 
@@ -250,6 +256,7 @@ export default function ToolInventoryRoute() {
         type="Part"
         itemTrackingType={itemTrackingType ?? "Inventory"}
         replenishmentSystem={replenishmentSystem}
+        bomHasShelfLifeManagedInput={bomHasShelfLifeManagedInput}
       />
       <InventoryDetails
         itemStorageUnitQuantities={itemStorageUnitQuantities}

@@ -199,7 +199,7 @@ msgstr "Ein Versand ist ein Datensatz eines Teils, das an einen Kunden versendet
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Ein Werkzeug ist ein physischer Gegenstand, der zur Herstellung eines Teils verwendet wird und über mehrere Aufträge hinweg eingesetzt werden kann"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:191
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:210
 msgid "A user records the expiry date on each batch or serial when the goods are received. Use when suppliers ship lots with different expiry dates."
 msgstr "Ein Benutzer erfasst das Verfallsdatum für jede Charge oder Seriennummer, wenn die Waren eingehen. Verwenden Sie dies, wenn Lieferanten Chargen mit unterschiedlichen Verfallsdaten versenden."
 
@@ -1710,7 +1710,7 @@ msgstr "Durch die Anmeldung stimmen Sie den <0>Nutzungsbedingungen</0> und der <
 msgid "CAD Model"
 msgstr "CAD-Modell"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:355
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:374
 #: apps/erp/app/routes/x+/settings+/inventory.tsx:337
 msgid "Calculate from BOM"
 msgstr "Aus Stückliste berechnen"
@@ -3652,7 +3652,7 @@ msgid "Default Source"
 msgstr "Standardquelle"
 
 #: apps/erp/app/modules/items/ui/Item/ItemStorageFields.tsx:18
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:118
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:134
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:929
 #: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:245
 msgid "Default Storage Unit"
@@ -5036,7 +5036,7 @@ msgstr "Seriennummer eingeben oder scannen"
 msgid "Enter PO number"
 msgstr "PO-Nummer eingeben"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:189
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:208
 msgid "Entered At Receipt"
 msgstr "Bei Wareneingang erfasst"
 
@@ -5967,7 +5967,7 @@ msgstr "Fest"
 msgid "Fixed Reorder"
 msgstr "Feste Nachbestellung"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:174
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:193
 msgid "Fixed Shelf Life"
 msgstr "Feste Haltbarkeit"
 
@@ -6398,7 +6398,7 @@ msgstr "Incoterm-Ort"
 msgid "Infrastructure"
 msgstr "Infrastruktur"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:184
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:203
 msgid "Inherit From Materials"
 msgstr "Von Materialien erben"
 
@@ -6506,7 +6506,7 @@ msgstr "Ungültige Verfolgungsnummer"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:82
 #: apps/erp/app/modules/items/ui/Consumables/useConsumableNavigation.tsx:62
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:62
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:90
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:106
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:126
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:70
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:94
@@ -8629,6 +8629,10 @@ msgstr "Noch keine archivierten Protokolle. Protokolle älter als {0} Tage werde
 msgid "No available filters"
 msgstr "Keine verfügbaren Filter"
 
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:395
+msgid "No BOM input has a shelf-life policy"
+msgstr ""
+
 #: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:292
 msgid "No calibration records found"
 msgstr "Keine Kalibrierungsdatensätze gefunden"
@@ -9277,7 +9281,7 @@ msgstr "Ausgehend"
 msgid "Output"
 msgstr "Ausgabe"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:356
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:375
 msgid "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
 msgstr "Die Ausgabe überlebt ihre Rohstoffe nie. Fällt auf die feste Dauer zurück, wenn keine Eingabe ein Verfallsdatum hat."
 
@@ -11454,7 +11458,7 @@ msgstr "Samstag"
 #: apps/erp/app/modules/items/ui/Item/ItemPlanningForm.tsx:166
 #: apps/erp/app/modules/items/ui/Item/ItemPurchasingForm.tsx:102
 #: apps/erp/app/modules/items/ui/Item/ItemSalePriceForm.tsx:72
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:135
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:152
 #: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:122
 #: apps/erp/app/modules/items/ui/ItemPostingGroups/ItemPostingGroupForm.tsx:104
 #: apps/erp/app/modules/items/ui/MaterialDimensions/MaterialDimensionForm.tsx:102
@@ -12163,15 +12167,15 @@ msgstr "Angebot teilen"
 msgid "Shelf life"
 msgstr "Haltbarkeit"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:329
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:348
 msgid "Shelf Life (Days)"
 msgstr "Haltbarkeitsdauer (Tage)"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:337
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:356
 msgid "Shelf Life Start Process"
 msgstr "Haltbarkeitsstartprozess"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:292
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:311
 msgid "Shelf-Life"
 msgstr "Haltbarkeit"
 
@@ -12607,7 +12611,7 @@ msgstr "Beginnen Sie, Teile zu Ihrer Bestandsübertragung hinzuzufügen"
 msgid "Start Date"
 msgstr "Startdatum"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:344
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:363
 msgid "Start Expiration"
 msgstr "Verfallsdatum starten"
 
@@ -12818,15 +12822,15 @@ msgstr "Lagereinheit"
 msgid "Storage Units"
 msgstr "Lagereinheiten"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:180
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:199
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's created (or when the trigger process runs, if set)."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer festgelegt, wenn sie erstellt wird (oder wenn der Triggerprozess ausgeführt wird, falls festgelegt)."
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:181
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:200
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received or created (or when the trigger process runs, if set)."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer festgelegt, wenn sie empfangen oder erstellt wird (oder wenn der Triggerprozess ausgeführt wird, falls festgelegt)."
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:178
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:197
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer bei Erhalt festgelegt."
 
@@ -13212,7 +13216,7 @@ msgstr "Tabellenaktionen"
 msgid "Tags"
 msgstr "Tags"
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:186
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:205
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "Nehmen Sie die kürzeste verbleibende Haltbarkeitsdauer der Materialien, die zur Herstellung dieses Artikels verbraucht werden. Verwenden Sie dies, wenn die Haltbarkeit des Produkts von seinen Inhaltsstoffen abhängt."
 
@@ -13462,6 +13466,10 @@ msgstr "Dies ist der Monat, in dem Ihr Geschäftsjahr beginnt."
 #: apps/erp/app/modules/accounting/ui/FiscalYear/FiscalYearSettingsForm.tsx:52
 msgid "This is the month your tax year starts."
 msgstr "Dies ist der Monat, in dem Ihr Steuerjahr beginnt."
+
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:398
+msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
+msgstr ""
 
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1024
 msgid "This job will be received to inventory. It will no longer be available on the shop floor."
@@ -13770,7 +13778,7 @@ msgstr "Verfolgen Sie jede Änderung an Ihren Bestellungen, Rechnungen, Kunden u
 msgid "Track every change to your orders, invoices, customers, suppliers, and more."
 msgstr "Verfolgen Sie jede Änderung an Ihren Bestellungen, Rechnungen, Kunden, Lieferanten und mehr."
 
-#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:295
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:314
 msgid "Track when batches or serials of this item expire."
 msgstr "Verfolgen Sie, wann Chargen oder Seriennummern dieses Artikels ablaufen."
 

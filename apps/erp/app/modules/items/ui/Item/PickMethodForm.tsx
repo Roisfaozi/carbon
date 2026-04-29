@@ -1,5 +1,8 @@
 import { Boolean, useControlField, ValidatedForm } from "@carbon/form";
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Card,
   CardAction,
   CardContent,
@@ -16,7 +19,12 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { LuCalendarClock, LuClipboardCheck, LuLayers } from "react-icons/lu";
+import {
+  LuCalendarClock,
+  LuClipboardCheck,
+  LuLayers,
+  LuTriangleAlert
+} from "react-icons/lu";
 import type { z } from "zod";
 import {
   Combobox as ComboboxFormField,
@@ -56,6 +64,13 @@ type PickMethodFormProps = {
    * consumed). `Buy and Make` / null keeps every mode.
    */
   replenishmentSystem: ReplenishmentSystem | null;
+  /**
+   * Whether the active make-method has at least one BOM input with a
+   * managed shelf-life policy. Used to warn the user when they pick a
+   * BOM-driven shelf-life option (Calculated mode, or Fixed Duration with
+   * Calculate-from-BOM) but no input would actually contribute an expiry.
+   */
+  bomHasShelfLifeManagedInput?: boolean;
 };
 
 const PickMethodForm = ({
@@ -64,7 +79,8 @@ const PickMethodForm = ({
   storageUnits,
   type,
   itemTrackingType,
-  replenishmentSystem
+  replenishmentSystem,
+  bomHasShelfLifeManagedInput
 }: PickMethodFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
@@ -124,6 +140,7 @@ const PickMethodForm = ({
               <ShelfLifeFields
                 replenishmentSystem={replenishmentSystem}
                 itemId={initialValues.itemId}
+                bomHasShelfLifeManagedInput={bomHasShelfLifeManagedInput}
               />
             )}
 
@@ -156,10 +173,12 @@ const ALL_SHELF_LIFE_MODES: ManagedShelfLifeMode[] = [
 // (items.service.ts upsertItemShelfLife).
 function ShelfLifeFields({
   replenishmentSystem,
-  itemId
+  itemId,
+  bomHasShelfLifeManagedInput
 }: {
   replenishmentSystem: ReplenishmentSystem | null;
   itemId: string;
+  bomHasShelfLifeManagedInput?: boolean;
 }) {
   const { t } = useLingui();
   const { inventoryShelfLife } = useSettings();
@@ -362,6 +381,28 @@ function ShelfLifeFields({
           )}
         </>
       )}
+
+      {hasShelfLife &&
+        bomHasShelfLifeManagedInput !== true &&
+        (choiceValue === "Calculated" ||
+          (choiceValue === "Fixed Duration" &&
+            !!shelfLifeCalculateFromBom &&
+            replenishmentSystem !== "Buy")) && (
+          <div className="lg:col-span-3">
+            <Alert variant="warning">
+              <LuTriangleAlert className="h-4 w-4" />
+              <AlertTitle>
+                <Trans>No BOM input has a shelf-life policy</Trans>
+              </AlertTitle>
+              <AlertDescription>
+                <Trans>
+                  This item's bill of materials has no inputs with shelf-life
+                  enabled, so no expiry will be calculated from the BOM.
+                </Trans>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
     </>
   );
 }
