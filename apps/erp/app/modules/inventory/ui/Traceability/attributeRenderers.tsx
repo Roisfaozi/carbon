@@ -176,7 +176,9 @@ function Row({
   return (
     <div className="grid grid-cols-[8rem_1fr] items-center gap-3 py-1.5 first:pt-0 last:pb-0">
       <dt className="text-xs text-muted-foreground truncate">{label}</dt>
-      <dd className="text-right min-w-0 truncate text-sm">{children}</dd>
+      <dd className="min-w-0 text-sm flex items-center justify-end gap-2 truncate">
+        {children}
+      </dd>
     </div>
   );
 }
