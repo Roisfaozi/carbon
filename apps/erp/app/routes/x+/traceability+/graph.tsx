@@ -3,7 +3,8 @@ import { Button, Loading, useHydrated, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { ParentSize } from "@visx/responsive";
-import { useMemo } from "react";
+import { ReactFlowProvider, useReactFlow, useStore } from "@xyflow/react";
+import { useCallback, useMemo, useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, redirect, useLoaderData, useNavigation } from "react-router";
 import { Empty } from "~/components";
@@ -15,7 +16,6 @@ import {
   fetchLineageSubgraph
 } from "~/modules/inventory/lineage.server";
 import { clampDepth } from "~/modules/inventory/ui/Traceability/constants";
-import { useTraceabilityStore } from "~/modules/inventory/ui/Traceability/store";
 import { TraceabilityGraph } from "~/modules/inventory/ui/Traceability/TraceabilityGraph";
 import { TraceabilitySidebar } from "~/modules/inventory/ui/Traceability/TraceabilitySidebar";
 import type { StepRecord } from "~/modules/inventory/ui/Traceability/utils";
@@ -180,6 +180,14 @@ async function collectStepRecordsForActivities(
 }
 
 export default function TraceabilityRoute() {
+  return (
+    <ReactFlowProvider>
+      <TraceabilityRouteInner />
+    </ReactFlowProvider>
+  );
+}
+
+function TraceabilityRouteInner() {
   const {
     entities,
     inputs,
@@ -199,13 +207,36 @@ export default function TraceabilityRoute() {
   const isHydrated = useHydrated();
   const navigation = useNavigation();
 
-  const selectedIds = useTraceabilityStore((s) => s.selectedIds);
-  const focusedIndex = useTraceabilityStore((s) => s.focusedIndex);
-  const setSelectedSingle = useTraceabilityStore((s) => s.setSelectedSingle);
+  // Selection lives in the React Flow store. Subscribe to the nodes ref
+  // (stable until xyflow updates it) and derive ids via useMemo so the
+  // returned array stays referentially stable across unrelated renders.
+  const flowNodes = useStore((s) => s.nodes);
+  const selectedIds = useMemo(() => {
+    const ids: string[] = [];
+    for (let i = 0; i < flowNodes.length; i++) {
+      if (flowNodes[i].selected) ids.push(flowNodes[i].id);
+    }
+    return ids;
+  }, [flowNodes]);
+  const [focusedIndex, setFocusedIndex] = useState(0);
   const safeIndex =
     selectedIds.length > 0 ? Math.min(focusedIndex, selectedIds.length - 1) : 0;
   const focusedSelectedId = selectedIds[safeIndex] ?? null;
   const sidebarId = focusedSelectedId ?? rootId;
+
+  const { setNodes } = useReactFlow();
+  const selectNode = useCallback(
+    (id: string | null) => {
+      setNodes((nodes) =>
+        nodes.map((n) => {
+          const wantsSelected = id !== null && n.id === id;
+          if (n.selected === wantsSelected) return n;
+          return { ...n, selected: wantsSelected };
+        })
+      );
+    },
+    [setNodes]
+  );
 
   const selectedEntity =
     (entities.find((e) => e?.id === sidebarId) as TrackedEntity | undefined) ??
@@ -266,7 +297,10 @@ export default function TraceabilityRoute() {
             stepRecords,
             containments
           }}
-          onSelect={(id) => setSelectedSingle(id)}
+          onSelect={selectNode}
+          focusedIndex={safeIndex}
+          onFocusedIndexChange={setFocusedIndex}
+          selectedIds={selectedIds}
         />
       )}
     </div>

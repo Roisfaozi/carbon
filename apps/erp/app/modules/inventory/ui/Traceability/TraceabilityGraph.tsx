@@ -9,7 +9,6 @@ import {
   type NodeMouseHandler,
   type NodeTypes,
   ReactFlow,
-  ReactFlowProvider,
   useEdgesState,
   useNodesInitialized,
   useNodesState,
@@ -17,6 +16,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { LuX } from "react-icons/lu";
 import { useNavigate, useSearchParams } from "react-router";
 import { useShallow } from "zustand/react/shallow";
 import type {
@@ -81,11 +81,7 @@ type Props = {
 };
 
 export function TraceabilityGraph(props: Props) {
-  return (
-    <ReactFlowProvider>
-      <TraceabilityGraphInner {...props} />
-    </ReactFlowProvider>
-  );
+  return <TraceabilityGraphInner {...props} />;
 }
 
 function TraceabilityGraphInner({
@@ -130,8 +126,10 @@ function TraceabilityGraphInner({
     setView,
     setSpacing,
     setIsolate,
-    setSelectedSingle,
-    toggleSelected
+    toggleExcluded,
+    clearExcluded,
+    toggleAdditionalRoot,
+    clearAdditionalRoots
   } = useTraceabilityStore(
     useShallow((s) => ({
       addExpansion: s.addExpansion,
@@ -143,10 +141,14 @@ function TraceabilityGraphInner({
       setView: s.setView,
       setSpacing: s.setSpacing,
       setIsolate: s.setIsolate,
-      setSelectedSingle: s.setSelectedSingle,
-      toggleSelected: s.toggleSelected
+      toggleExcluded: s.toggleExcluded,
+      clearExcluded: s.clearExcluded,
+      toggleAdditionalRoot: s.toggleAdditionalRoot,
+      clearAdditionalRoots: s.clearAdditionalRoots
     }))
   );
+  const excludedIds = useTraceabilityStore((s) => s.excludedIds);
+  const additionalRootIds = useTraceabilityStore((s) => s.additionalRootIds);
   const probeCacheRef = useRef<Map<string, LineagePayload>>(new Map());
   const probedRef = useRef<Set<string>>(new Set());
 
@@ -225,11 +227,81 @@ function TraceabilityGraphInner({
   const laidNodes = layoutResult?.nodes ?? EMPTY_NODES;
   const laidEdges = layoutResult?.edges ?? EMPTY_EDGES;
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
+  const [nodes, setNodes, onNodesChangeRaw] = useNodesState<Node>(
     laidNodes as Node[]
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(
     laidEdges as Edge[]
+  );
+
+  const shiftDownRef = useRef(false);
+  const [shiftHeld, setShiftHeld] = useState(false);
+  useEffect(() => {
+    const onDown = (e: KeyboardEvent) => {
+      // Auto-repeat fires keydown continuously; bail if already tracked.
+      if (e.key !== "Shift" || shiftDownRef.current) return;
+      shiftDownRef.current = true;
+      setShiftHeld(true);
+    };
+    const onUp = (e: KeyboardEvent) => {
+      if (e.key !== "Shift" || !shiftDownRef.current) return;
+      shiftDownRef.current = false;
+      setShiftHeld(false);
+    };
+    const onBlur = () => {
+      if (!shiftDownRef.current) return;
+      shiftDownRef.current = false;
+      setShiftHeld(false);
+    };
+    window.addEventListener("keydown", onDown);
+    window.addEventListener("keyup", onUp);
+    window.addEventListener("blur", onBlur);
+    return () => {
+      window.removeEventListener("keydown", onDown);
+      window.removeEventListener("keyup", onUp);
+      window.removeEventListener("blur", onBlur);
+    };
+  }, []);
+
+  const onNodesChange = useCallback(
+    (changes: Parameters<typeof onNodesChangeRaw>[0]) => {
+      if (shiftDownRef.current) {
+        const filtered = changes.filter((c) => c.type !== "select");
+        if (filtered.length > 0) onNodesChangeRaw(filtered);
+        return;
+      }
+      onNodesChangeRaw(changes);
+    },
+    [onNodesChangeRaw]
+  );
+
+  const selectionPathRef = useRef<{ nodeIds: Set<string> } | null>(null);
+  const additionalRootIdsRef = useRef<Set<string>>(additionalRootIds);
+  additionalRootIdsRef.current = additionalRootIds;
+  const excludedIdsRef = useRef<Set<string>>(excludedIds);
+  excludedIdsRef.current = excludedIds;
+
+  const onNodeClick = useCallback<NodeMouseHandler>(
+    (event, node) => {
+      if (event.shiftKey) {
+        const id = node.id;
+        if (excludedIdsRef.current.has(id)) {
+          toggleExcluded(id);
+          return;
+        }
+        if (additionalRootIdsRef.current.has(id)) {
+          toggleAdditionalRoot(id);
+          return;
+        }
+        const inPath = selectionPathRef.current?.nodeIds.has(id) ?? false;
+        if (inPath) toggleExcluded(id);
+        else toggleAdditionalRoot(id);
+      } else {
+        clearExcluded();
+        clearAdditionalRoots();
+      }
+    },
+    [toggleExcluded, toggleAdditionalRoot, clearExcluded, clearAdditionalRoots]
   );
 
   const [layoutAnimating, setLayoutAnimating] = useState(false);
@@ -242,9 +314,28 @@ function TraceabilityGraphInner({
     return () => clearTimeout(t);
   }, [laidNodes, laidEdges, setNodes, setEdges]);
 
-  const selectedIds = useTraceabilityStore((s) => s.selectedIds);
+  const selectedIds = useMemo(() => {
+    const out: string[] = [];
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].selected) out.push(nodes[i].id);
+    }
+    return out;
+  }, [nodes]);
   const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
   const selectedId = selectedIds[0] ?? null;
+
+  const selectNode = useCallback(
+    (id: string | null) => {
+      setNodes((ns) =>
+        ns.map((n) => {
+          const wantsSelected = id !== null && n.id === id;
+          if (n.selected === wantsSelected) return n;
+          return { ...n, selected: wantsSelected };
+        })
+      );
+    },
+    [setNodes]
+  );
 
   const onExpandResult = useCallback(
     (incoming: LineagePayload, originId: string) => {
@@ -269,18 +360,6 @@ function TraceabilityGraphInner({
 
   const { expand, isLoading: isExpanding } = useExpandNode(onExpandResult);
 
-  const onNodeClick = useCallback<NodeMouseHandler>(
-    (event, node) => {
-      const shift = event.shiftKey;
-      if (shift) {
-        toggleSelected(node.id);
-        return;
-      }
-      setSelectedSingle(node.id);
-    },
-    [setSelectedSingle, toggleSelected]
-  );
-
   const onExpandNode = useCallback(
     (id: string, direction: "up" | "down" | "both") => {
       const cached = probeCacheRef.current.get(id);
@@ -300,24 +379,23 @@ function TraceabilityGraphInner({
     [removeExpansion]
   );
 
-  const onPaneClick = useCallback(() => {
-    setSelectedSingle(null);
-  }, [setSelectedSingle]);
-
   const selectionPath = useAsyncSelectionPath(
     tracingGraphManager,
     edges as unknown as LineageEdge[],
-    selectedIds
+    selectedIds,
+    excludedIds,
+    additionalRootIds
   );
+  selectionPathRef.current = selectionPath;
 
   const isolated = useMemo(() => {
-    if (!isolate || selectedIds.length === 0) return null;
+    if (!isolate) return null;
+    if (selectedIds.length === 0 && additionalRootIds.size === 0) return null;
     if (selectionPath) return selectionPath;
-    return {
-      nodeIds: new Set(selectedIds),
-      edgeIds: new Set<string>()
-    };
-  }, [isolate, selectedIds, selectionPath]);
+    const nodeIds = new Set<string>(selectedIds);
+    for (const id of additionalRootIds) nodeIds.add(id);
+    return { nodeIds, edgeIds: new Set<string>() };
+  }, [isolate, selectedIds, additionalRootIds, selectionPath]);
 
   const boundaryByNode = useMemo(() => {
     const incoming = new Set<string>();
@@ -354,7 +432,8 @@ function TraceabilityGraphInner({
     return nodes.map((n) => {
       const isRoot = !isJobRoot && n.id === rootId;
       const selected = selectedIdSet.has(n.id);
-      const inPath = selectionPath?.nodeIds.has(n.id) ?? false;
+      const excluded = excludedIds.has(n.id);
+      const inPath = !excluded && (selectionPath?.nodeIds.has(n.id) ?? false);
       const dimmed = isolated ? !isolated.nodeIds.has(n.id) : false;
       const isExpanded = expansions.has(n.id);
       const isEntity = (n.data as any)?.kind === "entity";
@@ -374,6 +453,7 @@ function TraceabilityGraphInner({
           selected,
           inPath,
           dimmed,
+          excluded,
           isExpanded,
           canExpandUp,
           canExpandDown,
@@ -395,6 +475,7 @@ function TraceabilityGraphInner({
     expandable,
     selectionPath,
     containmentByEntity,
+    excludedIds,
     onExpandNode,
     onCollapseNode
   ]);
@@ -461,7 +542,7 @@ function TraceabilityGraphInner({
             payload={payload}
             rootId={rootId}
             selectedId={selectedId}
-            onSelect={(id) => setSelectedSingle(id)}
+            onSelect={(id) => selectNode(id)}
           />
         </div>
         <GraphToolbar
@@ -473,7 +554,7 @@ function TraceabilityGraphInner({
           onViewChange={setView}
           isolate={isolate}
           onIsolateChange={setIsolate}
-          hasSelection={selectedIds.length > 0}
+          hasSelection={selectedIds.length > 0 || additionalRootIds.size > 0}
           onOpenSearch={() => setSearchOpen(true)}
           spacing={spacing}
           onSpacingChange={setSpacing}
@@ -482,7 +563,7 @@ function TraceabilityGraphInner({
           open={searchOpen}
           onOpenChange={setSearchOpen}
           payload={payload}
-          onSelect={(id) => setSelectedSingle(id)}
+          onSelect={(id) => selectNode(id)}
         />
       </div>
     );
@@ -519,8 +600,6 @@ function TraceabilityGraphInner({
         edges={enrichedEdges as Edge[]}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
         className="trace-fade-in"
         style={{ opacity: fitted ? 1 : 0 }}
         onNodeDragStart={(_, node) =>
@@ -541,6 +620,9 @@ function TraceabilityGraphInner({
         edgesFocusable={false}
         elevateNodesOnSelect={false}
         onlyRenderVisibleElements
+        selectionKeyCode={null}
+        multiSelectionKeyCode={null}
+        onNodeClick={onNodeClick}
         defaultEdgeOptions={{ type: "quantity", zIndex: 0 }}
       >
         <Background
@@ -575,7 +657,7 @@ function TraceabilityGraphInner({
         onViewChange={setView}
         isolate={isolate}
         onIsolateChange={setIsolate}
-        hasSelection={selectedIds.length > 0}
+        hasSelection={selectedIds.length > 0 || additionalRootIds.size > 0}
         onRelayout={handleRelayout}
         onOpenSearch={() => setSearchOpen(true)}
         spacing={spacing}
@@ -588,7 +670,7 @@ function TraceabilityGraphInner({
         open={searchOpen}
         onOpenChange={setSearchOpen}
         payload={payload}
-        onSelect={(id) => setSelectedSingle(id)}
+        onSelect={(id) => selectNode(id)}
       />
 
       {isExpanding && (
@@ -596,6 +678,51 @@ function TraceabilityGraphInner({
           Loading...
         </div>
       )}
+
+      {(() => {
+        const traceCount =
+          selectionPath?.nodeIds.size ??
+          selectedIds.length + additionalRootIds.size;
+        const traceActive =
+          selectedIds.length > 0 ||
+          additionalRootIds.size > 0 ||
+          excludedIds.size > 0;
+        const visible = shiftHeld || traceActive;
+        if (!visible) return null;
+        const clearAll = () => {
+          if (selectedIds.length > 0) selectNode(null);
+          clearExcluded();
+          clearAdditionalRoots();
+        };
+        return (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 rounded-full border border-border bg-card/95 backdrop-blur pl-2 pr-1 py-1 text-xs shadow-md">
+            {traceActive ? (
+              <>
+                <span className="px-1 tabular-nums font-medium">
+                  {traceCount}
+                </span>
+                <span className="text-muted-foreground">in trace</span>
+                <button
+                  type="button"
+                  onClick={clearAll}
+                  className="ml-1 flex items-center justify-center w-5 h-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  aria-label="Clear trace"
+                  title="Clear trace"
+                >
+                  <LuX className="w-3 h-3" />
+                </button>
+              </>
+            ) : (
+              <span className="px-1 flex items-center gap-1.5 text-muted-foreground">
+                <kbd className="rounded border border-border bg-muted px-1 py-px font-mono text-[10px] leading-none text-foreground">
+                  Shift
+                </kbd>
+                click to add or remove
+              </span>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }

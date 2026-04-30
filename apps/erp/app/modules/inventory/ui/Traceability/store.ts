@@ -8,13 +8,12 @@ export type ViewMode = "graph" | "table";
 
 type TraceabilityState = {
   rootId: string | null;
-  selectedIds: string[];
-  focusedIndex: number;
   isolate: boolean;
   expansions: Map<string, LineagePayload>;
   expandable: Set<string>;
   exhausted: Set<string>;
   excludedIds: Set<string>;
+  additionalRootIds: Set<string>;
 
   // persisted preferences
   direction: LayoutDirection;
@@ -23,11 +22,9 @@ type TraceabilityState = {
 
   // actions
   reset: (rootId: string) => void;
-  setSelectedIds: (ids: string[]) => void;
-  setSelectedSingle: (id: string | null) => void;
-  toggleSelected: (id: string) => void;
-  setFocusedIndex: (i: number) => void;
   setIsolate: (next: boolean) => void;
+  toggleAdditionalRoot: (id: string) => void;
+  clearAdditionalRoots: () => void;
   addExpansion: (originId: string, payload: LineagePayload) => void;
   removeExpansion: (originId: string) => void;
   resetExpansions: () => void;
@@ -44,13 +41,12 @@ export const useTraceabilityStore = create<TraceabilityState>()(
   persist(
     (set) => ({
       rootId: null,
-      selectedIds: [],
-      focusedIndex: 0,
       isolate: false,
       expansions: new Map(),
       expandable: new Set(),
       exhausted: new Set(),
       excludedIds: new Set(),
+      additionalRootIds: new Set(),
       direction: "TB",
       view: "graph",
       spacing: SPACING.default,
@@ -58,43 +54,25 @@ export const useTraceabilityStore = create<TraceabilityState>()(
       reset: (rootId) =>
         set({
           rootId,
-          selectedIds: [],
-          focusedIndex: 0,
           isolate: false,
           expansions: new Map(),
           expandable: new Set(),
           exhausted: new Set(),
-          excludedIds: new Set()
+          excludedIds: new Set(),
+          additionalRootIds: new Set()
         }),
-
-      setSelectedIds: (ids) =>
-        set((s) => ({
-          selectedIds: ids,
-          focusedIndex:
-            ids.length === 0 ? 0 : Math.min(s.focusedIndex, ids.length - 1)
-        })),
-
-      setSelectedSingle: (id) =>
-        set({
-          selectedIds: id ? [id] : [],
-          focusedIndex: 0
-        }),
-
-      toggleSelected: (id) =>
-        set((s) => {
-          const next = s.selectedIds.includes(id)
-            ? s.selectedIds.filter((x) => x !== id)
-            : [...s.selectedIds, id];
-          return {
-            selectedIds: next,
-            focusedIndex:
-              next.length === 0 ? 0 : Math.min(s.focusedIndex, next.length - 1)
-          };
-        }),
-
-      setFocusedIndex: (i) => set({ focusedIndex: i }),
 
       setIsolate: (next) => set({ isolate: next }),
+
+      toggleAdditionalRoot: (id) =>
+        set((s) => {
+          const next = new Set(s.additionalRootIds);
+          if (next.has(id)) next.delete(id);
+          else next.add(id);
+          return { additionalRootIds: next };
+        }),
+
+      clearAdditionalRoots: () => set({ additionalRootIds: new Set() }),
 
       addExpansion: (originId, payload) =>
         set((s) => {

@@ -6,7 +6,9 @@ type WorkerApi = {
   layout: (input: LayoutInput) => LayoutResult;
   selection: (
     edges: LineageEdge[],
-    rootIds: string[]
+    rootIds: string[],
+    excludedIds: string[],
+    additionalRootIds: string[]
   ) => SelectionPathResult | null;
 };
 
@@ -47,16 +49,23 @@ export class TracingGraphManager {
 
   async selection(
     edges: LineageEdge[],
-    rootIds: string[]
+    rootIds: string[],
+    excludedIds: string[],
+    additionalRootIds: string[]
   ): Promise<SelectionPathResult | null> {
     const seq = ++this.selectionSeq;
     if (this.proxy) {
-      const result = await this.proxy.selection(edges, rootIds);
+      const result = await this.proxy.selection(
+        edges,
+        rootIds,
+        excludedIds,
+        additionalRootIds
+      );
       if (this.disposed || seq !== this.selectionSeq) return null;
       return result;
     }
     const { computeSelectionPath } = await import("./core");
     if (this.disposed || seq !== this.selectionSeq) return null;
-    return computeSelectionPath(edges, rootIds);
+    return computeSelectionPath(edges, rootIds, excludedIds, additionalRootIds);
   }
 }

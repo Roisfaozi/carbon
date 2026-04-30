@@ -52,27 +52,36 @@ export type SelectionPath = {
 export function useAsyncSelectionPath(
   manager: TracingGraphManager,
   edges: LineageEdge[],
-  selectedIds: string[]
+  selectedIds: string[],
+  excludedIds: Set<string>,
+  additionalRootIds: Set<string>
 ): SelectionPath | null {
   const [path, setPath] = useState<SelectionPath | null>(null);
+  const excludedArray = useMemo(() => Array.from(excludedIds), [excludedIds]);
+  const additionalArray = useMemo(
+    () => Array.from(additionalRootIds),
+    [additionalRootIds]
+  );
 
   useEffect(() => {
-    if (selectedIds.length === 0) {
+    if (selectedIds.length === 0 && additionalArray.length === 0) {
       setPath(null);
       return;
     }
     let cancelled = false;
-    manager.selection(edges, selectedIds).then((r) => {
-      if (cancelled || r === null) return;
-      setPath({
-        nodeIds: new Set(r.pathNodeIds),
-        edgeIds: new Set(r.pathEdgeIds)
+    manager
+      .selection(edges, selectedIds, excludedArray, additionalArray)
+      .then((r) => {
+        if (cancelled || r === null) return;
+        setPath({
+          nodeIds: new Set(r.pathNodeIds),
+          edgeIds: new Set(r.pathEdgeIds)
+        });
       });
-    });
     return () => {
       cancelled = true;
     };
-  }, [manager, edges, selectedIds]);
+  }, [manager, edges, selectedIds, excludedArray, additionalArray]);
 
   return path;
 }

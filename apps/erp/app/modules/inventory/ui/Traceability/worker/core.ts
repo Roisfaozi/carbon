@@ -5,7 +5,6 @@ import {
   type LineageEdgeData,
   type LineageNode,
   type LineagePayload,
-  lineagePathEdgesMulti,
   payloadToFlow
 } from "../utils";
 
@@ -49,39 +48,50 @@ function detectBackEdges(
   edges: LineageEdge[]
 ): Set<string> {
   const adj = new Map<string, string[]>();
-  for (const e of edges) {
-    if (!adj.has(e.source)) adj.set(e.source, []);
-    adj.get(e.source)!.push(e.target);
+  for (let i = 0; i < edges.length; i++) {
+    const e = edges[i];
+    let arr = adj.get(e.source);
+    if (arr === undefined) {
+      arr = [];
+      adj.set(e.source, arr);
+    }
+    arr.push(e.target);
   }
 
   const visited = new Set<string>();
-  const stack = new Set<string>();
+  const pathIdx = new Map<string, number>();
+  const path: string[] = [];
   const back = new Set<string>();
 
-  function dfs(id: string, path: string[]) {
-    if (stack.has(id)) {
-      const cycleStart = path.indexOf(id);
-      if (cycleStart !== -1) {
-        for (let i = cycleStart; i < path.length - 1; i++) {
-          back.add(`${path[i]}->${path[i + 1]}`);
-        }
-        if (path.length > 0) back.add(`${path[path.length - 1]}->${id}`);
+  function dfs(id: string) {
+    const onStackAt = pathIdx.get(id);
+    if (onStackAt !== undefined) {
+      for (let i = onStackAt; i < path.length - 1; i++) {
+        back.add(`${path[i]}->${path[i + 1]}`);
       }
+      back.add(`${path[path.length - 1]}->${id}`);
       return;
     }
     if (visited.has(id)) return;
     visited.add(id);
-    stack.add(id);
+    pathIdx.set(id, path.length);
     path.push(id);
-    for (const next of adj.get(id) ?? []) dfs(next, path);
+    const neighbors = adj.get(id);
+    if (neighbors !== undefined) {
+      for (let i = 0; i < neighbors.length; i++) dfs(neighbors[i]);
+    }
     path.pop();
-    stack.delete(id);
+    pathIdx.delete(id);
   }
 
-  for (const n of nodes) if (!visited.has(n.id)) dfs(n.id, []);
+  for (let i = 0; i < nodes.length; i++) {
+    const id = nodes[i].id;
+    if (!visited.has(id)) dfs(id);
+  }
 
   const backEdgeIds = new Set<string>();
-  for (const e of edges) {
+  for (let i = 0; i < edges.length; i++) {
+    const e = edges[i];
     if (back.has(`${e.source}->${e.target}`)) backEdgeIds.add(e.id);
   }
   return backEdgeIds;
@@ -164,25 +174,85 @@ export function computeFullLayout(input: LayoutInput): LayoutResult {
     input.direction,
     input.spacing
   );
-  const finalEdges: LineageEdge[] = weightedEdges.map((e) => ({
-    ...e,
-    data: {
-      ...(e.data as LineageEdgeData),
-      isBackEdge: backEdges.has(e.id),
-      points: edgePoints.get(e.id)
-    }
-  }));
+  const finalEdges: LineageEdge[] = [];
+  for (let i = 0; i < weightedEdges.length; i++) {
+    const e = weightedEdges[i];
+    finalEdges.push({
+      ...e,
+      data: {
+        ...(e.data as LineageEdgeData),
+        isBackEdge: backEdges.has(e.id),
+        points: edgePoints.get(e.id)
+      }
+    });
+  }
   return { nodes: positioned, edges: finalEdges };
 }
 
 export function computeSelectionPath(
   edges: LineageEdge[],
-  rootIds: string[]
+  rootIds: string[],
+  excludedIds: string[] = [],
+  additionalRootIds: string[] = []
 ): SelectionPathResult | null {
-  if (rootIds.length === 0) return null;
-  const r = lineagePathEdgesMulti(rootIds, edges);
+  if (rootIds.length === 0 && additionalRootIds.length === 0) return null;
+
+  const excludedSet = new Set(excludedIds);
+
+  // Build outgoing adjacency once in a single pass over edges.
+  // Skip back-edges and edges touching excluded nodes inline so we never
+  // allocate an intermediate `acyclic` array.
+  const outgoing = new Map<string, LineageEdge[]>();
+  for (let i = 0; i < edges.length; i++) {
+    const e = edges[i];
+    if (e.data?.isBackEdge) continue;
+    if (excludedSet.has(e.source) || excludedSet.has(e.target)) continue;
+    let arr = outgoing.get(e.source);
+    if (arr === undefined) {
+      arr = [];
+      outgoing.set(e.source, arr);
+    }
+    arr.push(e);
+  }
+
+  // Collect roots (primary + additional), dropping excluded.
+  const allRoots: string[] = [];
+  for (let i = 0; i < rootIds.length; i++) {
+    if (!excludedSet.has(rootIds[i])) allRoots.push(rootIds[i]);
+  }
+  for (let i = 0; i < additionalRootIds.length; i++) {
+    const id = additionalRootIds[i];
+    if (!excludedSet.has(id)) allRoots.push(id);
+  }
+  if (allRoots.length === 0) return null;
+
+  // Forward DFS from every root, sharing the adjacency map and visited
+  // sets across roots (a node visited from one root never revisits).
+  const edgeIds = new Set<string>();
+  const nodeIds = new Set<string>();
+  const stack: string[] = [];
+  for (let i = 0; i < allRoots.length; i++) {
+    const root = allRoots[i];
+    if (nodeIds.has(root)) continue;
+    nodeIds.add(root);
+    stack.push(root);
+    while (stack.length > 0) {
+      const cur = stack.pop()!;
+      const neighbors = outgoing.get(cur);
+      if (neighbors === undefined) continue;
+      for (let j = 0; j < neighbors.length; j++) {
+        const e = neighbors[j];
+        edgeIds.add(e.id);
+        if (!nodeIds.has(e.target)) {
+          nodeIds.add(e.target);
+          stack.push(e.target);
+        }
+      }
+    }
+  }
+
   return {
-    pathNodeIds: Array.from(r.nodeIds),
-    pathEdgeIds: Array.from(r.edgeIds)
+    pathNodeIds: Array.from(nodeIds),
+    pathEdgeIds: Array.from(edgeIds)
   };
 }

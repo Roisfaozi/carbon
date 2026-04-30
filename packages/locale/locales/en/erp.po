@@ -1492,7 +1492,7 @@ msgstr "Back"
 msgid "Back to home"
 msgstr "Back to home"
 
-#: apps/erp/app/routes/x+/traceability+/graph.tsx:226
+#: apps/erp/app/routes/x+/traceability+/graph.tsx:257
 msgid "Back to traceability"
 msgstr "Back to traceability"
 
@@ -2689,7 +2689,7 @@ msgstr "Copy document name"
 msgid "Copy document unique identifier"
 msgstr "Copy document unique identifier"
 
-#: apps/erp/app/modules/inventory/ui/Traceability/TraceabilitySidebar.tsx:216
+#: apps/erp/app/modules/inventory/ui/Traceability/TraceabilitySidebar.tsx:218
 msgid "Copy ID"
 msgstr "Copy ID"
 
@@ -2705,7 +2705,7 @@ msgstr "Copy issue unique identifier"
 msgid "Copy Job number"
 msgstr "Copy Job number"
 
-#: apps/erp/app/modules/inventory/ui/Traceability/TraceabilitySidebar.tsx:202
+#: apps/erp/app/modules/inventory/ui/Traceability/TraceabilitySidebar.tsx:204
 msgid "Copy link"
 msgstr "Copy link"
 

@@ -22,7 +22,6 @@ import { AttributeList, hasRenderedAttributes } from "./attributeRenderers";
 import { ContainmentList } from "./ContainmentList";
 import { ACTIVITY_KIND_META, activityKindFor } from "./metadata";
 import { StepRecordsList } from "./StepRecordsList";
-import { useTraceabilityStore } from "./store";
 import TrackedEntityStatus from "./TrackedEntityStatus";
 import {
   activityHeadline,
@@ -36,17 +35,20 @@ type SidebarProps = {
   activity: Activity | null;
   payload?: LineagePayload;
   onSelect?: (id: string) => void;
+  selectedIds: string[];
+  focusedIndex: number;
+  onFocusedIndexChange: (i: number) => void;
 };
 
 export function TraceabilitySidebar({
   entity,
   activity,
   payload,
-  onSelect
+  onSelect,
+  selectedIds,
+  focusedIndex,
+  onFocusedIndexChange
 }: SidebarProps) {
-  const selectedIds = useTraceabilityStore((s) => s.selectedIds);
-  const focusedIndex = useTraceabilityStore((s) => s.focusedIndex);
-  const onFocusedIndexChange = useTraceabilityStore((s) => s.setFocusedIndex);
   const { t } = useLingui();
   const selectedNode = entity ?? activity;
   const selectedNodeType = entity ? "entity" : "activity";
