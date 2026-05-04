@@ -211,7 +211,7 @@ msgstr "Un transfert d'entrepôt est un mouvement d'inventaire inter-entreprises
 msgid "Abilities"
 msgstr "Compétences"
 
-#: apps/erp/app/components/AvatarMenu.tsx:210
+#: apps/erp/app/components/AvatarMenu.tsx:263
 #: apps/erp/app/modules/account/ui/Profile/ProfileForm.tsx:60
 msgid "About"
 msgstr "À propos"
@@ -258,8 +258,8 @@ msgstr "Gestionnaire de compte"
 msgid "Account Number"
 msgstr "Numéro de compte"
 
-#: apps/erp/app/components/AvatarMenu.tsx:170
-#: apps/erp/app/routes/x+/account+/_layout.tsx:30
+#: apps/erp/app/components/AvatarMenu.tsx:223
+#: apps/erp/app/routes/x+/account+/_layout.tsx:27
 msgid "Account Settings"
 msgstr "Paramètres du compte"
 
@@ -315,7 +315,7 @@ msgid "Action Types"
 msgstr "Types d'actions"
 
 #: apps/erp/app/components/Configurator/ConfigurationEditor/ConfigurationEditor.ee.tsx:348
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:217
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:255
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:608
 #: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:174
 #: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:406
@@ -389,7 +389,7 @@ msgstr "Activer le centre de travail"
 msgid "Active"
 msgstr "Actif"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:316
+#: apps/erp/app/routes/x+/production+/_index.tsx:317
 msgid "Active Jobs"
 msgstr "Tâches actives"
 
@@ -652,7 +652,7 @@ msgstr "Ligne d'adresse 1"
 msgid "Address Line 2"
 msgstr "Ligne d'adresse 2"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:318
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:357
 msgid "Adjustment Type"
 msgstr "Type d'ajustement"
 
@@ -752,7 +752,7 @@ msgstr "API et Webhooks"
 msgid "API Docs"
 msgstr "Documentation API"
 
-#: apps/erp/app/components/AvatarMenu.tsx:98
+#: apps/erp/app/components/AvatarMenu.tsx:114
 msgid "API Documentation"
 msgstr "Documentation API"
 
@@ -1553,7 +1553,7 @@ msgstr "Les articles en lot nécessitent une commande client"
 msgid "Batch number"
 msgstr "Numéro de lot"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:353
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:392
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:774
 msgid "Batch Number"
 msgstr "Numéro de lot"
@@ -1770,7 +1770,7 @@ msgstr "Impossible de désactiver le seul palier actif. Ajoutez un autre palier 
 #: apps/erp/app/modules/accounting/ui/Currencies/CurrencyForm.tsx:112
 #: apps/erp/app/modules/documents/ui/Documents/DocumentForm.tsx:82
 #: apps/erp/app/modules/inventory/ui/Batches/BatchPropertiesConfig.tsx:395
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:378
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:423
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:332
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptPostModal.tsx:195
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptVoidModal.tsx:85
@@ -2098,15 +2098,11 @@ msgstr "Chat"
 msgid "Check your email"
 msgstr "Vérifiez votre email"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:31
-msgid "Chinese"
-msgstr "Chinois"
-
 #: apps/erp/app/components/ImportCSVModal/FieldMappings.tsx:286
 msgid "Choose another file"
 msgstr "Choisir un autre fichier"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:53
+#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:44
 msgid "Choose your preferred language for the interface."
 msgstr "Choisissez votre langue préférée pour l'interface."
 
@@ -2270,7 +2266,7 @@ msgstr "Colonnes"
 msgid "Coming soon"
 msgstr "Bientôt disponible"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:373
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:418
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -2373,7 +2369,7 @@ msgstr "Quantité Complétée"
 msgid "Completion Barcode"
 msgstr "Code-barres d'achèvement"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:150
+#: apps/erp/app/routes/x+/production+/_index.tsx:151
 msgid "Completion Time"
 msgstr "Temps d'exécution"
 
@@ -3428,7 +3424,7 @@ msgstr "Types de clients"
 msgid "Customers"
 msgstr "Clients"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:74
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:81
 msgid "Daily Usage"
 msgstr "Utilisation quotidienne"
 
@@ -3436,11 +3432,11 @@ msgstr "Utilisation quotidienne"
 msgid "Dark"
 msgstr "Sombre"
 
-#: apps/erp/app/components/AvatarMenu.tsx:108
+#: apps/erp/app/components/AvatarMenu.tsx:124
 msgid "Dark Mode"
 msgstr "Mode sombre"
 
-#: apps/erp/app/components/AvatarMenu.tsx:90
+#: apps/erp/app/components/AvatarMenu.tsx:106
 #: apps/erp/app/components/Layout/Topbar/CompanySwitcher.tsx:91
 #: apps/erp/app/routes/x+/quality+/_index.tsx:81
 #: apps/erp/app/routes/x+/settings+/quality.tsx:268
@@ -3529,7 +3525,7 @@ msgstr "Jours à l'avance pour générer les dépêches"
 msgid "Days Off"
 msgstr "Jours de congé"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:62
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:69
 msgid "Days Remaining"
 msgstr "Jours restants"
 
@@ -5023,10 +5019,6 @@ msgstr "Heure de fin"
 msgid "Engineering Contact"
 msgstr "Contact Technique"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:22
-msgid "English"
-msgstr "Anglais"
-
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:814
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Entrez un numéro de lot avant de définir la date d'expiration"
@@ -5196,7 +5188,7 @@ msgstr "Quantité de rebut estimée"
 msgid "Estimates vs Actual"
 msgstr "Estimations vs Réel"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:149
+#: apps/erp/app/routes/x+/production+/_index.tsx:150
 msgid "Estimates vs Actuals"
 msgstr "Estimations vs Réalités"
 
@@ -5274,6 +5266,7 @@ msgstr "Réception prévue"
 msgid "Expected Receipt Date"
 msgstr "Date de réception prévue"
 
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:397
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:799
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:279
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteForm.tsx:178
@@ -5331,7 +5324,7 @@ msgstr "Traçabilité d'expiration"
 msgid "Export"
 msgstr "Exporter"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:420
+#: apps/erp/app/routes/x+/production+/_index.tsx:421
 #: apps/erp/app/routes/x+/purchasing+/_index.tsx:544
 #: apps/erp/app/routes/x+/quality+/_index.tsx:533
 #: apps/erp/app/routes/x+/resources+/_index.tsx:507
@@ -5995,10 +5988,6 @@ msgstr "Oublié de pointer la sortie ?"
 msgid "Format"
 msgstr "Format"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:23
-msgid "French"
-msgstr "Français"
-
 #: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:156
 msgid "Frequencies"
 msgstr "Fréquences"
@@ -6088,10 +6077,6 @@ msgstr "Les IDs générés sont désactivés"
 msgid "Generated IDs are enabled"
 msgstr "Les IDs générés sont activés"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:24
-msgid "German"
-msgstr "Allemand"
-
 #: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:226
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:279
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:361
@@ -6168,10 +6153,6 @@ msgstr "Masquer, épingler et réorganiser les colonnes"
 #: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:273
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "La priorité plus élevée gagne les égalités et s'applique en premier pour les majorations"
-
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:32
-msgid "Hindi"
-msgstr "Hindi"
 
 #: apps/erp/app/components/AuditLog/AuditLogDrawer.tsx:210
 #: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:141
@@ -6533,7 +6514,7 @@ msgstr "Invitation invalide"
 msgid "Inventory"
 msgstr "Inventaire"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:301
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:340
 msgid "Inventory Adjustment"
 msgstr "Ajustement d'inventaire"
 
@@ -6760,10 +6741,6 @@ msgstr "Date d'émission"
 msgid "Issues"
 msgstr "Problèmes"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:26
-msgid "Italian"
-msgstr "Italien"
-
 #: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:595
 msgid "item"
 msgstr "article"
@@ -6886,10 +6863,6 @@ msgstr "Articles"
 msgid "Items inside this window get a yellow badge."
 msgstr "Les articles dans cette fenêtre reçoivent un badge jaune."
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:27
-msgid "Japanese"
-msgstr "Japonais"
-
 #: apps/erp/app/components/Gantt/Gantt.tsx:233
 #: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:54
 #: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:36
@@ -6953,7 +6926,7 @@ msgstr "Les PDF de bon de travail incluent les instructions de travail."
 msgid "Jobs"
 msgstr "Travaux"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:345
+#: apps/erp/app/routes/x+/production+/_index.tsx:346
 msgid "Jobs Assigned to Me"
 msgstr "Tâches qui m'ont été assignées"
 
@@ -7064,8 +7037,9 @@ msgstr "Temps de travail"
 msgid "Labor Unit"
 msgstr "Unité de travail"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:50
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:57
+#: apps/erp/app/components/AvatarMenu.tsx:185
+#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:41
+#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:48
 msgid "Language"
 msgstr "Langue"
 
@@ -7295,7 +7269,7 @@ msgid "Loading..."
 msgstr "Chargement..."
 
 #: apps/erp/app/modules/accounting/ui/PostingGroups/InventoryPostingGroupsTable.tsx:71
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:309
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:348
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:277
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptForm/ReceiptForm.tsx:85
 #: apps/erp/app/modules/inventory/ui/Shipments/ShipmentForm/ShipmentForm.tsx:122
@@ -7575,7 +7549,7 @@ msgstr "Gérez le suivi, le calcul et l'application de la durée de conservation
 msgid "Manage Ownership"
 msgstr "Gérer la propriété"
 
-#: apps/erp/app/components/AvatarMenu.tsx:179
+#: apps/erp/app/components/AvatarMenu.tsx:232
 #: apps/erp/app/routes/x+/settings+/billing.tsx:200
 #: apps/erp/app/routes/x+/settings+/billing.tsx:266
 msgid "Manage Subscription"
@@ -8003,7 +7977,7 @@ msgstr "Lundi"
 #: apps/erp/app/modules/resources/ui/Training/TrainingExplorer.tsx:416
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:325
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:386
-#: apps/erp/app/routes/x+/production+/_index.tsx:409
+#: apps/erp/app/routes/x+/production+/_index.tsx:410
 #: apps/erp/app/routes/x+/purchasing+/_index.tsx:533
 #: apps/erp/app/routes/x+/quality+/_index.tsx:522
 #: apps/erp/app/routes/x+/resources+/_index.tsx:496
@@ -8179,8 +8153,8 @@ msgstr "Naviguer"
 msgid "NCRs by Type"
 msgstr "NCRs par type"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:324
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:342
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:363
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:381
 msgid "Negative Adjustment"
 msgstr "Ajustement Négatif"
 
@@ -8652,8 +8626,8 @@ msgstr "Aucun chat trouvé"
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Aucun commentaire pour le moment. Soyez le premier à ajouter un commentaire."
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:158
 #: apps/erp/app/routes/x+/production+/_index.tsx:159
+#: apps/erp/app/routes/x+/production+/_index.tsx:160
 msgid "No completed jobs within range"
 msgstr "Aucun travail terminé dans la plage"
 
@@ -8836,7 +8810,7 @@ msgstr "Aucun tri appliqué à cette vue"
 msgid "No time entries for this week"
 msgstr "Aucune entrée de temps pour cette semaine"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:157
+#: apps/erp/app/routes/x+/production+/_index.tsx:158
 msgid "No work center utilization data within range"
 msgstr "Aucune donnée d'utilisation du centre de travail dans la plage"
 
@@ -9715,10 +9689,6 @@ msgstr "Numéro de BC"
 msgid "Policy & Procedure"
 msgstr "Politique et Procédure"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:28
-msgid "Polish"
-msgstr "Polonais"
-
 #: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalsTable.tsx:56
 msgid "Portal Link"
 msgstr "Lien du portail"
@@ -9727,11 +9697,7 @@ msgstr "Lien du portail"
 msgid "Portals"
 msgstr "Portails"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:29
-msgid "Portuguese"
-msgstr "Portugais"
-
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:338
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:377
 msgid "Positive Adjustment"
 msgstr "Ajustement positif"
 
@@ -9890,7 +9856,7 @@ msgstr "Règles de tarification"
 msgid "Pricing Trace"
 msgstr "Traçabilité des prix"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:240
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:278
 msgid "Print Label"
 msgstr "Imprimer l'étiquette"
 
@@ -9913,7 +9879,7 @@ msgstr "Priorités"
 msgid "Priority"
 msgstr "Priorité"
 
-#: apps/erp/app/components/AvatarMenu.tsx:200
+#: apps/erp/app/components/AvatarMenu.tsx:253
 msgid "Privacy Policy"
 msgstr "Politique de confidentialité"
 
@@ -10016,7 +9982,7 @@ msgstr "Quantité de Production"
 #: apps/erp/app/modules/account/ui/Profile/ProfileForm.tsx:41
 #: apps/erp/app/modules/account/ui/useAccountSubmodules.tsx:10
 #: apps/erp/app/modules/people/ui/Person/PersonSidebar/usePersonSidebar.tsx:18
-#: apps/erp/app/routes/x+/account+/profile.tsx:23
+#: apps/erp/app/routes/x+/account+/profile.tsx:20
 #: apps/erp/app/routes/x+/person+/$personId.details.tsx:40
 msgid "Profile"
 msgstr "Profil"
@@ -10350,8 +10316,8 @@ msgstr "Type Qualité"
 msgid "Quantities"
 msgstr "Quantités"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:180
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:359
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:218
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:404
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:215
 #: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1154
 #: apps/erp/app/modules/inventory/ui/Shipments/ShipmentLines.tsx:1161
@@ -10418,20 +10384,20 @@ msgstr "La quantité est dérivée des numéros de série/lots complétés dans 
 msgid "Quantity must be greater than 0"
 msgstr "La quantité doit être supérieure à 0"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:50
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:57
 #: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:494
 msgid "Quantity on Hand"
 msgstr "Quantité en stock"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:116
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:123
 msgid "Quantity on Jobs"
 msgstr "Quantité sur les commandes"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:86
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:93
 msgid "Quantity on Purchase Order"
 msgstr "Quantité en commande d'achat"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:101
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:108
 msgid "Quantity on Sales Order"
 msgstr "Quantité sur Commande Vente"
 
@@ -11257,10 +11223,6 @@ msgstr "Exécuter le test"
 msgid "Running Total"
 msgstr "Total cumulé"
 
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:30
-msgid "Russian"
-msgstr "Russe"
-
 #: apps/erp/app/modules/items/ui/Item/ItemPlanningForm.tsx:121
 msgid "Safety Stock"
 msgstr "Stock de sécurité"
@@ -11430,7 +11392,7 @@ msgstr "Samedi"
 #: apps/erp/app/components/Table/components/TableHeader.tsx:212
 #: apps/erp/app/modules/account/ui/Personal/PersonalDataForm.tsx:24
 #: apps/erp/app/modules/account/ui/Profile/ProfileForm.tsx:71
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:62
+#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:53
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:193
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:825
 #: apps/erp/app/modules/accounting/ui/AccountCategories/AccountCategoryForm.tsx:101
@@ -12029,7 +11991,7 @@ msgstr "Numéro de série / Lot"
 msgid "Serial items require a sales order"
 msgstr "Les articles en série nécessitent un bon de commande"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:353
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:392
 #: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:381
 #: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:171
 msgid "Serial Number"
@@ -12081,7 +12043,7 @@ msgstr "Définir la date d'échéance"
 msgid "Set Pricing"
 msgstr "Définir la tarification"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:322
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:361
 msgid "Set Quantity"
 msgstr "Définir la quantité"
 
@@ -12405,11 +12367,11 @@ msgstr "Se connecter avec Google"
 msgid "Sign in with Outlook"
 msgstr "Se connecter avec Outlook"
 
-#: apps/erp/app/components/AvatarMenu.tsx:218
+#: apps/erp/app/components/AvatarMenu.tsx:271
 msgid "Sign Out"
 msgstr "Se déconnecter"
 
-#: apps/erp/app/components/AvatarMenu.tsx:85
+#: apps/erp/app/components/AvatarMenu.tsx:101
 msgid "Signed in as {name}"
 msgstr "Connecté en tant que {name}"
 
@@ -12528,10 +12490,6 @@ msgstr "Sources"
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:879
 msgid "Sourcing Type"
 msgstr "Type d'approvisionnement"
-
-#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:25
-msgid "Spanish"
-msgstr "Espagnol"
 
 #: apps/erp/app/routes/x+/resources+/_index.tsx:187
 msgid "Spare Part Consumption"
@@ -12803,8 +12761,8 @@ msgstr "Type de stockage"
 msgid "Storage Types"
 msgstr "Types de stockage"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:176
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:313
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:214
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:352
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:284
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:432
 #: apps/erp/app/modules/inventory/ui/Shipments/ShipmentLines.tsx:1198
@@ -12823,7 +12781,7 @@ msgstr "Types de stockage"
 msgid "Storage Unit"
 msgstr "Unité de stockage"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:153
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:191
 #: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitsTable.tsx:394
 #: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:87
 #: apps/erp/app/routes/x+/inventory+/storage-units.tsx:22
@@ -13320,11 +13278,11 @@ msgstr "Taxe :"
 msgid "Temperature"
 msgstr "Température"
 
-#: apps/erp/app/components/AvatarMenu.tsx:188
+#: apps/erp/app/components/AvatarMenu.tsx:241
 msgid "Terms and Privacy"
 msgstr "Conditions et Confidentialité"
 
-#: apps/erp/app/components/AvatarMenu.tsx:194
+#: apps/erp/app/components/AvatarMenu.tsx:247
 msgid "Terms of Service"
 msgstr "Conditions d'utilisation"
 
@@ -13415,7 +13373,7 @@ msgstr "Le prix unitaire de l'article au moment de l'achat"
 msgid "Theme"
 msgstr "Thème"
 
-#: apps/erp/app/components/AvatarMenu.tsx:136
+#: apps/erp/app/components/AvatarMenu.tsx:152
 msgid "Theme Color"
 msgstr "Couleur du thème"
 
@@ -13815,7 +13773,7 @@ msgstr "L'ID d'entité suivie est requis mais aucun n'a été trouvé"
 msgid "Tracking"
 msgstr "Suivi"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:183
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:221
 msgid "Tracking ID"
 msgstr "ID de suivi"
 
@@ -14033,7 +13991,7 @@ msgstr "Unité"
 msgid "Unit Cost"
 msgstr "Coût unitaire"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:369
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:414
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:291
 #: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceLineForm.tsx:430
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:171
@@ -14132,7 +14090,7 @@ msgstr "UoM"
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:167
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:205
 msgid "Update Inventory"
 msgstr "Mettre à jour l'inventaire"
 
@@ -14165,7 +14123,7 @@ msgstr "Mettre à jour les autorisations"
 msgid "Update prices on"
 msgstr "Mettre à jour les prix sur"
 
-#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:234
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:272
 msgid "Update Quantity"
 msgstr "Mettre à jour la quantité"
 
@@ -14476,7 +14434,7 @@ msgstr "via Devis Numérique"
 msgid "View"
 msgstr "Afficher"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:334
+#: apps/erp/app/routes/x+/production+/_index.tsx:335
 msgid "View Active Jobs"
 msgstr "Afficher les tâches actives"
 
@@ -14488,7 +14446,7 @@ msgstr "Afficher les devis actifs"
 msgid "View All"
 msgstr "Afficher tout"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:360
+#: apps/erp/app/routes/x+/production+/_index.tsx:361
 msgid "View Assigned Jobs"
 msgstr "Afficher les tâches assignées"
 
@@ -14902,7 +14860,7 @@ msgstr "Wordmark Mode Clair"
 msgid "Work Center"
 msgstr "Centre de travail"
 
-#: apps/erp/app/routes/x+/production+/_index.tsx:148
+#: apps/erp/app/routes/x+/production+/_index.tsx:149
 msgid "Work Center Utilization"
 msgstr "Utilisation du centre de travail"
 
