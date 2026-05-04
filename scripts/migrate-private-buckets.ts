@@ -43,7 +43,7 @@ async function migrate() {
 
     // Since Supabase storage list is limited and requires recursion for folders,
     // we'll implement a simple recursive list.
-    async function listAndMoveAll(pathPrefix: string) {
+    const listAndMoveAll = async (pathPrefix: string) => {
       const { data: list, error: listError } = await supabase.storage
         .from("private")
         .list(pathPrefix);
