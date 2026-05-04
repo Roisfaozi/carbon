@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallbackDetailed
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import type { FileObject } from "@supabase/storage-js";
@@ -722,7 +722,7 @@ export async function getJobDocuments(
   }
 ): Promise<StorageItem[]> {
   const listFiles = (objectPathPrefix: string) =>
-    listPrivateObjectsWithFallbackDetailed({
+    listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix,
@@ -805,7 +805,7 @@ export const getPartDocuments = async (
   ...items: Array<{ itemId: string }>
 ) => {
   const getFile = async (id: string) => {
-    const result = await listPrivateObjectsWithFallbackDetailed({
+    const result = await listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/parts/${id}`,
@@ -846,7 +846,7 @@ export async function getJobDocumentsWithItemId(
     const opportunityLine = job.salesOrderLineId || job.quoteLineId;
 
     const [opportunityLineFiles, jobFiles] = await Promise.all([
-      listPrivateObjectsWithFallbackDetailed({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/opportunity-line/${opportunityLine}`,
@@ -854,7 +854,7 @@ export async function getJobDocumentsWithItemId(
           client.storage.from(physicalBucket).list(prefix),
         getItemKey: (item: FileObject) => item.name
       }),
-      listPrivateObjectsWithFallbackDetailed({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,
@@ -896,7 +896,7 @@ export async function getJobDocumentsWithItemId(
     ];
   } else {
     const [jobFiles] = await Promise.all([
-      listPrivateObjectsWithFallbackDetailed({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,

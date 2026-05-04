@@ -1,7 +1,7 @@
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
-  downloadPrivateObjectWithFallback,
+  downloadCompanyPrivateObject,
   getCompanyPrivateBucket,
   hasCompanyPrivateObjectPathPrefix,
   supportedModelTypes
@@ -129,7 +129,7 @@ export let loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 
   async function downloadFile(): Promise<Blob | null> {
-    const result = await downloadPrivateObjectWithFallback<Blob>({
+    const result = await downloadCompanyPrivateObject<Blob>({
       companyId: customerPortal.companyId,
       objectPath: storageObjectPath,
       requestedBucket: getCompanyPrivateBucket(customerPortal.companyId),

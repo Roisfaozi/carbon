@@ -5,7 +5,7 @@ import type { JSONContent } from "@carbon/react";
 import { VStack } from "@carbon/react";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
@@ -40,7 +40,7 @@ async function getMaintenanceDispatchFiles(
   companyId: string,
   dispatchId: string
 ) {
-  return listPrivateObjectsWithFallback({
+  return listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/maintenance/${dispatchId}`,

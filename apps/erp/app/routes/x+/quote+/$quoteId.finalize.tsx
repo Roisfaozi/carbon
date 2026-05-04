@@ -5,7 +5,7 @@ import { QuoteEmail } from "@carbon/documents/email";
 import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import {
-  createPrivateSignedUrlWithFallbackDetailed,
+  createCompanyPrivateSignedUrl,
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import { getLocalTimeZone, now } from "@internationalized/date";
@@ -194,23 +194,22 @@ export async function action(args: ActionFunctionArgs) {
 
         const html = await renderAsync(emailTemplate);
         const text = await renderAsync(emailTemplate, { plainText: true });
-        const signedUrlResult =
-          await createPrivateSignedUrlWithFallbackDetailed({
-            companyId,
-            requestedBucket: getCompanyPrivateBucket(companyId),
-            objectPath: documentFilePath,
-            expiresIn: 3600,
-            createSignedUrl: async (physicalBucket, objectPath, expiresIn) => {
-              const { data, error } = await client.storage
-                .from(physicalBucket)
-                .createSignedUrl(objectPath, expiresIn);
+        const signedUrlResult = await createCompanyPrivateSignedUrl({
+          companyId,
+          requestedBucket: getCompanyPrivateBucket(companyId),
+          objectPath: documentFilePath,
+          expiresIn: 3600,
+          createSignedUrl: async (physicalBucket, objectPath, expiresIn) => {
+            const { data, error } = await client.storage
+              .from(physicalBucket)
+              .createSignedUrl(objectPath, expiresIn);
 
-              return {
-                signedUrl: data?.signedUrl ?? null,
-                error: error ?? null
-              };
-            }
-          });
+            return {
+              signedUrl: data?.signedUrl ?? null,
+              error: error ?? null
+            };
+          }
+        });
 
         for (const bucketError of signedUrlResult.errors) {
           console.error("Failed to create quote attachment signed URL", {

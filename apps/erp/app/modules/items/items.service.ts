@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallbackDetailed
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -538,7 +538,7 @@ export async function getItemFiles(
   itemId: string,
   companyId: string
 ) {
-  const result = await listPrivateObjectsWithFallbackDetailed({
+  const result = await listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/parts/${itemId}`,

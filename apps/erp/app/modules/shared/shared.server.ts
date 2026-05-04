@@ -3,7 +3,7 @@ import { SalesOrderEmail } from "@carbon/documents/email";
 import { trigger } from "@carbon/jobs";
 import { redis } from "@carbon/kv";
 import {
-  createPrivateSignedUrlWithFallbackDetailed,
+  createCompanyPrivateSignedUrl,
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import type { CalendarDate } from "@internationalized/date";
@@ -274,7 +274,7 @@ export async function sendSalesOrderEmail(args: {
 
   const html = await renderAsync(emailTemplate);
   const text = await renderAsync(emailTemplate, { plainText: true });
-  const signedUrlResult = await createPrivateSignedUrlWithFallbackDetailed({
+  const signedUrlResult = await createCompanyPrivateSignedUrl({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPath: documentFilePath,

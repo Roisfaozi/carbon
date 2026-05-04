@@ -1,7 +1,7 @@
 import { notFound } from "@carbon/auth";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import {
-  downloadPrivateObjectWithFallback,
+  downloadCompanyPrivateObject,
   getCompanyPrivateBucket,
   supportedModelTypes
 } from "@carbon/utils";
@@ -52,7 +52,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     supportedFileTypes[fileType] ?? "application/octet-stream";
 
   async function downloadFile(): Promise<Blob | null> {
-    const result = await downloadPrivateObjectWithFallback<Blob>({
+    const result = await downloadCompanyPrivateObject<Blob>({
       companyId,
       objectPath,
       requestedBucket: getCompanyPrivateBucket(companyId),

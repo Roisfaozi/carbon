@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import {
-  createPrivateSignedUrlWithFallbackDetailed,
+  createCompanyPrivateSignedUrl,
   getCompanyPrivateBucket,
   tiptapToHTML
 } from "@carbon/utils";
@@ -229,7 +229,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Send emails if we have any contacts (using same format as supplier quote send)
   if (emailsToSend.length > 0 && company.data && user.data) {
     const createSignedUrlWithFallback = async (objectPath: string) => {
-      const result = await createPrivateSignedUrlWithFallbackDetailed({
+      const result = await createCompanyPrivateSignedUrl({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPath,

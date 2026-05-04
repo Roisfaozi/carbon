@@ -5,7 +5,7 @@ import {
   flattenTree,
   generateBomIds,
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback,
+  listCompanyPrivateObjects,
   type TrackedActivityAttributes
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -206,7 +206,7 @@ const getItemFiles = async (
   items: Array<{ itemId: string }>
 ) => {
   const getFile = async (id: string) => {
-    const files = await listPrivateObjectsWithFallback({
+    const files = await listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/parts/${id}`,
@@ -235,7 +235,7 @@ export async function getJobFiles(
     const opportunityLine = job.salesOrderLineId || job.quoteLineId;
 
     const [opportunityLineFiles, jobFiles, itemFiles] = await Promise.all([
-      listPrivateObjectsWithFallback({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/opportunity-line/${opportunityLine}`,
@@ -243,7 +243,7 @@ export async function getJobFiles(
           client.storage.from(physicalBucket).list(prefix),
         getItemKey: (item: FileObject) => item.name
       }),
-      listPrivateObjectsWithFallback({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,
@@ -265,7 +265,7 @@ export async function getJobFiles(
     ];
   } else {
     const [jobFiles, itemFiles] = await Promise.all([
-      listPrivateObjectsWithFallback({
+      listCompanyPrivateObjects({
         companyId,
         requestedBucket: getCompanyPrivateBucket(companyId),
         objectPathPrefix: `${companyId}/job/${job.id}`,

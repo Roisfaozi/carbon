@@ -2,7 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallbackDetailed,
+  listCompanyPrivateObjects,
   type PickPartial
 } from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
@@ -1059,7 +1059,7 @@ export async function getOpportunityDocuments(
   companyId: string,
   opportunityId: string
 ) {
-  const result = await listPrivateObjectsWithFallbackDetailed({
+  const result = await listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/opportunity/${opportunityId}`,
@@ -1088,7 +1088,7 @@ export async function getOpportunityLineDocuments(
   itemId?: string | null
 ) {
   const [opportunityLineResult, itemResult] = await Promise.all([
-    listPrivateObjectsWithFallbackDetailed({
+    listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/opportunity-line/${lineId}`,
@@ -1097,7 +1097,7 @@ export async function getOpportunityLineDocuments(
       getItemKey: (item: FileObject) => item.name
     }),
     itemId
-      ? listPrivateObjectsWithFallbackDetailed({
+      ? listCompanyPrivateObjects({
           companyId,
           requestedBucket: getCompanyPrivateBucket(companyId),
           objectPathPrefix: `${companyId}/parts/${itemId}`,

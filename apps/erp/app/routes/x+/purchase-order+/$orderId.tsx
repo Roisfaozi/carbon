@@ -8,7 +8,7 @@ import { trigger } from "@carbon/jobs";
 import { NotificationEvent } from "@carbon/notifications";
 import { VStack } from "@carbon/react";
 import {
-  createPrivateSignedUrlWithFallbackDetailed,
+  createCompanyPrivateSignedUrl,
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import { msg } from "@lingui/core/macro";
@@ -265,27 +265,26 @@ export async function action(args: ActionFunctionArgs) {
             const html = await renderAsync(emailTemplate);
             const text = await renderAsync(emailTemplate, { plainText: true });
 
-            const signedUrlResult =
-              await createPrivateSignedUrlWithFallbackDetailed({
-                companyId,
-                requestedBucket: getCompanyPrivateBucket(companyId),
-                objectPath: documentFilePath!,
-                expiresIn: 3600,
-                createSignedUrl: async (
-                  physicalBucket,
-                  objectPath,
-                  expiresIn
-                ) => {
-                  const { data, error } = await serviceRole.storage
-                    .from(physicalBucket)
-                    .createSignedUrl(objectPath, expiresIn);
+            const signedUrlResult = await createCompanyPrivateSignedUrl({
+              companyId,
+              requestedBucket: getCompanyPrivateBucket(companyId),
+              objectPath: documentFilePath!,
+              expiresIn: 3600,
+              createSignedUrl: async (
+                physicalBucket,
+                objectPath,
+                expiresIn
+              ) => {
+                const { data, error } = await serviceRole.storage
+                  .from(physicalBucket)
+                  .createSignedUrl(objectPath, expiresIn);
 
-                  return {
-                    signedUrl: data?.signedUrl ?? null,
-                    error: error ?? null
-                  };
-                }
-              });
+                return {
+                  signedUrl: data?.signedUrl ?? null,
+                  error: error ?? null
+                };
+              }
+            });
 
             for (const bucketError of signedUrlResult.errors) {
               console.error(

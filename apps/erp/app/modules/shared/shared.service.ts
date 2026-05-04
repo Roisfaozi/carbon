@@ -1,7 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import {
-  downloadPrivateObjectWithFallback,
+  downloadCompanyPrivateObject,
   getPurchaseOrderStatus,
   supportedModelTypes
 } from "@carbon/utils";
@@ -640,7 +640,7 @@ export async function getBase64ImageFromSupabase(
     return null;
   }
 
-  const result = await downloadPrivateObjectWithFallback({
+  const result = await downloadCompanyPrivateObject({
     companyId,
     objectPath: path,
     downloadObject: (physicalBucket, objectPath) =>

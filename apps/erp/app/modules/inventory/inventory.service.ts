@@ -2,8 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallback,
-  listPrivateObjectsWithFallbackDetailed
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -478,7 +477,7 @@ export async function getReceiptFiles(
   lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
   const promises = lineIds.map(async (lineId) => {
-    const result = await listPrivateObjectsWithFallbackDetailed({
+    const result = await listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/inventory/${lineId}`,
@@ -813,7 +812,7 @@ export async function getShipmentFiles(
   lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
   const promises = lineIds.map(async (lineId) => ({
-    data: await listPrivateObjectsWithFallback({
+    data: await listCompanyPrivateObjects({
       companyId,
       requestedBucket: getCompanyPrivateBucket(companyId),
       objectPathPrefix: `${companyId}/inventory/${lineId}`,

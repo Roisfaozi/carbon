@@ -1,5 +1,3 @@
-export const LEGACY_PRIVATE_BUCKET = "private";
-
 export type PrivateStorageTarget = {
   physicalBucket: string;
   logicalFolder: string;
@@ -16,36 +14,8 @@ type ListPrivateObjectResult<TItem> = {
   error: unknown | null;
 };
 
-export type PrivateBucketAttemptError = {
-  physicalBucket: string;
-  error: unknown;
-};
-
-export type DownloadPrivateObjectWithFallbackResult<TData> = {
-  attemptedBuckets: string[];
-  data: TData | null;
-  errors: PrivateBucketAttemptError[];
-  fallbackUsed: boolean;
-  physicalBucket?: string;
-};
-
-export type ListPrivateObjectsWithFallbackResult<TItem> = {
-  attemptedBuckets: string[];
-  data: TItem[];
-  errors: PrivateBucketAttemptError[];
-  fallbackUsed: boolean;
-};
-
 type CreateSignedUrlResult = {
   error: unknown | null;
-  signedUrl: string | null;
-};
-
-export type CreatePrivateSignedUrlWithFallbackResult = {
-  attemptedBuckets: string[];
-  errors: PrivateBucketAttemptError[];
-  fallbackUsed: boolean;
-  physicalBucket?: string;
   signedUrl: string | null;
 };
 
@@ -54,6 +24,28 @@ type BuildCompanyPrivateStorageTargetInput = {
   logicalFolder: string;
   fileName: string;
   entityId?: string | null;
+};
+
+export type PrivateBucketAttemptError = {
+  physicalBucket: string;
+  error: unknown;
+};
+
+export type DownloadCompanyPrivateObjectResult<TData> = {
+  data: TData | null;
+  errors: PrivateBucketAttemptError[];
+  physicalBucket?: string;
+};
+
+export type ListCompanyPrivateObjectsResult<TItem> = {
+  data: TItem[];
+  errors: PrivateBucketAttemptError[];
+};
+
+export type CreateCompanyPrivateSignedUrlResult = {
+  errors: PrivateBucketAttemptError[];
+  physicalBucket?: string;
+  signedUrl: string | null;
 };
 
 const normalizeStorageSegment = (value: string) =>
@@ -73,29 +65,7 @@ export const hasCompanyPrivateObjectPathPrefix = (
   return objectPath.startsWith(`${getCompanyPrivateBucket(companyId)}/`);
 };
 
-export const getPrivateReadCandidateBuckets = (
-  companyId: string,
-  requestedBucket?: string
-) => {
-  const companyBucket = getCompanyPrivateBucket(companyId);
-  const candidates =
-    !requestedBucket || requestedBucket === companyBucket
-      ? [companyBucket, LEGACY_PRIVATE_BUCKET]
-      : requestedBucket === LEGACY_PRIVATE_BUCKET
-        ? [LEGACY_PRIVATE_BUCKET]
-        : [];
-
-  return [...new Set(candidates)];
-};
-
-export const isAllowedPrivateBucketForCompany = (
-  bucket: string,
-  companyId: string
-) => {
-  return getPrivateReadCandidateBuckets(companyId, bucket).length > 0;
-};
-
-export const downloadPrivateObjectWithFallback = async <TData>({
+export const downloadCompanyPrivateObject = async <TData>({
   companyId,
   objectPath,
   requestedBucket,
@@ -108,76 +78,25 @@ export const downloadPrivateObjectWithFallback = async <TData>({
     physicalBucket: string,
     objectPath: string
   ) => Promise<DownloadPrivateObjectResult<TData>>;
-}) => {
-  const result = await downloadPrivateObjectWithFallbackDetailed({
-    companyId,
-    objectPath,
-    requestedBucket,
-    downloadObject
-  });
+}): Promise<DownloadCompanyPrivateObjectResult<TData>> => {
+  const physicalBucket = getCompanyPrivateBucket(companyId);
+  const result = await downloadObject(physicalBucket, objectPath);
 
-  if (!result.data || !result.physicalBucket) {
-    return null;
+  if (!result.error && result.data) {
+    return {
+      data: result.data,
+      errors: [],
+      physicalBucket
+    };
   }
 
   return {
-    data: result.data,
-    physicalBucket: result.physicalBucket
-  };
-};
-
-export const downloadPrivateObjectWithFallbackDetailed = async <TData>({
-  companyId,
-  objectPath,
-  requestedBucket,
-  downloadObject
-}: {
-  companyId: string;
-  objectPath: string;
-  requestedBucket?: string;
-  downloadObject: (
-    physicalBucket: string,
-    objectPath: string
-  ) => Promise<DownloadPrivateObjectResult<TData>>;
-}): Promise<DownloadPrivateObjectWithFallbackResult<TData>> => {
-  const attemptedBuckets: string[] = [];
-  const errors: PrivateBucketAttemptError[] = [];
-  const candidateBuckets = getPrivateReadCandidateBuckets(
-    companyId,
-    requestedBucket
-  );
-
-  for (const physicalBucket of candidateBuckets) {
-    attemptedBuckets.push(physicalBucket);
-    const result = await downloadObject(physicalBucket, objectPath);
-
-    if (!result.error && result.data) {
-      return {
-        attemptedBuckets,
-        data: result.data,
-        errors,
-        fallbackUsed: physicalBucket !== candidateBuckets[0],
-        physicalBucket
-      };
-    }
-
-    if (result.error) {
-      errors.push({
-        physicalBucket,
-        error: result.error
-      });
-    }
-  }
-
-  return {
-    attemptedBuckets,
     data: null,
-    errors,
-    fallbackUsed: false
+    errors: [{ physicalBucket, error: result.error }]
   };
 };
 
-export const listPrivateObjectsWithFallback = async <TItem>({
+export const listCompanyPrivateObjects = async <TItem>({
   companyId,
   objectPathPrefix,
   requestedBucket,
@@ -192,86 +111,37 @@ export const listPrivateObjectsWithFallback = async <TItem>({
     objectPathPrefix: string
   ) => Promise<ListPrivateObjectResult<TItem>>;
   getItemKey: (item: TItem) => string;
-}) => {
-  const result = await listPrivateObjectsWithFallbackDetailed({
-    companyId,
-    objectPathPrefix,
-    requestedBucket,
-    listObjects,
-    getItemKey
-  });
+}): Promise<ListCompanyPrivateObjectsResult<TItem>> => {
+  const physicalBucket = getCompanyPrivateBucket(companyId);
+  const result = await listObjects(physicalBucket, objectPathPrefix);
 
-  return result.data;
-};
+  if (result.error) {
+    return {
+      data: [],
+      errors: [{ physicalBucket, error: result.error }]
+    };
+  }
 
-export const listPrivateObjectsWithFallbackDetailed = async <TItem>({
-  companyId,
-  objectPathPrefix,
-  requestedBucket,
-  listObjects,
-  getItemKey
-}: {
-  companyId: string;
-  objectPathPrefix: string;
-  requestedBucket?: string;
-  listObjects: (
-    physicalBucket: string,
-    objectPathPrefix: string
-  ) => Promise<ListPrivateObjectResult<TItem>>;
-  getItemKey: (item: TItem) => string;
-}): Promise<ListPrivateObjectsWithFallbackResult<TItem>> => {
+  if (!result.data) {
+    return { data: [], errors: [] };
+  }
+
+  // Deduplicate items just in case
   const items = new Map<string, TItem>();
-  const attemptedBuckets: string[] = [];
-  const errors: PrivateBucketAttemptError[] = [];
-  let fallbackUsed = false;
-  const candidateBuckets = getPrivateReadCandidateBuckets(
-    companyId,
-    requestedBucket
-  );
-
-  for (const physicalBucket of candidateBuckets) {
-    attemptedBuckets.push(physicalBucket);
-    const result = await listObjects(physicalBucket, objectPathPrefix);
-
-    if (result.error) {
-      errors.push({
-        physicalBucket,
-        error: result.error
-      });
-      continue;
-    }
-
-    if (!result.data) {
-      continue;
-    }
-
-    const itemCountBefore = items.size;
-
-    for (const item of result.data) {
-      const itemKey = getItemKey(item);
-
-      if (!items.has(itemKey)) {
-        items.set(itemKey, item);
-      }
-    }
-
-    if (
-      physicalBucket !== candidateBuckets[0] &&
-      items.size > itemCountBefore
-    ) {
-      fallbackUsed = true;
+  for (const item of result.data) {
+    const itemKey = getItemKey(item);
+    if (!items.has(itemKey)) {
+      items.set(itemKey, item);
     }
   }
 
   return {
-    attemptedBuckets,
     data: [...items.values()],
-    errors,
-    fallbackUsed
+    errors: []
   };
 };
 
-export const createPrivateSignedUrlWithFallback = async ({
+export const createCompanyPrivateSignedUrl = async ({
   companyId,
   objectPath,
   requestedBucket,
@@ -287,75 +157,20 @@ export const createPrivateSignedUrlWithFallback = async ({
     objectPath: string,
     expiresIn: number
   ) => Promise<CreateSignedUrlResult>;
-}) => {
-  const result = await createPrivateSignedUrlWithFallbackDetailed({
-    companyId,
-    objectPath,
-    requestedBucket,
-    expiresIn,
-    createSignedUrl
-  });
+}): Promise<CreateCompanyPrivateSignedUrlResult> => {
+  const physicalBucket = getCompanyPrivateBucket(companyId);
+  const result = await createSignedUrl(physicalBucket, objectPath, expiresIn);
 
-  if (!result.signedUrl || !result.physicalBucket) {
-    return null;
+  if (!result.error && result.signedUrl) {
+    return {
+      errors: [],
+      physicalBucket,
+      signedUrl: result.signedUrl
+    };
   }
 
   return {
-    physicalBucket: result.physicalBucket,
-    signedUrl: result.signedUrl
-  };
-};
-
-export const createPrivateSignedUrlWithFallbackDetailed = async ({
-  companyId,
-  objectPath,
-  requestedBucket,
-  expiresIn,
-  createSignedUrl
-}: {
-  companyId: string;
-  objectPath: string;
-  requestedBucket?: string;
-  expiresIn: number;
-  createSignedUrl: (
-    physicalBucket: string,
-    objectPath: string,
-    expiresIn: number
-  ) => Promise<CreateSignedUrlResult>;
-}): Promise<CreatePrivateSignedUrlWithFallbackResult> => {
-  const attemptedBuckets: string[] = [];
-  const errors: PrivateBucketAttemptError[] = [];
-  const candidateBuckets = getPrivateReadCandidateBuckets(
-    companyId,
-    requestedBucket
-  );
-
-  for (const physicalBucket of candidateBuckets) {
-    attemptedBuckets.push(physicalBucket);
-    const result = await createSignedUrl(physicalBucket, objectPath, expiresIn);
-
-    if (!result.error && result.signedUrl) {
-      return {
-        attemptedBuckets,
-        errors,
-        fallbackUsed: physicalBucket !== candidateBuckets[0],
-        physicalBucket,
-        signedUrl: result.signedUrl
-      };
-    }
-
-    if (result.error) {
-      errors.push({
-        physicalBucket,
-        error: result.error
-      });
-    }
-  }
-
-  return {
-    attemptedBuckets,
-    errors,
-    fallbackUsed: false,
+    errors: [{ physicalBucket, error: result.error }],
     signedUrl: null
   };
 };

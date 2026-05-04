@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import {
   getCompanyPrivateBucket,
   getPurchaseOrderStatus,
-  listPrivateObjectsWithFallbackDetailed
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type {
@@ -549,7 +549,7 @@ export async function getSupplierInteractionDocuments(
   companyId: string,
   interactionId: string
 ) {
-  const result = await listPrivateObjectsWithFallbackDetailed({
+  const result = await listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/supplier-interaction/${interactionId}`,
@@ -576,7 +576,7 @@ export async function getSupplierInteractionLineDocuments(
   companyId: string,
   lineId: string
 ) {
-  const result = await listPrivateObjectsWithFallbackDetailed({
+  const result = await listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/supplier-interaction-line/${lineId}`,

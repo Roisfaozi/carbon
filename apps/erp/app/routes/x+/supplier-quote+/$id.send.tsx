@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import {
-  createPrivateSignedUrlWithFallbackDetailed,
+  createCompanyPrivateSignedUrl,
   getCompanyPrivateBucket
 } from "@carbon/utils";
 import type { ActionFunctionArgs } from "react-router";
@@ -116,7 +116,7 @@ export async function action(args: ActionFunctionArgs) {
         const attachments: Array<{ filename: string; path: string }> = [];
 
         const createSignedUrlWithFallback = async (objectPath: string) => {
-          const result = await createPrivateSignedUrlWithFallbackDetailed({
+          const result = await createCompanyPrivateSignedUrl({
             companyId,
             requestedBucket: getCompanyPrivateBucket(companyId),
             objectPath,

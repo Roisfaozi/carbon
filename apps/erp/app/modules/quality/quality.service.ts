@@ -3,7 +3,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import {
   getCompanyPrivateBucket,
-  listPrivateObjectsWithFallbackDetailed
+  listCompanyPrivateObjects
 } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -1055,7 +1055,7 @@ export async function getQualityFiles(
   id: string,
   companyId: string
 ) {
-  const result = await listPrivateObjectsWithFallbackDetailed({
+  const result = await listCompanyPrivateObjects({
     companyId,
     requestedBucket: getCompanyPrivateBucket(companyId),
     objectPathPrefix: `${companyId}/quality/${id}`,

@@ -1,10 +1,11 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import {
-  downloadPrivateObjectWithFallback,
-  hasCompanyPrivateObjectPathPrefix,
-  isAllowedPrivateBucketForCompany
+  downloadCompanyPrivateObject,
+  getCompanyPrivateBucket,
+  hasCompanyPrivateObjectPathPrefix
 } from "@carbon/utils";
+
 import type { LoaderFunctionArgs } from "react-router";
 
 const supportedFileTypes: Record<string, string> = {
@@ -55,7 +56,7 @@ export let loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const decodedPath = decodeURIComponent(objectPath);
 
-  if (!isAllowedPrivateBucketForCompany(bucket, companyId)) {
+  if (bucket !== getCompanyPrivateBucket(companyId)) {
     return new Response(null, { status: 403 });
   }
 
@@ -66,7 +67,7 @@ export let loader = async ({ request, params }: LoaderFunctionArgs) => {
   const serviceRole = await getCarbonServiceRole();
 
   async function downloadFile(): Promise<Blob | null> {
-    const result = await downloadPrivateObjectWithFallback<Blob>({
+    const result = await downloadCompanyPrivateObject<Blob>({
       companyId,
       objectPath: storageObjectPath,
       requestedBucket: bucket,
