@@ -34,7 +34,6 @@ import {
   VStack
 } from "@carbon/react";
 import {
-  formatDateTime,
   getCompanyPrivateBucket,
   parseMentionsFromDocument
 } from "@carbon/utils";
@@ -52,7 +51,7 @@ import {
 import { useFetcher } from "react-router";
 import { ProcedureStepTypeIcon } from "~/components/Icons";
 import ItemThumbnail from "~/components/ItemThumbnail";
-import { useUser } from "~/hooks";
+import { useDateFormatter, useUser } from "~/hooks";
 import { stepRecordValidator } from "~/services/models";
 import type { JobOperationStep } from "~/services/types";
 import { useItems, usePeople } from "~/stores";
@@ -286,6 +285,7 @@ export function PreviewStepRecord({
 }) {
   const [employees] = usePeople();
   const numberFormatter = useNumberFormatter();
+  const { formatDateTime } = useDateFormatter();
 
   if (!step.jobOperationStepRecord) return null;
   const record = step.jobOperationStepRecord.find(

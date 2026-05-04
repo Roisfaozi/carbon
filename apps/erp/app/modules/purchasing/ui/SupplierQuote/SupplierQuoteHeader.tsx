@@ -49,7 +49,11 @@ import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useParams, useRevalidator } from "react-router";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
-import { usePermissions, useRouteData, useSettings } from "~/hooks";
+import {
+  usePermissions,
+  useRouteData,
+  useSupplierApprovalRequired
+} from "~/hooks";
 import { useSuppliers } from "~/stores/suppliers";
 import { path } from "~/utils/path";
 import { isSupplierQuoteLocked } from "../../purchasing.models";
@@ -73,7 +77,7 @@ const SupplierQuoteHeader = () => {
   const permissions = usePermissions();
   const revalidator = useRevalidator();
 
-  const settings = useSettings();
+  const supplierApprovalRequired = useSupplierApprovalRequired();
   const routeData = useRouteData<{
     quote: SupplierQuote;
     lines: SupplierQuoteLine[];
@@ -87,10 +91,10 @@ const SupplierQuoteHeader = () => {
   const [suppliers] = useSuppliers();
   const isSupplierApproved = useMemo(
     () =>
-      !settings?.supplierApproval ||
+      !supplierApprovalRequired ||
       suppliers.find((s) => s.id === routeData?.quote?.supplierId)
         ?.supplierStatus === "Active",
-    [settings?.supplierApproval, routeData?.quote?.supplierId, suppliers]
+    [supplierApprovalRequired, routeData?.quote?.supplierId, suppliers]
   );
 
   const isOutsideProcessing =
@@ -171,7 +175,7 @@ const SupplierQuoteHeader = () => {
                 {routeData?.quote?.supplierQuoteType}
               </Badge>
             )}
-            {settings?.supplierApproval && !isSupplierApproved && (
+            {supplierApprovalRequired && !isSupplierApproved && (
               <Status color="red">
                 <Trans>Unapproved Supplier</Trans>
               </Status>

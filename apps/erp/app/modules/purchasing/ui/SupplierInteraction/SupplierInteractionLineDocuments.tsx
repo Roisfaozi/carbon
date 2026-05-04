@@ -22,7 +22,6 @@ import {
 } from "@carbon/react";
 import {
   convertKbToString,
-  formatDate,
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
@@ -34,7 +33,7 @@ import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { useFetchers, useRevalidator, useSubmit } from "react-router";
 import { DocumentPreview, FileDropzone } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
-import { usePermissions, useUser } from "~/hooks";
+import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { ItemFile } from "~/modules/items";
 import type { OptimisticFileObject } from "~/modules/shared";
 import { getDocumentType } from "~/modules/shared";
@@ -228,6 +227,7 @@ const SupplierInteractionLineDocuments = ({
   } = useUser();
   const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { t } = useLingui();
+  const { formatDate } = useDateFormatter();
   const { canDelete, download, deleteFile, getPath, upload } =
     useSupplierInteractionLineDocuments({
       id,

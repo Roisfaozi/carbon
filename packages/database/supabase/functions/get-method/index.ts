@@ -396,6 +396,17 @@ serve(async (req: Request) => {
         }, {});
 
         await db.transaction().execute(async (trx) => {
+          if (isConfigured) {
+            await trx.updateTable("job")
+              .set({
+                configuration: JSON.stringify(configuration),
+                updatedAt: new Date().toISOString(),
+                updatedBy: userId,
+              })
+              .where("id", "=", jobId)
+              .execute();
+          }
+
           // Delete existing jobMakeMethod, jobMakeMethodOperation, jobMakeMethodMaterial
           await Promise.all([
             parts.billOfMaterial
@@ -605,6 +616,8 @@ serve(async (req: Request) => {
                   defaultValue: op.operationType,
                 }),
               ]);
+
+              if (processId === "") continue;
 
               jobOperationsInserts.push({
                 jobId,
@@ -824,6 +837,8 @@ serve(async (req: Request) => {
                 }),
               ]);
 
+              if (itemId === "") return null;
+
               let itemType = child.data.itemType;
               let unitCost = child.data.unitCost;
               let requiresSerialTracking =
@@ -913,9 +928,17 @@ serve(async (req: Request) => {
               };
             };
 
-            let materialsWithConfiguredFields = await Promise.all(
+            const jobMaterialResults = await Promise.all(
               node.children.map(mapMethodMaterialToJobMaterial)
             );
+            const validJobMaterialIndices = jobMaterialResults.reduce<number[]>((acc, m, i) => {
+              if (m !== null) acc.push(i);
+              return acc;
+            }, []);
+            let materialsWithConfiguredFields = jobMaterialResults.filter(
+              (m): m is NonNullable<typeof m> => m !== null
+            );
+            const configuredChildren = validJobMaterialIndices.map(i => node.children[i]);
 
             const bomConfigurationKey = `billOfMaterial:${nodeLevelConfigurationKey}`;
             let bomConfiguration: string[] | null = null;
@@ -953,7 +976,7 @@ serve(async (req: Request) => {
                 (material) => material.methodType !== "Make to Order"
               );
 
-            const madeChildren = node.children.filter(
+            const madeChildren = configuredChildren.filter(
               (child) => child.data.methodType === "Make to Order"
             );
 
@@ -1519,7 +1542,7 @@ serve(async (req: Request) => {
             .eq("quoteLineId", quoteLineId)
             .is("parentMaterialId", null)
             .eq("companyId", companyId)
-            .single(),
+            .maybeSingle(),
           client.from("workCenters").select("*").eq("companyId", companyId),
           client.from("supplierProcess").select("*").eq("companyId", companyId),
           isConfigured
@@ -1554,6 +1577,25 @@ serve(async (req: Request) => {
           throw new Error("Failed to get quote make method");
         }
 
+        if (!quoteMakeMethod.data) {
+          const inserted = await client
+            .from("quoteMakeMethod")
+            .insert({
+              quoteId,
+              quoteLineId,
+              itemId,
+              companyId,
+              createdBy: userId,
+            })
+            .select("*")
+            .single();
+
+          if (inserted.error || !inserted.data) {
+            throw new Error("Failed to create quote make method");
+          }
+          quoteMakeMethod.data = inserted.data;
+        }
+
         if (workCenters.error) {
           throw new Error("Failed to get related work centers");
         }
@@ -1584,6 +1626,17 @@ serve(async (req: Request) => {
         );
 
         await db.transaction().execute(async (trx: Transaction<KyselyDatabase>) => {
+          if (isConfigured) {
+            await trx.updateTable("quoteLine")
+              .set({
+                configuration: JSON.stringify(configuration),
+                updatedAt: new Date().toISOString(),
+                updatedBy: userId,
+              })
+              .where("id", "=", quoteLineId)
+              .execute();
+          }
+
           // Delete existing quoteMakeMethod, quoteMakeMethodOperation, quoteMakeMethodMaterial
           await Promise.all([
             parts.billOfMaterial
@@ -1768,6 +1821,8 @@ serve(async (req: Request) => {
                   defaultValue: op.operationType,
                 }),
               ]);
+
+              if (processId === "") continue;
 
               const operationRates = getLaborAndOverheadRates(
                 processId,
@@ -1989,6 +2044,8 @@ serve(async (req: Request) => {
                 }),
               ]);
 
+              if (itemId === "") return null;
+
               let itemType = child.data.itemType;
               let unitCost = child.data.unitCost;
 
@@ -2040,9 +2097,17 @@ serve(async (req: Request) => {
               };
             };
 
-            let materialsWithConfiguredFields = await Promise.all(
+            const quoteMaterialResults = await Promise.all(
               node.children.map(mapMethodMaterialToQuoteMaterial)
             );
+            const validQuoteMaterialIndices = quoteMaterialResults.reduce<number[]>((acc, m, i) => {
+              if (m !== null) acc.push(i);
+              return acc;
+            }, []);
+            let materialsWithConfiguredFields = quoteMaterialResults.filter(
+              (m): m is NonNullable<typeof m> => m !== null
+            );
+            const configuredChildren = validQuoteMaterialIndices.map(i => node.children[i]);
 
             const bomConfigurationKey = `billOfMaterial:${nodeLevelConfigurationKey}`;
             let bomConfiguration: string[] | null = null;
@@ -2080,7 +2145,7 @@ serve(async (req: Request) => {
                 (material) => material.methodType !== "Make to Order"
               );
 
-            const madeChildren = node.children.filter(
+            const madeChildren = configuredChildren.filter(
               (child) => child.data.methodType === "Make to Order"
             );
 

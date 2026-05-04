@@ -40,7 +40,6 @@ import {
   Number,
   Select,
   Submit,
-  TextArea,
   UnitOfMeasure
 } from "~/components/Form";
 import { ReplenishmentSystemIcon, TrackingTypeIcon } from "~/components/Icons";
@@ -51,6 +50,7 @@ import {
   itemTrackingTypes,
   toolValidator
 } from "../../items.models";
+import ItemStorageFields from "../Item/ItemStorageFields";
 
 type ToolFormProps = {
   initialValues: z.infer<typeof toolValidator> & { tags: string[] };
@@ -270,14 +270,7 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
                 />
 
                 <Input name="name" label={t`Short Description`} />
-                <Select
-                  name="itemTrackingType"
-                  label={t`Tracking Type`}
-                  options={itemTrackingTypeOptions}
-                />
-                {isEditing && (
-                  <TextArea name="description" label={t`Long Description`} />
-                )}
+
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}
@@ -290,6 +283,11 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
                       setDefaultMethodType("Make to Order");
                     }
                   }}
+                />
+                <Select
+                  name="itemTrackingType"
+                  label={t`Tracking Type`}
+                  options={itemTrackingTypeOptions}
                 />
                 <DefaultMethodType
                   name="defaultMethodType"
@@ -324,6 +322,8 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
                     isReadOnly={replenishmentSystem === "Make"}
                   />
                 )}
+
+                <ItemStorageFields />
 
                 <CustomFormFields table="tool" tags={initialValues.tags} />
               </div>

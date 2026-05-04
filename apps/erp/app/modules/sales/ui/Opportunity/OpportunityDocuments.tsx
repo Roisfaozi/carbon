@@ -23,7 +23,6 @@ import {
 } from "@carbon/react";
 import {
   convertKbToString,
-  formatDate,
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
@@ -42,7 +41,7 @@ import {
 import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
 import { DocumentPreview, FileDropzone } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
-import { usePermissions, useUser } from "~/hooks";
+import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
@@ -64,6 +63,7 @@ const OpportunityDocuments = ({
   type,
   isReadOnly: isReadOnlyProp
 }: OpportunityDocumentsProps) => {
+  const { formatDate } = useDateFormatter();
   const { canDelete, download, deleteAttachment, getPath, upload } =
     useOpportunityDocuments({
       opportunityId: opportunity.id,

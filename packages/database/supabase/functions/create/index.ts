@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.175.0/http/server.ts";
+import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 import { DB, getConnectionPool, getDatabaseClient } from "../lib/database.ts";
 
 import z from "npm:zod@^3.24.1";
@@ -824,6 +825,31 @@ serve(async (req: Request) => {
             .map((d) => d.id)
         );
 
+        // Map (itemId, locationId) -> defaultStorageUnitId. Receipt lines
+        // fall back to the pickMethod-configured storage unit for their
+        // destination location when the purchase order line doesn't pin
+        // one explicitly. Scoped by locationId because a single item can
+        // be stocked across multiple locations with different defaults
+        // per location (that's why pickMethod exists).
+        const receiptItemIds = purchaseOrderLines.data
+          .filter((d): d is typeof d & { itemId: string } => !!d.itemId)
+          .map((d) => d.itemId);
+        const pickMethods = await client
+          .from("pickMethod")
+          .select("itemId, locationId, defaultStorageUnitId")
+          .in("itemId", receiptItemIds);
+        const pickMethodKey = (itemId: string, loc: string | null) =>
+          `${itemId}::${loc ?? ""}`;
+        const defaultStorageUnitByItemLocation = new Map<string, string>();
+        for (const row of pickMethods.data ?? []) {
+          if (row.defaultStorageUnitId) {
+            defaultStorageUnitByItemLocation.set(
+              pickMethodKey(row.itemId, row.locationId),
+              row.defaultStorageUnitId
+            );
+          }
+        }
+
         const hasReceipt = !!receipt.data?.id;
         const isOutsideOperation =
           purchaseOrder.data.purchaseOrderType === "Outside Processing";
@@ -841,13 +867,12 @@ serve(async (req: Request) => {
           if (
             !d.itemId ||
             !d.purchaseQuantity ||
-            d.unitPrice === null ||
-            d.purchaseOrderLineType === "Service" ||
-            isNaN(d.unitPrice)
+            d.purchaseOrderLineType === "Service"
           ) {
             return acc;
           }
 
+          const unitPrice = d.unitPrice ?? 0;
           const outstandingQuantity =
             d.purchaseQuantity -
             (previouslyReceivedQuantitiesByLine[d.id!] ?? 0);
@@ -870,10 +895,15 @@ serve(async (req: Request) => {
             requiresBatchTracking:
               batchItems.has(d.itemId) && !isOutsideOperation,
             unitPrice:
-              d.unitPrice / (d.conversionFactor ?? 1) + shippingAndTaxUnitCost,
+              unitPrice / (d.conversionFactor ?? 1) + shippingAndTaxUnitCost,
             unitOfMeasure: d.inventoryUnitOfMeasureCode ?? "EA",
-            locationId: d.locationId,
-            storageUnitId: d.storageUnitId,
+            locationId: d.locationId ?? null,
+            storageUnitId:
+              d.storageUnitId ??
+              defaultStorageUnitByItemLocation.get(
+                pickMethodKey(d.itemId!, d.locationId ?? null)
+              ) ??
+              null,
             createdBy: userId ?? "",
           });
 
@@ -1380,7 +1410,7 @@ serve(async (req: Request) => {
               .execute();
           }
 
-          await trx
+          const newReceiptLineRows = await trx
             .insertInto("receiptLine")
             .values({
               ...data,
@@ -1389,7 +1419,10 @@ serve(async (req: Request) => {
               receivedQuantity: quantity,
               createdBy: userId,
             })
+            .returning(["id"])
             .execute();
+
+          const newReceiptLineId = newReceiptLineRows[0]?.id;
 
           await trx
             .updateTable("receiptLine")
@@ -1402,6 +1435,50 @@ serve(async (req: Request) => {
             })
             .where("id", "=", receiptLineId)
             .execute();
+
+          // Carry batch tracking onto the new line: clone each existing
+          // trackedEntity (batch number + expirationDate + attributes) and
+          // shrink the original entity's quantity by the split amount.
+          if (
+            !receiptLine.data.requiresSerialTracking &&
+            newReceiptLineId &&
+            trackedEntities.data?.length
+          ) {
+            for (const entity of trackedEntities.data) {
+              const attrs = (entity.attributes ?? {}) as Record<string, unknown>;
+              const { ["Receipt Line Index"]: _ignored, ...rest } = attrs;
+              const newAttributes = {
+                ...rest,
+                "Receipt Line": newReceiptLineId,
+              };
+
+              await trx
+                .insertInto("trackedEntity")
+                .values({
+                  id: nanoid(),
+                  quantity: quantity,
+                  status: entity.status,
+                  sourceDocument: entity.sourceDocument,
+                  sourceDocumentId: entity.sourceDocumentId,
+                  sourceDocumentReadableId: entity.sourceDocumentReadableId,
+                  readableId: entity.readableId,
+                  attributes: newAttributes,
+                  companyId: entity.companyId,
+                  createdBy: userId,
+                  itemId: entity.itemId,
+                  expirationDate: entity.expirationDate,
+                })
+                .execute();
+
+              await trx
+                .updateTable("trackedEntity")
+                .set({
+                  quantity: Math.max(0, (entity.quantity ?? 0) - quantity),
+                })
+                .where("id", "=", entity.id)
+                .execute();
+            }
+          }
         });
 
         return new Response(
@@ -1796,9 +1873,7 @@ serve(async (req: Request) => {
             if (
               !purchaseOrderLine.itemId ||
               !purchaseOrderLine.purchaseQuantity ||
-              purchaseOrderLine.unitPrice === null ||
-              purchaseOrderLine.purchaseOrderLineType === "Service" ||
-              isNaN(purchaseOrderLine.unitPrice)
+              purchaseOrderLine.purchaseOrderLineType === "Service"
             ) {
               continue;
             }
@@ -2023,9 +2098,7 @@ serve(async (req: Request) => {
             if (
               !salesOrderLine.itemId ||
               !salesOrderLine.saleQuantity ||
-              salesOrderLine.unitPrice === null ||
-              salesOrderLine.salesOrderLineType === "Service" ||
-              isNaN(salesOrderLine.unitPrice)
+              salesOrderLine.salesOrderLineType === "Service"
             ) {
               continue;
             }

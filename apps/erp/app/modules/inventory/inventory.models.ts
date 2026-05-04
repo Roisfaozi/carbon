@@ -49,7 +49,8 @@ export const trackedEntityStatus = [
   "Available",
   "Consumed",
   "On Hold",
-  "Reserved"
+  "Reserved",
+  "Rejected"
 ] as const;
 
 export const replenishmentSystemTypes = [
@@ -100,6 +101,19 @@ export const batchPropertyValidator = z
 export const batchPropertyOrderValidator = z.object({
   id: z.string().min(1, { message: "ID is required" }),
   sortOrder: zfd.numeric(z.number().min(0))
+});
+
+// Manual override of a tracked entity's expirationDate. Reason is required
+// because the override is recorded on the entity's attributes JSONB so the
+// trace popover can surface it later.
+export const trackedEntityExpiryValidator = z.object({
+  trackedEntityId: z.string().min(1),
+  // ISO date (YYYY-MM-DD). Empty clears the column entirely.
+  expirationDate: zfd.text(z.string().optional()),
+  reason: z
+    .string()
+    .min(3, { message: "Reason must be at least 3 characters" })
+    .max(500)
 });
 
 export const inventoryAdjustmentValidator = z.object({
@@ -169,7 +183,7 @@ export const storageUnitValidator = z.object({
   locationId: z.string().min(1, { message: "Location ID is required" }),
   warehouseId: zfd.text(z.string().optional()),
   parentId: zfd.text(z.string().optional()),
-  storageTypeIds: zfd.repeatableOfType(z.string()).optional()
+  storageTypeIds: zfd.repeatableOfType(z.string()).default([])
 });
 
 export const storageTypeValidator = z.object({

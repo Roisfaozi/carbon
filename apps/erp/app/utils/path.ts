@@ -129,6 +129,8 @@ export const path = {
       qualityKpi: (key: string) => generatePath(`${api}/quality/kpi/${key}`),
       procedures: `${api}/production/procedures`,
       processes: `${api}/resources/processes`,
+      itemRecipeProcesses: (itemId: string) =>
+        generatePath(`${api}/items/${itemId}/recipe-processes`),
       productionKpi: (key: string) =>
         generatePath(`${api}/production/kpi/${key}`),
       quoteBillOfMaterials: (
@@ -180,6 +182,10 @@ export const path = {
       storageTypes: `${api}/inventory/storage-types`,
       storageUnitDescendants: (id: string) =>
         generatePath(`${api}/inventory/storage-unit-descendants?id=${id}`),
+      storageUnitChildren: (parentId: string) =>
+        generatePath(
+          `${api}/inventory/storage-unit-children?parentId=${parentId}`
+        ),
       supplierContacts: (id: string) =>
         generatePath(`${api}/purchasing/supplier-contacts/${id}`),
       supplierLocations: (id: string) =>
@@ -440,6 +446,8 @@ export const path = {
     bulkUpdateJob: `${x}/job/update`,
     bulkUpdateIssue: `${x}/issue/update`,
     updateIssueItem: `${x}/issue/item/update`,
+    splitIssueItem: `${x}/issue/item/split`,
+    assignIssueItemEntities: `${x}/issue/item/assign-entities`,
     issueActionTasksOrder: `${x}/issue/action-tasks/order`,
     bulkUpdateIssueWorkflow: `${x}/issue-workflow/update`,
     bulkUpdatePurchaseOrder: `${x}/purchase-order/update`,
@@ -493,6 +501,8 @@ export const path = {
       generatePath(`${x}/consumable/${id}/planning?location=${locationId}`),
     consumablePurchasing: (id: string) =>
       generatePath(`${x}/consumable/${id}/purchasing`),
+    consumableQuality: (id: string) =>
+      generatePath(`${x}/consumable/${id}/quality`),
     consumableRoot: `${x}/consumable`,
     consumableSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/consumable/${itemId}/purchasing/${id}`),
@@ -852,6 +862,7 @@ export const path = {
     issue: (id: string) => generatePath(`${x}/issue/${id}`),
     issueDetails: (id: string) => generatePath(`${x}/issue/${id}/details`),
     issueStatus: (id: string) => generatePath(`${x}/issue/${id}/status`),
+    closeIssue: (id: string) => generatePath(`${x}/issue/${id}/close`),
     issueActions: (id: string) => generatePath(`${x}/issue/${id}`),
     issueDispositions: (id: string) =>
       generatePath(`${x}/issue/${id}/dispositions`),
@@ -988,6 +999,8 @@ export const path = {
       generatePath(`${x}/material/${id}/pricing`),
     materialPurchasing: (id: string) =>
       generatePath(`${x}/material/${id}/purchasing`),
+    materialQuality: (id: string) =>
+      generatePath(`${x}/material/${id}/quality`),
     materialRoot: `${x}/material`,
     materialSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/material/${itemId}/purchasing/${id}`),
@@ -1203,6 +1216,7 @@ export const path = {
     partPricing: (id: string) => generatePath(`${x}/part/${id}/pricing`),
     partPurchasing: (id: string) => generatePath(`${x}/part/${id}/purchasing`),
     partRoot: `${x}/part`,
+    partQuality: (id: string) => generatePath(`${x}/part/${id}/quality`),
     partSales: (id: string) => generatePath(`${x}/part/${id}/sales`),
     partSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/part/${itemId}/purchasing/${id}`),
@@ -1302,6 +1316,9 @@ export const path = {
     purchasingSettings: `${x}/settings/purchasing`,
     quality: `${x}/quality`,
     qualityActions: `${x}/quality/actions`,
+    inboundInspections: `${x}/quality/inbound-inspections`,
+    inboundInspection: (id: string) =>
+      generatePath(`${x}/quality/inbound-inspections/${id}`),
     qualityDocument: (id: string) =>
       generatePath(`${x}/quality-document/${id}`),
     qualityDocuments: `${x}/quality/documents`,
@@ -1615,6 +1632,7 @@ export const path = {
       generatePath(`${x}/tool/${id}/planning?location=${locationId}`),
     toolPricing: (id: string) => generatePath(`${x}/tool/${id}/pricing`),
     toolPurchasing: (id: string) => generatePath(`${x}/tool/${id}/purchasing`),
+    toolQuality: (id: string) => generatePath(`${x}/tool/${id}/quality`),
     toolRoot: `${x}/tool`,
     toolSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/tool/${itemId}/suppliers/${id}`),
@@ -1623,6 +1641,7 @@ export const path = {
     traceability: `${x}/traceability`,
     traceabilityGraph: `${x}/traceability/graph`,
     trackedEntities: `${x}/inventory/tracked-entities`,
+    trackedEntityExpiry: `${x}/inventory/tracked-entity/expiry`,
     training: (id: string) => generatePath(`${x}/training/${id}`),
     trainings: `${x}/resources/training`,
     trainingQuestion: (id: string, questionId: string) =>

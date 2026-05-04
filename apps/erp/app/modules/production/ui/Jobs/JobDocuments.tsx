@@ -28,7 +28,6 @@ import {
 } from "@carbon/react";
 import {
   convertKbToString,
-  formatDate,
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
@@ -41,7 +40,7 @@ import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
 import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
-import { usePermissions, useUser } from "~/hooks";
+import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { OptimisticFileObject } from "~/modules/shared";
 import { getDocumentType } from "~/modules/shared";
 import type { ModelUpload } from "~/types";
@@ -382,6 +381,7 @@ const JobDocuments = ({
   } = useUser();
   const companyPrivateBucket = getCompanyPrivateBucket(companyId);
   const { t } = useLingui();
+  const { formatDate } = useDateFormatter();
   const {
     canDelete,
     canUpdate,

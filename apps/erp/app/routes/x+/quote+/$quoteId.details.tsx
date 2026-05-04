@@ -125,8 +125,6 @@ export default function QuoteDetailsRoute() {
 
   if (!quoteData) throw new Error("Could not find quote data");
 
-  const isReadOnly = isQuoteLocked(quoteData?.quote?.status);
-
   const shipmentFormRef = useRef<QuoteShipmentFormRef>(null);
 
   const handleEditShippingCost = () => {
@@ -157,7 +155,9 @@ export default function QuoteDetailsRoute() {
     shippingMethodId: quoteData?.shipment?.shippingMethodId ?? "",
     shippingTermId: quoteData?.shipment?.shippingTermId ?? "",
     receiptRequestedDate: quoteData?.shipment?.receiptRequestedDate ?? "",
-    shippingCost: quoteData?.shipment?.shippingCost ?? 0
+    shippingCost: quoteData?.shipment?.shippingCost ?? 0,
+    incoterm: quoteData?.shipment?.incoterm ?? undefined,
+    incotermLocation: quoteData?.shipment?.incotermLocation ?? ""
   };
 
   const paymentInitialValues = {
@@ -191,7 +191,6 @@ export default function QuoteDetailsRoute() {
             attachments={resolvedFiles}
             id={quoteId}
             type="Quote"
-            isReadOnly={isReadOnly}
           />
         )}
       </DeferredFiles>

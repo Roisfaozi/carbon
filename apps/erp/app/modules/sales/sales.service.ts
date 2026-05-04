@@ -3409,7 +3409,8 @@ export async function upsertQuote(
       invoiceCustomerLocationId
     } = customerPayment.data;
 
-    const { shippingMethodId, shippingTermId } = customerShipping.data;
+    const { shippingMethodId, shippingTermId, incoterm, incotermLocation } =
+      customerShipping.data;
 
     if (quote.currencyCode) {
       const currency = await getCurrencyByCode(
@@ -3450,6 +3451,8 @@ export async function upsertQuote(
           locationId: locationId,
           shippingMethodId: shippingMethodId,
           shippingTermId: shippingTermId,
+          incoterm: incoterm,
+          incotermLocation: incotermLocation,
           companyId: quote.companyId
         }
       ]),
@@ -4758,7 +4761,8 @@ export async function upsertSalesOrder(
     invoiceCustomerLocationId
   } = customerPayment.data;
 
-  const { shippingMethodId, shippingTermId } = customerShipping.data;
+  const { shippingMethodId, shippingTermId, incoterm, incotermLocation } =
+    customerShipping.data;
 
   const locationId = employee?.data?.locationId ?? null;
 
@@ -4810,6 +4814,8 @@ export async function upsertSalesOrder(
         receiptRequestedDate: requestedDate,
         receiptPromisedDate: promisedDate,
         shippingTermId: shippingTermId,
+        incoterm: incoterm,
+        incotermLocation: incotermLocation,
         companyId: salesOrder.companyId
       }
     ]),

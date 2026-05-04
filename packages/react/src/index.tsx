@@ -38,6 +38,8 @@ import {
 import { Checkbox } from "./Checkbox";
 import type { ChoiceCardOption } from "./ChoiceCard";
 import { ChoiceCardGroup } from "./ChoiceCard";
+import type { ChoiceSelectOption } from "./ChoiceSelect";
+import { ChoiceSelect } from "./ChoiceSelect";
 import { ClientOnly } from "./ClientOnly";
 import { CodeBlock } from "./CodeBlock";
 import {
@@ -304,6 +306,7 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "./Tooltip";
+import { TruncatedTooltipText } from "./TruncatedTooltipText";
 import { cn } from "./utils/cn";
 import { copyToClipboard } from "./utils/dom";
 import { getValidChildren, reactNodeToString } from "./utils/react";
@@ -344,6 +347,7 @@ export {
   CardTitle,
   Checkbox,
   ChoiceCardGroup,
+  ChoiceSelect,
   ClientOnly,
   CodeBlock,
   Collapsible,
@@ -563,6 +567,7 @@ export {
   Toggle,
   ToggleGroup,
   ToggleGroupItem,
+  TruncatedTooltipText,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -588,6 +593,7 @@ export type {
   BadgeProps,
   ButtonProps,
   ChoiceCardOption,
+  ChoiceSelectOption,
   ComboboxProps,
   CreatableComboboxProps,
   CreatableMultiSelectProps,

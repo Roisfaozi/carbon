@@ -23,7 +23,6 @@ import {
 import {
   buildCompanyPrivateStorageTarget,
   convertKbToString,
-  formatDate,
   getCompanyPrivateBucket,
   getPrivateReadCandidateBuckets
 } from "@carbon/utils";
@@ -34,7 +33,7 @@ import { LuAxis3D, LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
 import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
-import { usePermissions, useUser } from "~/hooks";
+import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { OptimisticFileObject } from "~/modules/shared";
 import { getDocumentType } from "~/modules/shared";
 import type { ModelUpload, StorageItem } from "~/types";
@@ -61,6 +60,7 @@ const Documents = ({
   writeBucketPermission
 }: DocumentsProps) => {
   const { t } = useLingui();
+  const { formatDate } = useDateFormatter();
   const permissions = usePermissions();
   const revalidator = useRevalidator();
   const { carbon } = useCarbon();
@@ -140,7 +140,14 @@ const Documents = ({
       toast.success(t`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [carbon?.storage, getReadPath, revalidator]
+    [
+      carbon?.storage,
+      getReadPath,
+      revalidator,
+      company.id,
+      companyPrivateBucket,
+      t
+    ]
   );
 
   const downloadModel = useCallback(
@@ -214,7 +221,7 @@ const Documents = ({
         console.error(error);
       }
     },
-    [getReadPath]
+    [getReadPath, companyPrivateBucket, t]
   );
 
   const upload = useCallback(

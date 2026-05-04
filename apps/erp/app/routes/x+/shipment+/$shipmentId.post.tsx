@@ -3,7 +3,6 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { getCompanyPrivateBucket } from "@carbon/utils";
-import { FunctionRegion } from "@supabase/supabase-js";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertDocument } from "~/modules/documents";
