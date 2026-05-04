@@ -23,8 +23,7 @@ import {
 import {
   buildCompanyPrivateStorageTarget,
   convertKbToString,
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets
+  getCompanyPrivateBucket
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ChangeEvent } from "react";
@@ -117,10 +116,7 @@ const Documents = ({
       let deleted = false;
       let lastError: string | undefined;
 
-      for (const physicalBucket of getPrivateReadCandidateBuckets(
-        company.id,
-        companyPrivateBucket
-      )) {
+      for (const physicalBucket of [companyPrivateBucket]) {
         const fileDelete = await carbon?.storage
           .from(physicalBucket)
           .remove([objectPath]);

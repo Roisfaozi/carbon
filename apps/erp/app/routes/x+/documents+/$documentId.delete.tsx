@@ -2,10 +2,7 @@ import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
-import {
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets
-} from "@carbon/utils";
+import { getCompanyPrivateBucket } from "@carbon/utils";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { deleteDocument, getDocument } from "~/modules/documents";
@@ -52,10 +49,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   let storageDeleted = false;
   let storageDeleteError: string | undefined;
 
-  for (const physicalBucket of getPrivateReadCandidateBuckets(
-    documentCompanyId,
-    getCompanyPrivateBucket(documentCompanyId)
-  )) {
+  for (const physicalBucket of [getCompanyPrivateBucket(documentCompanyId)]) {
     const result = await serviceRole.storage
       .from(physicalBucket)
       .remove([documentPath]);

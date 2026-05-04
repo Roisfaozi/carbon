@@ -20,11 +20,7 @@ import {
   Tr,
   toast
 } from "@carbon/react";
-import {
-  convertKbToString,
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets
-} from "@carbon/utils";
+import { convertKbToString, getCompanyPrivateBucket } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
@@ -82,10 +78,7 @@ const useSupplierInteractionLineDocuments = ({
       let deleted = false;
       let lastError: string | undefined;
 
-      for (const physicalBucket of getPrivateReadCandidateBuckets(
-        company.id,
-        companyPrivateBucket
-      )) {
+      for (const physicalBucket of [companyPrivateBucket]) {
         const fileDelete = await carbon?.storage
           .from(physicalBucket)
           .remove([getPath(file)]);

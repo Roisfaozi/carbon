@@ -28,8 +28,7 @@ import { Editor } from "@carbon/react/Editor";
 import {
   buildCompanyPrivateStorageTarget,
   convertKbToString,
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets
+  getCompanyPrivateBucket
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
@@ -285,10 +284,7 @@ function MaintenanceFilesContent({
       let deleted = false;
       let lastError: string | undefined;
 
-      for (const physicalBucket of getPrivateReadCandidateBuckets(
-        company.id,
-        companyPrivateBucket
-      )) {
+      for (const physicalBucket of [companyPrivateBucket]) {
         const result = await carbon.storage
           .from(physicalBucket)
           .remove([filePath]);

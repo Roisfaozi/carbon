@@ -36,11 +36,7 @@ import {
   VStack
 } from "@carbon/react";
 import type { TrackedEntityAttributes } from "@carbon/utils";
-import {
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets,
-  labelSizes
-} from "@carbon/utils";
+import { getCompanyPrivateBucket, labelSizes } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
@@ -1325,10 +1321,7 @@ function useReceiptFiles(receiptId: string) {
       let deleted = false;
       let lastError: string | undefined;
 
-      for (const physicalBucket of getPrivateReadCandidateBuckets(
-        company.id,
-        companyPrivateBucket
-      )) {
+      for (const physicalBucket of [companyPrivateBucket]) {
         const fileDelete = await carbon?.storage
           .from(physicalBucket)
           .remove([getPath(file, lineId)]);

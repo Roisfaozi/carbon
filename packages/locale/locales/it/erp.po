@@ -28,11 +28,11 @@ msgstr "{0} giorni"
 
 #. placeholder {0}: attachment.name
 #. placeholder {0}: file.name
-#: apps/erp/app/components/Documents.tsx:140
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:106
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:308
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:344
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:115
+#: apps/erp/app/components/Documents.tsx:136
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:99
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:304
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:337
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:108
 msgid "{0} deleted successfully"
 msgstr "{0} eliminato con successo"
 
@@ -57,7 +57,7 @@ msgid "{0} un-sampled entities will be released to Available. Sampled passes sta
 msgstr "{0} entità non campionate verranno rilasciate a Disponibile. I campioni approvati rimangono Disponibili e i campioni rifiutati rimangono Rifiutati."
 
 #. placeholder {0}: file.name
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:245
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:244
 msgid "{0} uploaded successfully"
 msgstr "{0} caricato con successo"
 
@@ -532,7 +532,7 @@ msgstr "Aggiungi Voce"
 msgid "Add Note"
 msgstr "Aggiungi Nota"
 
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:114
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:113
 msgid "Add notes and documentation for this maintenance dispatch"
 msgstr "Aggiungi note e documentazione per questo ordine di manutenzione"
 
@@ -1554,7 +1554,7 @@ msgid "Batch number"
 msgstr "Numero di lotto"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:353
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:778
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:774
 msgid "Batch Number"
 msgstr "Numero Lotto"
 
@@ -1642,7 +1642,7 @@ msgstr "BOM sincronizzato con successo"
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:510
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:500
 msgid "Bucket"
 msgstr "Bucket"
 
@@ -1938,8 +1938,8 @@ msgstr "Non è possibile aggiungere strumenti a un'operazione non salvata"
 msgid "Cannot convert RFQ to quote"
 msgstr "Impossibile convertire RFQ in preventivo"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:276
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:327
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:269
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:320
 msgid "Cannot move to parts bucket without item ID"
 msgstr "Impossibile spostare nel bucket parti senza ID elemento"
 
@@ -1951,8 +1951,8 @@ msgstr "Impossibile effettuare l'ordine - nessun fornitore associato a questo ar
 msgid "Cannot send RFQ"
 msgstr "Impossibile inviare RFQ"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:227
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:278
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:220
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:271
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Impossibile caricare nel bucket delle parti senza ID elemento"
 
@@ -1966,20 +1966,20 @@ msgstr "Varianza di Capacità"
 msgid "Carbon client is not available"
 msgstr "Il client Carbon non è disponibile"
 
-#: apps/erp/app/components/Documents.tsx:230
+#: apps/erp/app/components/Documents.tsx:226
 #: apps/erp/app/components/ImportCSVModal/UploadCSV.tsx:82
 #: apps/erp/app/components/ImportCSVModal/UploadCSV.tsx:106
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1285
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1281
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:417
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:222
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:271
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:319
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:163
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:228
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:279
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:405
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:273
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:322
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:215
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:264
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:312
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:156
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:227
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:278
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:398
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:266
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:315
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:112
 msgid "Carbon client not available"
 msgstr "Client Carbon non disponibile"
@@ -2955,15 +2955,15 @@ msgstr "Crea Versione"
 msgid "Create Work Center"
 msgstr "Crea Centro di Lavoro"
 
-#: apps/erp/app/components/Documents.tsx:321
+#: apps/erp/app/components/Documents.tsx:317
 #: apps/erp/app/modules/inventory/ui/Batches/BatchPropertiesConfig.tsx:432
 #: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferLines.tsx:183
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:117
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:991
 #: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:211
 #: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:245
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:128
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:513
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:124
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:503
 msgid "Created"
 msgstr "Creato"
 
@@ -3688,8 +3688,8 @@ msgstr "Definire i termini e le condizioni per preventivi e ordini di vendita"
 msgid "Defines how many tracked entities are inspected per lot, and how many failures are tolerated before the lot is rejected."
 msgstr "Definisce quante entità tracciate vengono ispezionate per lotto e quanti difetti sono tollerati prima che il lotto venga rifiutato."
 
-#: apps/erp/app/components/Documents.tsx:384
-#: apps/erp/app/components/Documents.tsx:458
+#: apps/erp/app/components/Documents.tsx:380
+#: apps/erp/app/components/Documents.tsx:454
 #: apps/erp/app/components/RichText.tsx:51
 #: apps/erp/app/modules/inventory/ui/Batches/BatchPropertiesConfig.tsx:452
 #: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferLines.tsx:215
@@ -3699,17 +3699,17 @@ msgstr "Definisce quante entità tracciate vengono ispezionate per lotto e quant
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:1012
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:431
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:243
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:168
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:353
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:164
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:346
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:234
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterCard.tsx:181
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterCard.tsx:244
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:269
 #: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:400
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:412
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:174
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:571
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:694
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:408
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:170
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:561
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:684
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteLinePricing.tsx:1141
 #: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:295
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:580
@@ -3807,7 +3807,7 @@ msgstr "Elimina Tipo di Dipendente"
 msgid "Delete Failure Mode"
 msgstr "Elimina Modalità di Guasto"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:548
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:544
 msgid "Delete file"
 msgstr "Elimina file"
 
@@ -3933,7 +3933,7 @@ msgstr "Elimina Motivo"
 msgid "Delete Receipt"
 msgstr "Elimina Ricevuta"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:377
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:373
 msgid "Delete receipt line"
 msgstr "Elimina riga ricevuta"
 
@@ -4291,17 +4291,17 @@ msgstr "Non annullare"
 msgid "Done"
 msgstr "Fatto"
 
-#: apps/erp/app/components/Documents.tsx:366
-#: apps/erp/app/components/Documents.tsx:451
+#: apps/erp/app/components/Documents.tsx:362
+#: apps/erp/app/components/Documents.tsx:447
 #: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:416
 #: apps/erp/app/modules/documents/ui/Documents/DocumentView.tsx:69
 #: apps/erp/app/modules/documents/ui/Documents/DocumentView.tsx:96
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:161
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:346
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:405
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:167
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:564
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:658
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:157
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:339
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:401
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:163
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:554
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:648
 #: apps/erp/app/modules/settings/ui/AuditLog/AuditLogSettings.tsx:140
 msgid "Download"
 msgstr "Scarica"
@@ -5027,7 +5027,7 @@ msgstr "Contatto Tecnico"
 msgid "English"
 msgstr "Inglese"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:818
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:814
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Inserisci un numero di lotto prima di impostare la data di scadenza"
 
@@ -5080,23 +5080,23 @@ msgstr "ERP, MES, QMS"
 msgid "Error"
 msgstr "Errore"
 
-#: apps/erp/app/components/Documents.tsx:136
+#: apps/erp/app/components/Documents.tsx:132
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:326
 msgid "Error deleting file"
 msgstr "Errore durante l'eliminazione del file"
 
-#: apps/erp/app/components/Documents.tsx:173
-#: apps/erp/app/components/Documents.tsx:220
+#: apps/erp/app/components/Documents.tsx:169
+#: apps/erp/app/components/Documents.tsx:216
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:376
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:399
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:147
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:175
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:282
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:126
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:269
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:368
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:195
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:223
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:140
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:168
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:275
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:119
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:268
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:361
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:188
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:216
 msgid "Error downloading file"
 msgstr "Errore durante il download del file"
 
@@ -5134,12 +5134,12 @@ msgstr "Errore nel caricamento dell'albero dei lavori."
 msgid "Error loading make method"
 msgstr "Errore nel caricamento del metodo di produzione"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:341
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:393
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:331
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:383
 msgid "Error moving file"
 msgstr "Errore durante lo spostamento del file"
 
-#: apps/erp/app/components/Documents.tsx:191
+#: apps/erp/app/components/Documents.tsx:187
 msgid "Error removing model from {sourceDocument}"
 msgstr "Errore nella rimozione del modello da {sourceDocument}"
 
@@ -5147,23 +5147,23 @@ msgstr "Errore nella rimozione del modello da {sourceDocument}"
 msgid "Error removing model from item"
 msgstr "Errore nella rimozione del modello dall'elemento"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:120
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:113
 msgid "Error removing model from job"
 msgstr "Errore nella rimozione del modello dal lavoro"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:155
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:148
 msgid "Error removing model from quote line"
 msgstr "Errore nella rimozione del modello dalla riga di preventivo"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:150
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:143
 msgid "Error removing model from RFQ line"
 msgstr "Errore nella rimozione del modello dalla riga RFQ"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:165
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:158
 msgid "Error removing model from sales invoice line"
 msgstr "Errore nella rimozione del modello dalla riga della fattura di vendita"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:160
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:153
 msgid "Error removing model from sales order line"
 msgstr "Errore nella rimozione del modello dalla riga dell'ordine di vendita"
 
@@ -5274,7 +5274,7 @@ msgstr "Ricevimento Previsto"
 msgid "Expected Receipt Date"
 msgstr "Data di Ricezione Prevista"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:803
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:799
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:279
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteForm.tsx:178
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:275
@@ -5286,7 +5286,7 @@ msgstr "Data di Ricezione Prevista"
 msgid "Expiration Date"
 msgstr "Data di scadenza"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1025
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1021
 msgid "Expiration Date (applies to all serials on this line)"
 msgstr "Data di scadenza (si applica a tutti i numeri seriali su questa riga)"
 
@@ -5517,13 +5517,13 @@ msgstr "Impossibile creare il webhook: {0}"
 msgid "Failed to create work center: {0}"
 msgstr "Impossibile creare il centro di lavoro: {0}"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:330
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:382
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:320
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:372
 msgid "Failed to delete file from old location"
 msgstr "Impossibile eliminare il file dalla posizione precedente"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:308
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:360
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:298
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:350
 msgid "Failed to download file for moving"
 msgstr "Impossibile scaricare il file per lo spostamento"
 
@@ -5725,20 +5725,20 @@ msgstr "Impossibile caricare il file CSV."
 msgid "Failed to upload file"
 msgstr "Impossibile caricare il file"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:321
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:373
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:311
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:363
 msgid "Failed to upload file to new location"
 msgstr "Impossibile caricare il file nella nuova posizione"
 
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
-#: apps/erp/app/components/Documents.tsx:245
+#: apps/erp/app/components/Documents.tsx:241
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:773
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:433
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:242
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:243
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:421
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:293
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:235
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:242
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:414
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:286
 msgid "Failed to upload file: {0}"
 msgstr "Caricamento del file non riuscito: {0}"
 
@@ -5840,8 +5840,8 @@ msgstr "File eliminato con successo"
 msgid "File Extension"
 msgstr "Estensione File"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:283
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:335
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:276
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:328
 msgid "File is already in the selected bucket"
 msgstr "Il file è già nel bucket selezionato"
 
@@ -5874,19 +5874,19 @@ msgstr "Tipo di file non supportato"
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "Tipo di file non supportato. Utilizza JPG, PNG, WebP o GIF."
 
-#: apps/erp/app/components/Documents.tsx:292
+#: apps/erp/app/components/Documents.tsx:288
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:482
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:99
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:745
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:611
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:574
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:428
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:86
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:265
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:148
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:177
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:104
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:485
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:418
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:82
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:258
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:147
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:176
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:100
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:475
 msgid "Files"
 msgstr "File"
 
@@ -6788,7 +6788,7 @@ msgstr "articolo"
 #: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionLotView.tsx:171
 #: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionsTable.tsx:71
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:110
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:683
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:673
 #: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:150
 #: apps/erp/app/modules/sales/ui/Pricing/PriceOverridesTable.tsx:139
 #: apps/erp/app/modules/sales/ui/Pricing/PriceOverridesTable.tsx:409
@@ -7190,7 +7190,7 @@ msgstr "Probabilità"
 msgid "Line Item Comparison"
 msgstr "Confronto Articoli di Riga"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:357
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:353
 #: apps/erp/app/modules/inventory/ui/Shipments/ShipmentLines.tsx:354
 #: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferLines.tsx:185
 msgid "Line options"
@@ -7934,11 +7934,11 @@ msgstr "Fornitori Mancanti"
 msgid "Mobile Phone"
 msgstr "Telefono Mobile"
 
-#: apps/erp/app/components/Documents.tsx:156
+#: apps/erp/app/components/Documents.tsx:152
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:354
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:359
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:130
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:178
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:123
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:171
 msgid "Model data is missing"
 msgstr "I dati del modello sono mancanti"
 
@@ -7951,7 +7951,7 @@ msgstr "Numero Modello"
 msgid "Model Number:"
 msgstr "Numero Modello:"
 
-#: apps/erp/app/components/Documents.tsx:201
+#: apps/erp/app/components/Documents.tsx:197
 msgid "Model removed from {sourceDocument}"
 msgstr "Modello rimosso da {sourceDocument}"
 
@@ -7959,11 +7959,11 @@ msgstr "Modello rimosso da {sourceDocument}"
 msgid "Model removed from item"
 msgstr "Modello rimosso dall'elemento"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:123
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:116
 msgid "Model removed from job"
 msgstr "Modello rimosso dal lavoro"
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:169
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:162
 msgid "Model removed from line"
 msgstr "Modello rimosso dalla riga"
 
@@ -7980,26 +7980,26 @@ msgstr "Moduli"
 msgid "Monday"
 msgstr "Lunedì"
 
-#: apps/erp/app/components/Documents.tsx:357
-#: apps/erp/app/components/Documents.tsx:444
+#: apps/erp/app/components/Documents.tsx:353
+#: apps/erp/app/components/Documents.tsx:440
 #: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceExplorer.tsx:216
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceExplorer.tsx:218
 #: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:176
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:146
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:225
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:480
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:580
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:470
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:570
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:549
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:639
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderExplorer.tsx:229
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQExplorer.tsx:203
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQLineForm.tsx:187
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:152
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:339
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:148
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:332
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteExplorer.tsx:219
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:221
 #: apps/erp/app/modules/quality/ui/Documents/QualityDocumentExplorer.tsx:388
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:398
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:394
 #: apps/erp/app/modules/resources/ui/Training/TrainingExplorer.tsx:416
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:325
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:386
@@ -8067,7 +8067,7 @@ msgstr "Sposta elemento"
 msgid "Move some of the quantity into a new disposition row so MRB can decide each portion separately (e.g. scrap some, rework some)."
 msgstr "Sposta parte della quantità in una nuova riga di disposizione in modo che MRB possa decidere ogni porzione separatamente (ad es. scartare alcuni, rielaborare alcuni)."
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:663
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:653
 msgid "Move to"
 msgstr "Sposta in"
 
@@ -8077,7 +8077,7 @@ msgstr "Sposta nel Cestino"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:387
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:377
 msgid "Moved {0} to {1} bucket"
 msgstr "Spostato {0} nel bucket {1}"
 
@@ -8099,7 +8099,7 @@ msgid "My Saved View"
 msgstr "La mia vista salvata"
 
 #: apps/erp/app/components/Configurator/ConfigurationEditor/ParameterPanel.ee.tsx:47
-#: apps/erp/app/components/Documents.tsx:315
+#: apps/erp/app/components/Documents.tsx:311
 #: apps/erp/app/modules/accounting/ui/AccountCategories/AccountSubcategoryForm.tsx:90
 #: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountForm.tsx:112
 #: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountsTable.tsx:61
@@ -8146,15 +8146,15 @@ msgstr "La mia vista salvata"
 #: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:63
 #: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:187
 #: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowsTable.tsx:39
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:341
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:337
 #: apps/erp/app/modules/resources/ui/Training/TrainingForm.tsx:75
 #: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:50
 #: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:110
 #: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:117
 #: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:89
 #: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:74
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:122
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:504
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:118
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:494
 #: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:106
 #: apps/erp/app/modules/sales/ui/Pricing/PricingRulesTable.tsx:78
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:1058
@@ -8197,10 +8197,10 @@ msgstr "Variazione Netta"
 msgid "Never"
 msgstr "Mai"
 
-#: apps/erp/app/components/Documents.tsx:306
+#: apps/erp/app/components/Documents.tsx:302
 #: apps/erp/app/components/Grid/Grid.tsx:426
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:388
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:410
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:381
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:403
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:144
 #: apps/erp/app/modules/sales/ui/Customer/CustomerContactForm.tsx:89
 #: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:80
@@ -8208,8 +8208,8 @@ msgstr "Mai"
 #: apps/erp/app/modules/sales/ui/CustomerStatuses/CustomerStatusForm.tsx:83
 #: apps/erp/app/modules/sales/ui/CustomerTypes/CustomerTypeForm.tsx:83
 #: apps/erp/app/modules/sales/ui/NoQuoteReasons/NoQuoteReasonForm.tsx:83
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:472
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:756
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:465
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:746
 #: packages/react/src/CreateableCombobox.tsx:258
 #: packages/react/src/CreateableMultiSelect.tsx:274
 msgid "New"
@@ -8697,16 +8697,16 @@ msgstr "Nessun dipendente assegnato ancora. Aggiungi gruppi per visualizzare lo 
 msgid "No employees found"
 msgstr "Nessun dipendente trovato"
 
-#: apps/erp/app/components/Documents.tsx:473
+#: apps/erp/app/components/Documents.tsx:469
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:254
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:368
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:709
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:361
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:699
 msgid "No files"
 msgstr "Nessun file"
 
-#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:182
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:428
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:188
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:178
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:424
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:184
 msgid "No files uploaded"
 msgstr "Nessun file caricato"
 
@@ -8928,7 +8928,7 @@ msgstr "Nota"
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:205
 #: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:454
 #: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:525
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:111
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:110
 #: apps/erp/app/modules/sales/ui/Customer/CustomerContactForm.tsx:111
 #: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineNotes.tsx:122
 #: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:219
@@ -9190,7 +9190,7 @@ msgstr "Operatori"
 msgid "Operators can use shared workstations with PIN authentication."
 msgstr "Gli operatori possono utilizzare workstation condivise con autenticazione PIN."
 
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:680
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:670
 msgid "Opportunity"
 msgstr "Opportunità"
 
@@ -10353,7 +10353,7 @@ msgstr "Quantità"
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:180
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:359
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:215
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1158
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1154
 #: apps/erp/app/modules/inventory/ui/Shipments/ShipmentLines.tsx:1161
 #: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferLineForm.tsx:168
 #: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:685
@@ -10603,7 +10603,7 @@ msgstr "ID Ricevuta"
 msgid "Receipt Line"
 msgstr "Riga di Ricevimento"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:237
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:233
 msgid "Receipt Lines"
 msgstr "Righe di ricezione"
 
@@ -12413,13 +12413,13 @@ msgstr "Esci"
 msgid "Signed in as {name}"
 msgstr "Accesso effettuato come {name}"
 
-#: apps/erp/app/components/Documents.tsx:318
+#: apps/erp/app/components/Documents.tsx:314
 #: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:294
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:114
 #: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:107
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:344
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:125
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:507
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:340
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:121
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:497
 #: apps/erp/app/modules/settings/ui/Sequences/SequenceForm.tsx:88
 #: apps/erp/app/modules/settings/ui/Sequences/SequencesTable.tsx:61
 msgid "Size"
@@ -12568,7 +12568,7 @@ msgstr "Dividi riga"
 msgid "Split off quantity"
 msgstr "Quantità da dividere"
 
-#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:369
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:365
 msgid "Split receipt line"
 msgstr "Dividi riga ricevuta"
 
@@ -14113,7 +14113,7 @@ msgstr "Supporto Funzionale Illimitato"
 msgid "Unlink"
 msgstr "Scollega"
 
-#: apps/erp/app/components/Documents.tsx:197
+#: apps/erp/app/components/Documents.tsx:193
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "Tipo di documento di origine non supportato: {sourceDocument}"
 
@@ -14270,7 +14270,7 @@ msgstr "Aggiorna per sbloccare la cronologia di audit"
 #: apps/erp/app/components/ItemThumnailUpload.tsx:191
 #: apps/erp/app/modules/account/ui/Profile/ProfilePhotoForm.tsx:145
 #: apps/erp/app/modules/documents/ui/Documents/DocumentCreateForm.tsx:78
-#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:333
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:329
 #: apps/erp/app/modules/settings/ui/Company/CompanyLogoForm.tsx:206
 #: apps/erp/app/modules/settings/ui/Company/CompanyLogoForm.tsx:242
 msgid "Upload"
@@ -14291,24 +14291,24 @@ msgstr "Modello caricato"
 
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
-#: apps/erp/app/components/Documents.tsx:251
+#: apps/erp/app/components/Documents.tsx:247
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:775
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:435
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:423
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:416
 msgid "Uploaded: {0}"
 msgstr "Caricato: {0}"
 
 #. placeholder {0}: avatarFile.name
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
-#: apps/erp/app/components/Documents.tsx:236
+#: apps/erp/app/components/Documents.tsx:232
 #: apps/erp/app/components/ImportCSVModal/UploadCSV.tsx:78
 #: apps/erp/app/components/ItemThumnailUpload.tsx:80
 #: apps/erp/app/modules/account/ui/Profile/ProfilePhotoForm.tsx:30
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:761
 #: apps/erp/app/modules/documents/ui/Documents/DocumentCreateForm.tsx:26
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:422
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:411
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:404
 msgid "Uploading {0}"
 msgstr "Caricamento {0}"
 
@@ -14466,10 +14466,10 @@ msgstr "Versioni"
 msgid "via Digital Quote"
 msgstr "tramite Preventivo Digitale"
 
-#: apps/erp/app/components/Documents.tsx:376
+#: apps/erp/app/components/Documents.tsx:372
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:154
-#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:488
-#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:558
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:478
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:548
 #: apps/erp/app/routes/x+/quality+/_index.tsx:393
 #: apps/erp/app/routes/x+/quality+/_index.tsx:420
 #: apps/erp/app/routes/x+/quality+/_index.tsx:447

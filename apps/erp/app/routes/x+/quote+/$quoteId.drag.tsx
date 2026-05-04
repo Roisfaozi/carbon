@@ -4,11 +4,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { trigger } from "@carbon/jobs";
-import {
-  getCompanyPrivateBucket,
-  getPrivateReadCandidateBuckets,
-  supportedModelTypes
-} from "@carbon/utils";
+import { getCompanyPrivateBucket, supportedModelTypes } from "@carbon/utils";
 import { generateObject } from "ai";
 import { nanoid } from "nanoid";
 import type { ActionFunctionArgs } from "react-router";
@@ -45,10 +41,7 @@ async function movePrivateObjectForCompany({
   let sourceData: Blob | null = null;
   let sourcePhysicalBucket = companyPrivateBucket;
 
-  for (const physicalBucket of getPrivateReadCandidateBuckets(
-    companyId,
-    companyPrivateBucket
-  )) {
+  for (const physicalBucket of [companyPrivateBucket]) {
     const downloadResult = await client.storage
       .from(physicalBucket)
       .download(sourcePath);
