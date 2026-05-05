@@ -122,7 +122,7 @@ describe("storage helpers", () => {
           error: null
         };
       },
-      getItemKey: (item) => item.name
+      getItemKey: (item: { name: string }) => item.name
     });
 
     expect(bucketsTried).toEqual(["cmp_123"]);
@@ -143,7 +143,7 @@ describe("storage helpers", () => {
           error: { message: "Temporary storage error" }
         };
       },
-      getItemKey: (item) => item.name
+      getItemKey: (item: { name: string }) => item.name
     });
 
     expect(result).toEqual({

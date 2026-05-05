@@ -812,14 +812,16 @@ export async function getShipmentFiles(
   lineIds: string[]
 ): Promise<{ data: StorageItem[]; error: string | null }> {
   const promises = lineIds.map(async (lineId) => ({
-    data: await listCompanyPrivateObjects({
-      companyId,
-      requestedBucket: getCompanyPrivateBucket(companyId),
-      objectPathPrefix: `${companyId}/inventory/${lineId}`,
-      listObjects: (physicalBucket, prefix) =>
-        client.storage.from(physicalBucket).list(prefix),
-      getItemKey: (item) => item.name
-    }),
+    data: (
+      await listCompanyPrivateObjects({
+        companyId,
+        requestedBucket: getCompanyPrivateBucket(companyId),
+        objectPathPrefix: `${companyId}/inventory/${lineId}`,
+        listObjects: (physicalBucket, prefix) =>
+          client.storage.from(physicalBucket).list(prefix),
+        getItemKey: (item) => item.name
+      })
+    ).data,
     error: null,
     lineId
   }));

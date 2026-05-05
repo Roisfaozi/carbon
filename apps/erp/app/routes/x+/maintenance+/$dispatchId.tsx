@@ -40,14 +40,16 @@ async function getMaintenanceDispatchFiles(
   companyId: string,
   dispatchId: string
 ) {
-  return listCompanyPrivateObjects({
-    companyId,
-    requestedBucket: getCompanyPrivateBucket(companyId),
-    objectPathPrefix: `${companyId}/maintenance/${dispatchId}`,
-    listObjects: (physicalBucket, prefix) =>
-      client.storage.from(physicalBucket).list(prefix),
-    getItemKey: (item) => item.name
-  });
+  return (
+    await listCompanyPrivateObjects({
+      companyId,
+      requestedBucket: getCompanyPrivateBucket(companyId),
+      objectPathPrefix: `${companyId}/maintenance/${dispatchId}`,
+      listObjects: (physicalBucket, prefix) =>
+        client.storage.from(physicalBucket).list(prefix),
+      getItemKey: (item) => item.name
+    })
+  ).data;
 }
 
 export async function loader({ request, params }: LoaderFunctionArgs) {

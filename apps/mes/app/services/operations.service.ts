@@ -215,7 +215,11 @@ const getItemFiles = async (
       getItemKey: (item: FileObject) => item.name
     });
 
-    return files.map((f) => ({ ...f, bucket: "parts", itemId: id }));
+    return files.data.map((f: FileObject) => ({
+      ...f,
+      bucket: "parts",
+      itemId: id
+    }));
   };
 
   const elems = items.map((el) => getFile(el.itemId));
@@ -256,11 +260,11 @@ export async function getJobFiles(
 
     // Combine and return both sets of files
     return [
-      ...(opportunityLineFiles.map((f) => ({
+      ...opportunityLineFiles.data.map((f: FileObject) => ({
         ...f,
         bucket: "opportunity-line"
-      })) || []),
-      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
+      })),
+      ...jobFiles.data.map((f: FileObject) => ({ ...f, bucket: "job" })),
       ...itemFiles
     ];
   } else {
@@ -277,7 +281,7 @@ export async function getJobFiles(
     ]);
 
     return [
-      ...(jobFiles.map((f) => ({ ...f, bucket: "job" })) || []),
+      ...jobFiles.data.map((f: FileObject) => ({ ...f, bucket: "job" })),
       ...itemFiles
     ];
   }
