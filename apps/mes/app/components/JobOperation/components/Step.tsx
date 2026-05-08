@@ -39,6 +39,7 @@ import {
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
+import { nanoid } from "nanoid";
 import { useEffect, useMemo, useState } from "react";
 import {
   LuChevronDown,
@@ -376,7 +377,7 @@ export function RecordModal({
     setFile(fileUpload);
     toast.info(t`Uploading ${fileUpload.name}`);
 
-    const fileName = `${company.id}/job/${attribute.operationId}/${fileUpload.name}`;
+    const fileName = `${company.id}/job/${attribute.operationId}/${attribute.id}/${nanoid()}/${fileUpload.name}`;
     const companyPrivateBucket = getCompanyPrivateBucket(company.id);
 
     const upload = await carbon?.storage

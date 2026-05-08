@@ -21,6 +21,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { formatDate } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -165,16 +166,12 @@ const KanbansTable = memo(
                           className="flex flex-row items-center gap-1"
                         >
                           <LuTag />
-                          Create
+                          <Trans>Create</Trans>
                         </Badge>
                       </a>
                     </TooltipTrigger>
                     <TooltipContent>
-                      Label to create a{" "}
-                      {row.original.replenishmentSystem === "Make"
-                        ? "Job"
-                        : "Order"}{" "}
-                      for this kanban
+                      {t`Label to create a ${row.original.replenishmentSystem === "Make" ? "Job" : "Order"} for this kanban`}
                     </TooltipContent>
                   </Tooltip>
                   {row.original.replenishmentSystem === "Make" && (
@@ -194,12 +191,14 @@ const KanbansTable = memo(
                               className="flex flex-row items-center gap-1"
                             >
                               <LuTag />
-                              Start
+                              <Trans>Start</Trans>
                             </Badge>
                           </a>
                         </TooltipTrigger>
                         <TooltipContent>
-                          Label to start the next operation for this kanban
+                          <Trans>
+                            Label to start the next operation for this kanban
+                          </Trans>
                         </TooltipContent>
                       </Tooltip>
 
@@ -218,13 +217,15 @@ const KanbansTable = memo(
                               className="flex flex-row items-center gap-1"
                             >
                               <LuTag />
-                              Complete
+                              <Trans>Complete</Trans>
                             </Badge>
                           </a>
                         </TooltipTrigger>
                         <TooltipContent>
-                          Label to complete the current operation for this
-                          kanban
+                          <Trans>
+                            Label to complete the current operation for this
+                            kanban
+                          </Trans>
                         </TooltipContent>
                       </Tooltip>
                     </>
@@ -242,16 +243,12 @@ const KanbansTable = memo(
                             className="flex flex-row items-center gap-1 cursor-pointer"
                           >
                             <LuQrCode />
-                            Create
+                            <Trans>Create</Trans>
                           </Badge>
                         </HoverCardTrigger>
                       </TooltipTrigger>
                       <TooltipContent>
-                        QR Code to create a{" "}
-                        {row.original.replenishmentSystem === "Make"
-                          ? "Job"
-                          : "Order"}{" "}
-                        for this kanban
+                        {t`QR Code to create a ${row.original.replenishmentSystem === "Make" ? "Job" : "Order"} for this kanban`}
                       </TooltipContent>
                     </Tooltip>
                     <HoverCardContent
@@ -281,12 +278,15 @@ const KanbansTable = memo(
                                 className="flex flex-row items-center gap-1 cursor-pointer"
                               >
                                 <LuQrCode />
-                                Start
+                                <Trans>Start</Trans>
                               </Badge>
                             </HoverCardTrigger>
                           </TooltipTrigger>
                           <TooltipContent>
-                            QR Code to start the next operation for this kanban
+                            <Trans>
+                              QR Code to start the next operation for this
+                              kanban
+                            </Trans>
                           </TooltipContent>
                         </Tooltip>
                         <HoverCardContent
@@ -495,10 +495,7 @@ const KanbansTable = memo(
         {
           accessorKey: "createdAt",
           header: t`Created At`,
-          cell: ({ row }) =>
-            row.original.createdAt
-              ? new Date(row.original.createdAt).toLocaleDateString(locale)
-              : "",
+          cell: ({ row }) => formatDate(row.original.createdAt),
           meta: {
             icon: <LuCalendar />
           }
@@ -523,10 +520,7 @@ const KanbansTable = memo(
         {
           accessorKey: "updatedAt",
           header: t`Updated At`,
-          cell: ({ row }) =>
-            row.original.updatedAt
-              ? new Date(row.original.updatedAt).toLocaleDateString(locale)
-              : "",
+          cell: ({ row }) => formatDate(row.original.updatedAt),
           meta: {
             icon: <LuCalendar />
           }
@@ -547,7 +541,7 @@ const KanbansTable = memo(
               <MenuItem asChild>
                 <Link to={`${path.to.kanban(row.id!)}?${params}`}>
                   <LuPencil className="mr-2 size-4" />
-                  Edit
+                  <Trans>Edit</Trans>
                 </Link>
               </MenuItem>
             )}

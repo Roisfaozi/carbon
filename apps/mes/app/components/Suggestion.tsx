@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
   SidebarMenuButton,
   toast,
+  useMode,
   VStack
 } from "@carbon/react";
 import { getCompanyPrivateBucket } from "@carbon/utils";
@@ -50,6 +51,8 @@ const Suggestion = () => {
   const [emoji, setEmoji] = useState("💡");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [anonymous, setAnonymous] = useState(true);
+  const mode = useMode();
+  const pickerTheme = mode;
   const [attachment, setAttachment] = useState<{
     name: string;
     path: string;
@@ -172,14 +175,14 @@ const Suggestion = () => {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-auto p-0 border-0 bg-white"
+                  className="w-auto p-0 border-0"
                   align="end"
                   sideOffset={8}
                 >
                   <Picker
                     data={data}
                     onEmojiSelect={onEmojiSelect}
-                    theme="light"
+                    theme={pickerTheme}
                     previewPosition="none"
                     skinTonePosition="none"
                     navPosition="bottom"
