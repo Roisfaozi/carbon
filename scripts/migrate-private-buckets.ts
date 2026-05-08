@@ -64,27 +64,16 @@ async function migrate() {
           await listAndMoveAll(itemPath);
         } else {
           // It's a file, move it
-          console.log(`Copying ${itemPath} -> bucket: ${companyId}, path: ${itemPath}`);
+          console.log(`Moving ${itemPath} -> bucket: ${companyId}, path: ${itemPath}`);
           
-          // Download from old bucket
-          const { data: fileData, error: downloadError } = await supabase.storage
+          const { error: moveError } = await supabase.storage
             .from("private")
-            .download(itemPath);
-
-          if (downloadError) {
-            console.error(`Failed to download ${itemPath}:`, downloadError);
-            continue;
-          }
-
-          // Upload to new bucket
-          const { error: uploadError } = await supabase.storage
-            .from(companyId)
-            .upload(itemPath, fileData, {
-              upsert: true,
+            .move(itemPath, itemPath, {
+              destinationBucket: companyId,
             });
 
-          if (uploadError) {
-            console.error(`Failed to upload ${itemPath} to ${companyId}:`, uploadError);
+          if (moveError) {
+            console.error(`Failed to move ${itemPath} to ${companyId}:`, moveError);
           } else {
             console.log(`Successfully migrated ${itemPath}`);
           }
