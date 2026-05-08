@@ -26,7 +26,7 @@ async function migrate() {
     process.exit(1);
   }
 
-  for (const company of companies) {
+  for await (const company of companies) {
     const companyId = company.id;
     console.log(`\nProcessing company: ${companyId}`);
 
