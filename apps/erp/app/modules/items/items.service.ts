@@ -2496,7 +2496,7 @@ export async function cascadeItemTrackingType(
             .selectFrom("job")
             .select("id")
             .where("companyId", "=", args.companyId)
-            .where("status", "not in", ["Completed", "Closed", "Cancelled"])
+            .where("status", "in", ["Draft", "Planned"])
         )
       )
       .execute();
@@ -2519,7 +2519,7 @@ export async function cascadeItemTrackingType(
             .selectFrom("job")
             .select("id")
             .where("companyId", "=", args.companyId)
-            .where("status", "not in", ["Completed", "Closed", "Cancelled"])
+            .where("status", "in", ["Draft", "Planned"])
         )
       )
       .execute();
@@ -2542,7 +2542,7 @@ export async function cascadeItemTrackingType(
             .selectFrom("receipt")
             .select("id")
             .where("companyId", "=", args.companyId)
-            .where("status", "in", ["Draft", "Pending"])
+            .where("status", "=", "Draft")
         )
       )
       .execute();
@@ -2565,7 +2565,7 @@ export async function cascadeItemTrackingType(
             .selectFrom("shipment")
             .select("id")
             .where("companyId", "=", args.companyId)
-            .where("status", "in", ["Draft", "Pending"])
+            .where("status", "=", "Draft")
         )
       )
       .execute();
@@ -2588,7 +2588,7 @@ export async function cascadeItemTrackingType(
             .selectFrom("stockTransfer")
             .select("id")
             .where("companyId", "=", args.companyId)
-            .where("status", "in", ["Draft", "Released", "In Progress"])
+            .where("status", "=", "Draft")
         )
       )
       .execute();
