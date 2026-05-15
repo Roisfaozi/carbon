@@ -26,6 +26,10 @@ async function migrate() {
     process.exit(1);
   }
 
+  let totalCopied = 0;
+  let totalSkipped = 0;
+  let totalFailed = 0;
+
   for await (const company of companies) {
     const companyId = company.id;
     console.log(`\nProcessing company: ${companyId}`);
@@ -41,9 +45,8 @@ async function migrate() {
       continue;
     }
 
-    // Since Supabase storage list is limited and requires recursion for folders,
-    // we'll implement a simple recursive list.
-    const listAndMoveAll = async (pathPrefix: string) => {
+    // Recursive list and copy from the legacy "private" bucket
+    const listAndCopyAll = async (pathPrefix: string) => {
       const { data: list, error: listError } = await supabase.storage
         .from("private")
         .list(pathPrefix);
@@ -61,31 +64,43 @@ async function migrate() {
 
         if (item.id === null) {
           // It's a folder, recurse
-          await listAndMoveAll(itemPath);
+          await listAndCopyAll(itemPath);
         } else {
-          // It's a file, move it
-          console.log(`Moving ${itemPath} -> bucket: ${companyId}, path: ${itemPath}`);
-          
-          const { error: moveError } = await supabase.storage
+          // It's a file, copy it
+          const { error: copyError } = await supabase.storage
             .from("private")
-            .move(itemPath, itemPath, {
+            .copy(itemPath, itemPath, {
               destinationBucket: companyId,
             });
 
-          if (moveError) {
-            console.error(`Failed to move ${itemPath} to ${companyId}:`, moveError);
+          if (copyError) {
+            // Skip files that already exist in the destination (idempotent)
+            if (
+              copyError.message?.includes("already exists") ||
+              (copyError as any).statusCode === 409
+            ) {
+              totalSkipped++;
+            } else {
+              console.error(`Failed to copy ${itemPath} to ${companyId}:`, copyError);
+              totalFailed++;
+            }
           } else {
-            console.log(`Successfully migrated ${itemPath}`);
+            console.log(`Copied: ${itemPath}`);
+            totalCopied++;
           }
         }
       }
-    }
+    };
 
-    // Start recursive listing and moving at the companyId root folder in 'private' bucket
-    await listAndMoveAll(companyId);
+    // Start recursive listing and copying at the companyId root folder in 'private' bucket
+    await listAndCopyAll(companyId);
   }
 
-  console.log("\nMigration completed.");
+  console.log("\n--- Migration Summary ---");
+  console.log(`Copied:  ${totalCopied}`);
+  console.log(`Skipped: ${totalSkipped} (already existed)`);
+  console.log(`Failed:  ${totalFailed}`);
+  console.log("Migration completed.");
 }
 
 migrate().catch(console.error);
