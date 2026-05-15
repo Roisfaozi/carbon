@@ -1303,6 +1303,7 @@ export async function upsertPurchaseOrder(
         purchaseOrderId: string;
         status?: (typeof purchaseOrderStatusType)[number];
         companyId: string;
+        companyGroupId: string;
         createdBy: string;
         customFields?: Json;
       })
@@ -1354,7 +1355,7 @@ export async function upsertPurchaseOrder(
   if (purchaseOrder.currencyCode) {
     const currency = await getCurrencyByCode(
       client,
-      purchaseOrder.companyId,
+      purchaseOrder.companyGroupId,
       purchaseOrder.currencyCode
     );
     if (currency.data) {
@@ -1370,7 +1371,11 @@ export async function upsertPurchaseOrder(
     purchaseOrder.locationId ?? purchaser?.data?.locationId ?? null;
 
   // locationId is not a column on purchaseOrder -- it belongs on the delivery record
-  const { locationId: _locationId, ...purchaseOrderData } = purchaseOrder;
+  const {
+    locationId: _locationId,
+    companyGroupId: _companyGroupId,
+    ...purchaseOrderData
+  } = purchaseOrder;
 
   const order = await client
     .from("purchaseOrder")
@@ -1580,6 +1585,7 @@ export async function upsertSupplierQuote(
       > & {
         supplierQuoteId: string;
         companyId: string;
+        companyGroupId: string;
         createdBy: string;
         customFields?: Json;
       })
@@ -1589,6 +1595,7 @@ export async function upsertSupplierQuote(
       > & {
         id: string;
         supplierQuoteId: string;
+        companyGroupId: string;
         updatedBy: string;
         customFields?: Json;
       })
@@ -1597,7 +1604,7 @@ export async function upsertSupplierQuote(
     if (supplierQuote.currencyCode) {
       const currency = await getCurrencyByCode(
         client,
-        supplierQuote.companyId,
+        supplierQuote.companyGroupId,
         supplierQuote.currencyCode
       );
       if (currency.data) {
@@ -1617,12 +1624,14 @@ export async function upsertSupplierQuote(
 
     if (supplierInteraction.error) return supplierInteraction;
 
+    const { companyGroupId: _companyGroupId, ...supplierQuoteData } =
+      supplierQuote;
     const insert = await client
       .from("supplierQuote")
       .insert([
         {
-          ...supplierQuote,
-          status: supplierQuote.status ?? "Draft",
+          ...supplierQuoteData,
+          status: supplierQuoteData.status ?? "Draft",
           supplierInteractionId: supplierInteraction.data?.id
         }
       ])
@@ -1663,17 +1672,13 @@ export async function upsertSupplierQuote(
     // Only update the exchange rate if the currency code has changed
     const existingQuote = await client
       .from("supplierQuote")
-      .select("companyId, currencyCode, status")
+      .select("currencyCode, status")
       .eq("id", supplierQuote.id)
       .single();
 
     if (existingQuote.error) return existingQuote;
 
-    const {
-      companyId,
-      currencyCode,
-      status: existingStatus
-    } = existingQuote.data;
+    const { currencyCode, status: existingStatus } = existingQuote.data;
 
     if (
       supplierQuote.currencyCode &&
@@ -1681,7 +1686,7 @@ export async function upsertSupplierQuote(
     ) {
       const currency = await getCurrencyByCode(
         client,
-        companyId,
+        supplierQuote.companyGroupId,
         supplierQuote.currencyCode
       );
       if (currency.data) {
@@ -1689,10 +1694,12 @@ export async function upsertSupplierQuote(
         supplierQuote.exchangeRateUpdatedAt = new Date().toISOString();
       }
     }
+    const { companyGroupId: _companyGroupId2, ...supplierQuoteUpdateData } =
+      supplierQuote;
     return client
       .from("supplierQuote")
       .update({
-        ...sanitize(supplierQuote),
+        ...sanitize(supplierQuoteUpdateData),
         status:
           supplierQuote.expirationDate &&
           today(getLocalTimeZone()).toString() > supplierQuote.expirationDate

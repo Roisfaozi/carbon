@@ -30,11 +30,12 @@ import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, companyId, userId } = await requirePermissions(request, {
-    create: "purchasing",
-    role: "employee",
-    bypassRls: true
-  });
+  const { client, companyId, companyGroupId, userId } =
+    await requirePermissions(request, {
+      create: "purchasing",
+      role: "employee",
+      bypassRls: true
+    });
 
   const { rfqId } = params;
   if (!rfqId) throw new Error("Could not find rfqId");
@@ -136,6 +137,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       supplierId,
       quotedDate: new Date().toISOString().split("T")[0],
       companyId,
+      companyGroupId,
       createdBy: userId
     });
 
