@@ -40,6 +40,18 @@ const main = defineCommand({
           default: false,
           description:
             "Always docker compose pull (default: skip when all images exist locally)"
+        },
+        borrow: {
+          type: "boolean",
+          default: false,
+          description:
+            "Pick another worktree's running containers to use instead of booting a new stack"
+        },
+        portless: {
+          type: "boolean",
+          default: true,
+          description:
+            "Use portless .dev URLs (use --no-portless for localhost mode)"
         }
       },
       run: ({ args }) =>
@@ -47,7 +59,9 @@ const main = defineCommand({
           migrate: args.migrate !== false,
           regen: args.regen !== false,
           apps: args.apps !== false,
-          pull: args.pull === true
+          pull: args.pull === true,
+          borrow: args.borrow === true,
+          portless: args.portless !== false
         })
     }),
     down: defineCommand({
@@ -79,7 +93,14 @@ const main = defineCommand({
     }),
     new: defineCommand({
       meta: { description: "Interactive: create a worktree on a fresh branch" },
-      run: () => newWorktree()
+      args: {
+        branch: {
+          type: "positional",
+          required: false,
+          description: "Branch name (pre-fills the prompt)"
+        }
+      },
+      run: ({ args }) => newWorktree({ branch: args.branch })
     }),
     list: defineCommand({
       meta: { description: "List worktrees with stack status" },
