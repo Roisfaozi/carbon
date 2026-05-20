@@ -938,7 +938,7 @@ msgid "Audit logging is not enabled"
 msgstr "Audit logging is not enabled"
 
 msgid "Audit Logs"
-msgstr "Audit Logs<<<<<<< HEAD"
+msgstr "Audit Logs"
 
 msgid "Authentication Error"
 msgstr "Authentication Error"
@@ -1083,7 +1083,7 @@ msgid "by {byUser}"
 msgstr "by {byUser}"
 
 msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
-msgstr "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>.<<<<<<< HEAD"
+msgstr "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
@@ -1170,7 +1170,7 @@ msgid "Carbon client not found"
 msgstr "Carbon client not found"
 
 msgid "Carbon column"
-msgstr "Carbon column<<<<<<< HEAD"
+msgstr "Carbon column"
 
 msgid "Carbon Logo"
 msgstr "Carbon Logo"
@@ -1221,7 +1221,7 @@ msgid "Chart of Accounts"
 msgstr "Chart of Accounts"
 
 msgid "Chat"
-msgstr "Chat<<<<<<< HEAD"
+msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Check your email"
@@ -2801,7 +2801,7 @@ msgid "Edit Work Center"
 msgstr "Edit Work Center"
 
 msgid "Email"
-msgstr "Email<<<<<<< HEAD"
+msgstr "Email"
 
 msgid "Email Address"
 msgstr "Email Address"
@@ -4202,7 +4202,7 @@ msgid "Lock"
 msgstr "Lock"
 
 msgid "Log In"
-msgstr "Log In<<<<<<< HEAD"
+msgstr "Log In"
 
 msgid "Login or create a new account"
 msgstr "Login or create a new account"
@@ -5700,7 +5700,7 @@ msgid "Production Quantities"
 msgstr "Production Quantities"
 
 msgid "Production Quantity"
-msgstr "Production Quantity<<<<<<< HEAD"
+msgstr "Production Quantity"
 
 msgid "Profile"
 msgstr "Profile"
@@ -6008,7 +6008,7 @@ msgid "Record deleted"
 msgstr "Record deleted"
 
 msgid "Records"
-msgstr "Records<<<<<<< HEAD"
+msgstr "Records"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirecting to verification page..."
@@ -6895,7 +6895,7 @@ msgid "Show part thumbnails on quotes, sales orders, sales invoices, and shipmen
 msgstr "Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
 
 msgid "Show sync options"
-msgstr "Show sync options<<<<<<< HEAD"
+msgstr "Show sync options"
 
 msgid "Shown as a faint background behind every page of generated PDFs"
 msgstr "Shown as a faint background behind every page of generated PDFs"
@@ -6907,7 +6907,7 @@ msgid "Sign in with Email"
 msgstr "Sign in with Email"
 
 msgid "Sign in with Google"
-msgstr "Sign in with Google>>>>>>> main"
+msgstr "Sign in with Google"
 
 msgid "Sign in with Outlook"
 msgstr "Sign in with Outlook"
@@ -7466,7 +7466,7 @@ msgid "These jobs have operations assigned to this work center:"
 msgstr "These jobs have operations assigned to this work center:"
 
 msgid "This information will be used on document headers"
-msgstr "This information will be used on document headers<<<<<<< HEAD"
+msgstr "This information will be used on document headers"
 
 msgid "This information will be visible to all users, so be careful what you share."
 msgstr "This information will be visible to all users, so be careful what you share."
@@ -7928,7 +7928,7 @@ msgid "Use ... to get the next part ID"
 msgstr "Use ... to get the next part ID"
 
 msgid "Use ... to get the next tool ID"
-msgstr "Use ... to get the next tool ID<<<<<<< HEAD"
+msgstr "Use ... to get the next tool ID"
 
 msgid "Use a different email"
 msgstr "Use a different email"
@@ -7985,7 +7985,7 @@ msgid "VAT Number"
 msgstr "VAT Number"
 
 msgid "Verification Error"
-msgstr "Verification Error<<<<<<< HEAD"
+msgstr "Verification Error"
 
 msgid "Verify your email"
 msgstr "Verify your email"
@@ -8180,10 +8180,10 @@ msgid "We've mapped each column to what we believe is correct, but please review
 msgstr "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 
 msgid "We've sent a verification code to {email}"
-msgstr "We've sent a verification code to {email}<<<<<<< HEAD"
+msgstr "We've sent a verification code to {email}"
 
 msgid "We've sent a verification code to {signupEmail}"
-msgstr "We've sent a verification code to {signupEmail}>>>>>>> main"
+msgstr "We've sent a verification code to {signupEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "We've sent you a magic link to sign in to your account."

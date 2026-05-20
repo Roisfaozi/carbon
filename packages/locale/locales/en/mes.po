@@ -95,7 +95,7 @@ msgid "Assignee"
 msgstr "Assignee"
 
 msgid "Attach File"
-msgstr "Attach File<<<<<<< HEAD"
+msgstr "Attach File"
 
 msgid "Authentication Error"
 msgstr "Authentication Error"
@@ -123,13 +123,13 @@ msgid "Blocking"
 msgstr "Blocking"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
-msgstr "But don't worry. You can use the forgot password flow to request a new magic link.<<<<<<< HEAD"
+msgstr "But don't worry. You can use the forgot password flow to request a new magic link."
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 
 msgid "Cancel"
-msgstr "Cancel<<<<<<< HEAD"
+msgstr "Cancel"
 
 msgid "Carbon Logo"
 msgstr "Carbon Logo"
@@ -138,7 +138,7 @@ msgid "Cards"
 msgstr "Cards"
 
 msgid "Chat"
-msgstr "Chat<<<<<<< HEAD"
+msgstr "Chat"
 
 msgid "Check your email"
 msgstr "Check your email"
@@ -287,7 +287,7 @@ msgid "Duration"
 msgstr "Duration"
 
 msgid "Edit"
-msgstr "Edit<<<<<<< HEAD"
+msgstr "Edit"
 
 msgid "Email Address"
 msgstr "Email Address"
@@ -788,13 +788,13 @@ msgid "Set clock-out time"
 msgstr "Set clock-out time"
 
 msgid "Setup"
-msgstr "Setup<<<<<<< HEAD"
+msgstr "Setup"
 
 msgid "Sign in with Email"
 msgstr "Sign in with Email"
 
 msgid "Sign in with Google"
-msgstr "Sign in with Google>>>>>>> main"
+msgstr "Sign in with Google"
 
 msgid "Sign in with Outlook"
 msgstr "Sign in with Outlook"
@@ -920,7 +920,7 @@ msgid "Uploading {0}"
 msgstr "Uploading {0}"
 
 msgid "View maintenance dispatch"
-msgstr "View maintenance dispatch<<<<<<< HEAD"
+msgstr "View maintenance dispatch"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "We've sent you a magic link to sign in to your account."
