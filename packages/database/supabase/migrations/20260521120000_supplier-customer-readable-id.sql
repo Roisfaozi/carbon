@@ -1,27 +1,15 @@
 -- Add a first-class human-readable identifier to supplier and customer.
 --
--- Existing rows keep readableId = NULL until they're either re-imported via
--- CSV (importer sets readableId = CSV Unique ID) or edited in-app (form has
--- a SequenceOrCustomId input). The csv mapping rows in
--- externalIntegrationMapping remain the dedup key for re-imports.
+-- Every supplier/customer gets a readableId — either user-supplied (CSV import
+-- "Unique ID" column or the SequenceOrCustomId form field) or auto-generated
+-- from a per-company sequence (SUP000001 / CUS000001 style).
 
+-- 1. Add the column (initially nullable so the backfill can run).
 ALTER TABLE "supplier" ADD COLUMN IF NOT EXISTS "readableId" TEXT;
 ALTER TABLE "customer" ADD COLUMN IF NOT EXISTS "readableId" TEXT;
 
--- Partial unique index: NULL allowed (in-app-created entities have no
--- natural readableId), but non-NULL values must be unique per company.
-CREATE UNIQUE INDEX IF NOT EXISTS "supplier_readableId_companyId_unique"
-  ON "supplier" ("companyId", "readableId")
-  WHERE "readableId" IS NOT NULL;
-
-CREATE UNIQUE INDEX IF NOT EXISTS "customer_readableId_companyId_unique"
-  ON "customer" ("companyId", "readableId")
-  WHERE "readableId" IS NOT NULL;
-
--- Seed default sequences for every existing company so that supplier and
--- customer get auto-generated readableIds (SUP-000001, CUS-000001, etc.)
--- matching the convention used by purchaseOrder/quote/salesOrder.
--- Note: get_next_sequence() formats as: prefix + zero-padded(size) + suffix.
+-- 2. Seed default sequences for every existing company.
+-- get_next_sequence() formats as: prefix + zero-padded(size) + suffix.
 INSERT INTO "sequence" ("table", "name", "prefix", "suffix", "next", "size", "step", "companyId", "updatedBy")
 SELECT 'supplier', 'Supplier', 'SUP', NULL, 0, 6, 1, c.id, 'system'
 FROM "company" c
@@ -32,16 +20,34 @@ SELECT 'customer', 'Customer', 'CUS', NULL, 0, 6, 1, c.id, 'system'
 FROM "company" c
 ON CONFLICT ("table", "companyId") DO NOTHING;
 
--- BEFORE INSERT trigger: auto-fill readableId via get_next_sequence when
--- the caller didn't provide one. This means ALL insertion paths (in-app
--- creation, CSV import where the user didn't map Unique ID, future code)
--- get a readableId for free without per-call boilerplate.
+-- 3. Backfill existing rows so the column can be tightened to NOT NULL.
+-- Each call to get_next_sequence() atomically increments the per-company
+-- counter, so two rows in the same company get distinct ids.
+UPDATE "supplier"
+SET "readableId" = get_next_sequence('supplier', "companyId")
+WHERE "readableId" IS NULL;
+
+UPDATE "customer"
+SET "readableId" = get_next_sequence('customer', "companyId")
+WHERE "readableId" IS NULL;
+
+-- 4. Require the column and enforce per-company uniqueness.
+ALTER TABLE "supplier" ALTER COLUMN "readableId" SET NOT NULL;
+ALTER TABLE "customer" ALTER COLUMN "readableId" SET NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS "supplier_readableId_companyId_unique"
+  ON "supplier" ("companyId", "readableId");
+
+CREATE UNIQUE INDEX IF NOT EXISTS "customer_readableId_companyId_unique"
+  ON "customer" ("companyId", "readableId");
+
+-- 5. BEFORE INSERT trigger: auto-fill readableId via get_next_sequence when
+-- the caller didn't provide one (e.g., in-app create with blank ID field).
+-- Trigger no-ops if readableId is already set, so explicit values win.
 CREATE OR REPLACE FUNCTION set_supplier_readable_id_on_insert()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW."readableId" IS NULL OR NEW."readableId" = '' THEN
-    -- Only fire if a sequence row exists for this company. If not, leave
-    -- readableId NULL — that's the safe default.
     IF EXISTS (
       SELECT 1 FROM "sequence"
       WHERE "table" = 'supplier' AND "companyId" = NEW."companyId"
@@ -80,7 +86,7 @@ CREATE TRIGGER set_customer_readable_id
   FOR EACH ROW
   EXECUTE PROCEDURE set_customer_readable_id_on_insert();
 
--- Recreate the suppliers and customers views to expose readableId.
+-- 6. Recreate the suppliers and customers views to expose readableId.
 -- Postgres views freeze their column manifest at CREATE time, so adding a
 -- column to the base table does not propagate without a DROP/CREATE cycle.
 
