@@ -7,6 +7,7 @@ import {
 } from "@carbon/ee/notifications";
 import { companyHasPlan } from "@carbon/ee/plan.server";
 import { ERP_URL } from "@carbon/env";
+import type { Events } from "@carbon/lib/events";
 import {
   getNotificationEmailCtaLabel,
   getNotificationEmailHeading,
@@ -476,7 +477,7 @@ export const notifyFunction = inngest.createFunction(
   },
   { event: "carbon/notify" },
   async ({ event, step }) => {
-    const payload = event.data;
+    const payload = event.data as Events["carbon/notify"]["data"];
     // inApp is always on so the topbar reflects every notification. Callers
     // can request additional channels (email, slack) but cannot opt out of
     // the in-app row.

@@ -10,7 +10,8 @@ export const FEATURE_PLANS = {
   WEBHOOKS: [Plan.Business, Plan.Partner],
   INTEGRATIONS: [Plan.Business, Plan.Partner],
   ITEM_RULES: [Plan.Business],
-  AUDIT_LOG: [Plan.Business]
+  AUDIT_LOG: [Plan.Business],
+  EMAIL_NOTIFICATIONS: [Plan.Business]
 } as const satisfies Record<string, Plan[]>;
 
 export type Feature = keyof typeof FEATURE_PLANS;
