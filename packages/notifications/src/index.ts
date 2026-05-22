@@ -132,6 +132,7 @@ export function getNotificationLink(
     case NotificationEvent.JobOperationAssignment:
     case NotificationEvent.JobOperationMessage: {
       const { jobId, operationId, makeMethodId, materialId } = context ?? {};
+      if (!jobId || !operationId || !makeMethodId) return null;
       const link = materialId
         ? path.to.jobMakeMethod(jobId, makeMethodId)
         : path.to.jobMethod(jobId, makeMethodId);

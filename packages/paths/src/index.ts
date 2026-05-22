@@ -6,13 +6,9 @@ const file = "/file"; // from ~/routes/file+ folder
 const share = "/share"; // from ~/routes/shared+ folder
 const onboarding = "/onboarding"; // from ~/routes/onboarding+ folder
 
-// Resolve app URLs from env without importing @carbon/env / @carbon/auth.
-// Those packages have re-export chains that don't resolve in raw-Node ESM
-// runtimes (e.g. Inngest), and importing them here pulls @carbon/utils
-// back into a cycle. Keep this file self-contained.
-const env =
-  (typeof process !== "undefined" && process.env) ||
-  ({} as Record<string, string | undefined>);
+const env: Record<string, string | undefined> =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env ?? {};
 const isProd = env.VERCEL_ENV === "production" || env.NODE_ENV === "production";
 const isPreview = env.VERCEL_ENV === "preview";
 const isControlled =
