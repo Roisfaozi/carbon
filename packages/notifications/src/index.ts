@@ -1,5 +1,5 @@
 import type { Database } from "@carbon/database";
-
+import { path } from "@carbon/paths";
 // Notification event taxonomy. Kept as a standalone package because the
 // enums are referenced from app routes, scheduled jobs, and the inngest
 // notify function. The previous Novu trigger helpers have been removed —
@@ -109,42 +109,6 @@ export function getNotificationTopic(
 
 type ApprovalDocumentType = Database["public"]["Enums"]["approvalDocumentType"];
 
-const x = "x";
-// Path templates for ERP records that notifications can deep-link to. These
-// mirror apps/erp/app/utils/path.ts — kept here (not imported from the app)
-// because @carbon/notifications is upstream of the apps in the dependency
-// graph. If a route changes in path.ts, update the matching builder here.
-export const notificationPath = {
-  gauge: (id: string) => `/${x}/quality/gauges/${id}`,
-  job: (id: string) => `/${x}/job/${id}/details`,
-  jobOperation: (
-    jobId: string,
-    makeMethodId: string,
-    operationId: string,
-    materialId?: string
-  ) => {
-    const base = materialId
-      ? `/${x}/job/${jobId}/make/${makeMethodId}`
-      : `/${x}/job/${jobId}/method/${makeMethodId}`;
-    return `${base}?selectedOperation=${operationId}`;
-  },
-  maintenanceDispatch: (id: string) => `/${x}/maintenance/${id}`,
-  nonConformance: (id: string) => `/${x}/issue/${id}`,
-  procedure: (id: string) => `/${x}/procedure/${id}`,
-  purchaseInvoice: (id: string) => `/${x}/purchase-invoice/${id}/details`,
-  purchaseOrder: (id: string) => `/${x}/purchase-order/${id}/details`,
-  qualityDocument: (id: string) => `/${x}/quality-document/${id}`,
-  quote: (id: string) => `/${x}/quote/${id}/details`,
-  risk: (id: string) => `/${x}/quality/risks/${id}`,
-  salesOrder: (id: string) => `/${x}/sales-order/${id}/details`,
-  salesRfq: (id: string) => `/${x}/sales-rfq/${id}`,
-  stockTransfer: (id: string) => `/${x}/stock-transfer/${id}`,
-  suggestion: (id: string) => `/${x}/resources/suggestions/${id}`,
-  supplierApproval: (id: string) => `/${x}/supplier/${id}/approval`,
-  supplierQuote: (id: string) => `/${x}/supplier-quote/${id}/details`,
-  training: (id: string) => `/share/training/${id}`
-} as const;
-
 // Relative path that the notification deep-links to in the ERP app. Used for
 // email CTA buttons and (in future) topbar click handlers. Returns null if
 // the event doesn't correspond to a single navigable record.
@@ -164,62 +128,59 @@ export function getNotificationLink(
   switch (event) {
     case NotificationEvent.JobAssignment:
     case NotificationEvent.JobCompleted:
-      return notificationPath.job(recordId);
+      return path.to.job(recordId);
     case NotificationEvent.JobOperationAssignment:
     case NotificationEvent.JobOperationMessage: {
       const { jobId, operationId, makeMethodId, materialId } = context ?? {};
-      if (!jobId || !operationId || !makeMethodId) return null;
-      return notificationPath.jobOperation(
-        jobId,
-        makeMethodId,
-        operationId,
-        materialId
-      );
+      const link = materialId
+        ? path.to.jobMakeMethod(jobId, makeMethodId)
+        : path.to.jobMethod(jobId, makeMethodId);
+      return `${link}?selectedOperation=${operationId}`;
     }
     case NotificationEvent.PurchaseInvoiceAssignment:
-      return notificationPath.purchaseInvoice(recordId);
+      return path.to.purchaseInvoice(recordId);
     case NotificationEvent.PurchaseOrderAssignment:
-      return notificationPath.purchaseOrder(recordId);
+      return path.to.purchaseOrder(recordId);
     case NotificationEvent.QuoteAssignment:
     case NotificationEvent.QuoteExpired:
     case NotificationEvent.DigitalQuoteResponse:
-      return notificationPath.quote(recordId);
+      return path.to.quote(recordId);
     case NotificationEvent.SupplierQuoteAssignment:
     case NotificationEvent.SupplierQuoteResponse:
-      return notificationPath.supplierQuote(recordId);
+      return path.to.supplierQuote(recordId);
     case NotificationEvent.SalesOrderAssignment:
-      return notificationPath.salesOrder(recordId);
+      return path.to.salesOrder(recordId);
     case NotificationEvent.SalesRfqAssignment:
     case NotificationEvent.SalesRfqReady:
-      return notificationPath.salesRfq(recordId);
+      return path.to.salesRfq(recordId);
     case NotificationEvent.MaintenanceDispatchAssignment:
     case NotificationEvent.MaintenanceDispatchCreated:
-      return notificationPath.maintenanceDispatch(recordId);
+      return path.to.maintenanceDispatch(recordId);
     case NotificationEvent.GaugeCalibrationExpired:
-      return notificationPath.gauge(recordId);
+      return path.to.gauge(recordId);
     case NotificationEvent.NonConformanceAssignment:
-      return notificationPath.nonConformance(recordId);
+      return path.to.issue(recordId);
     case NotificationEvent.RiskAssignment:
-      return notificationPath.risk(recordId);
+      return path.to.risk(recordId);
     case NotificationEvent.ProcedureAssignment:
-      return notificationPath.procedure(recordId);
+      return path.to.procedure(recordId);
     case NotificationEvent.TrainingAssignment:
-      return notificationPath.training(recordId);
+      return path.to.training(recordId);
     case NotificationEvent.StockTransferAssignment:
-      return notificationPath.stockTransfer(recordId);
+      return path.to.stockTransfer(recordId);
     case NotificationEvent.SuggestionResponse:
-      return notificationPath.suggestion(recordId);
+      return path.to.suggestion(recordId);
     case NotificationEvent.ApprovalApproved:
     case NotificationEvent.ApprovalRejected:
     case NotificationEvent.ApprovalRequested:
       if (context?.documentType === "purchaseOrder") {
-        return notificationPath.purchaseOrder(recordId);
+        return path.to.purchaseOrder(recordId);
       }
       if (context?.documentType === "qualityDocument") {
-        return notificationPath.qualityDocument(recordId);
+        return path.to.qualityDocument(recordId);
       }
       if (context?.documentType === "supplier") {
-        return notificationPath.supplierApproval(recordId);
+        return path.to.supplierApproval(recordId);
       }
       return null;
     default:

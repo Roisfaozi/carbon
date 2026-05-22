@@ -1,5 +1,7 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "@carbon/paths": "workspace:*"
+  },
   "devDependencies": {
     "@carbon/config": "workspace:*",
     "@carbon/database": "workspace:*",
