@@ -19,7 +19,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
   const type = searchParams.get("type");
 
-  const query = client.from("groups").select("*").eq("companyId", companyId);
+  const query = client
+    .from("groups")
+    .select(
+      "id, name, companyId, isEmployeeTypeGroup, isCustomerOrgGroup, isCustomerTypeGroup, isSupplierOrgGroup, isSupplierTypeGroup, parentId"
+    )
+    .eq("companyId", companyId);
 
   if (type === "employee") {
     query.eq("isCustomerOrgGroup", false);

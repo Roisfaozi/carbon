@@ -12,7 +12,7 @@ import {
   useState
 } from "react";
 import { useFetcher } from "react-router";
-import type { Group } from "~/modules/users";
+import type { Group, User } from "~/modules/users";
 import { path } from "~/utils/path";
 
 import type {
@@ -78,6 +78,15 @@ export default function useUserSelect(props: UserSelectProps) {
   /* Disclosures */
   const dropdown = useDisclosure();
 
+  /* Fetch States */
+  const [loadingGroups, setLoadingGroups] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [fetchedMembers, setFetchedMembers] = useState<Record<string, User[]>>(
+    {}
+  );
+  const searchCache = useRef<Record<string, User[]>>({});
+
   /* Input */
   const [controlledValue, setControlledValue] = useState("");
 
@@ -123,7 +132,11 @@ export default function useUserSelect(props: UserSelectProps) {
         result.push(...subgroups);
       }
 
-      const users = group.data.users.map((user) => {
+      const users = (
+        fetchedMembers[group.data.id] ||
+        group.data.users ||
+        []
+      ).map((user) => {
         return {
           ...user,
           uid: getOptionId(groupId, user.id),
@@ -155,7 +168,7 @@ export default function useUserSelect(props: UserSelectProps) {
           }
           return acc;
         }, []);
-  }, [groupsFetcher.data, innerProps.usersOnly, instanceId]);
+  }, [groupsFetcher.data, innerProps.usersOnly, instanceId, fetchedMembers]);
 
   /* Pre-populate controlled component after data loads */
   useEffect(() => {
@@ -164,31 +177,58 @@ export default function useUserSelect(props: UserSelectProps) {
         (acc, group) => acc.concat(group.items),
         []
       );
-      if (Array.isArray(innerProps.value)) {
-        const selections = flattened.reduce<SelectionItemsById>((acc, item) => {
-          if (innerProps.value!.includes(item.id)) {
-            return {
-              ...acc,
-              [item.id]: item
-            };
+      const values = Array.isArray(innerProps.value)
+        ? innerProps.value
+        : [innerProps.value];
+
+      const newSelections: SelectionItemsById = {};
+      const missingUserIds: string[] = [];
+
+      values.forEach((val) => {
+        if (!selectionItemsById[val]) {
+          const found = flattened.find((item) => item.id === val);
+          if (found) {
+            newSelections[val] = found;
+          } else if (typeof val === "string" && !val.startsWith("group_")) {
+            missingUserIds.push(val);
           }
-          return acc;
-        }, {});
-        if (Object.keys(selections).length > 0) {
-          setSelectionItemsById(selections);
         }
-      } else {
-        const selection = flattened.find(
-          (item) => item.id === innerProps.value
-        );
-        if (selection) {
-          setSelectionItemsById({
-            [selection?.id]: selection
-          });
-        }
+      });
+
+      if (Object.keys(newSelections).length > 0) {
+        setSelectionItemsById((prev) => ({ ...prev, ...newSelections }));
+      }
+
+      if (missingUserIds.length > 0) {
+        const fetchMissing = async () => {
+          try {
+            const res = await fetch(
+              `/api/users/batch?ids=${missingUserIds.join(",")}`
+            );
+            const data = await res.json();
+            if (data.users && data.users.length > 0) {
+              setSelectionItemsById((prev) => {
+                const next = { ...prev };
+                data.users.forEach((u: User) => {
+                  if (!next[u.id]) {
+                    next[u.id] = {
+                      ...u,
+                      uid: getOptionId("preselected", u.id),
+                      label: u.fullName || ""
+                    };
+                  }
+                });
+                return next;
+              });
+            }
+          } catch (err) {
+            console.error("Failed to fetch preselected users", err);
+          }
+        };
+        fetchMissing();
       }
     }
-  }, [optionGroups, innerProps.value]);
+  }, [optionGroups, innerProps.value, selectionItemsById]);
 
   const makeFilteredOptionGroups = useCallback(
     (query?: string): OptionGroup[] =>
@@ -254,15 +294,38 @@ export default function useUserSelect(props: UserSelectProps) {
     }
   }, [focusInput]);
 
+  const prefetchGroup = useCallback(
+    (uid: string) => {
+      const groupId = uid.split("_")[1];
+      if (groupId && !fetchedMembers[groupId] && !loadingGroups[groupId]) {
+        setLoadingGroups((prev) => ({ ...prev, [groupId]: true }));
+        fetch(`/api/users/groups/${groupId}/members`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.users) {
+              setFetchedMembers((prev) => ({ ...prev, [groupId]: data.users }));
+            }
+          })
+          .catch((err) => console.error("Failed to prefetch group", err))
+          .finally(() => {
+            setLoadingGroups((prev) => ({ ...prev, [groupId]: false }));
+          });
+      }
+    },
+    [fetchedMembers, loadingGroups]
+  );
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const onGroupExpand = useCallback(
-    (uid: string) =>
+    (uid: string) => {
       setFilteredOptionGroups((previousGroups) =>
         previousGroups.map((group) =>
           group.uid === uid ? { ...group, expanded: true } : group
         )
-      ),
-    [setFilteredOptionGroups]
+      );
+      prefetchGroup(uid);
+    },
+    [setFilteredOptionGroups, prefetchGroup]
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -408,8 +471,58 @@ export default function useUserSelect(props: UserSelectProps) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const debouncedInputChange = useMemo(() => {
-    return debounce((search: string) => {
-      setFilteredOptionGroups(makeFilteredOptionGroups(search));
+    return debounce(async (search: string) => {
+      const q = search.trim();
+      if (q.length >= 2) {
+        if (searchCache.current[q]) {
+          const searchResults = searchCache.current[q].map((user: User) => ({
+            ...user,
+            uid: getOptionId("search", user.id),
+            label: user.fullName || ""
+          }));
+
+          setFilteredOptionGroups([
+            {
+              uid: "search_results",
+              expanded: true,
+              items: searchResults,
+              name: "Search Results"
+            }
+          ]);
+          resetFocus();
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            `/api/users/search?q=${encodeURIComponent(q)}`
+          );
+          const data = await res.json();
+          if (data.users && data.users.length > 0) {
+            searchCache.current[q] = data.users;
+            const searchResults = data.users.map((user: User) => ({
+              ...user,
+              uid: getOptionId("search", user.id),
+              label: user.fullName || ""
+            }));
+
+            setFilteredOptionGroups([
+              {
+                uid: "search_results",
+                expanded: true,
+                items: searchResults,
+                name: "Search Results"
+              }
+            ]);
+          } else {
+            setFilteredOptionGroups([]);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        setFilteredOptionGroups(makeFilteredOptionGroups(search));
+      }
       resetFocus();
     }, 240);
   }, [makeFilteredOptionGroups, resetFocus, setFilteredOptionGroups]);
@@ -756,6 +869,7 @@ export default function useUserSelect(props: UserSelectProps) {
     groups: filteredOptionGroups,
     errors: groupsFetcher.data?.errors,
     loading: groupsFetcher.state === "loading",
+    loadingGroups,
     selectionItemsById,
     // focus
     instanceId,
@@ -779,6 +893,7 @@ export default function useUserSelect(props: UserSelectProps) {
     onKeyDown,
     onGroupCollapse,
     onGroupExpand,
+    prefetchGroup,
     onInputChange,
     onInputBlur,
     onInputFocus,
