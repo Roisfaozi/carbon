@@ -1324,6 +1324,7 @@ export const path = {
     peopleSettings: `${x}/settings/people`,
     productionSettings: `${x}/settings/production`,
     profile: `${x}/account/profile`,
+    accountSecurity: `${x}/account/security`,
     purchaseInvoice: (id: string) =>
       generatePath(`${x}/purchase-invoice/${id}`),
     purchaseInvoiceDelivery: (id: string) =>

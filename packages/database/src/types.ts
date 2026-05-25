@@ -24631,6 +24631,90 @@ export type Database = {
           },
         ]
       }
+      passkeyCredential: {
+        Row: {
+          aaguid: string
+          backedUp: boolean
+          counter: number
+          createdAt: string
+          credentialName: string
+          deviceType: string
+          id: string
+          lastUsedAt: string | null
+          publicKey: string
+          rpId: string
+          transports: string[] | null
+          userHandle: string | null
+          userId: string
+        }
+        Insert: {
+          aaguid?: string
+          backedUp?: boolean
+          counter?: number
+          createdAt?: string
+          credentialName?: string
+          deviceType: string
+          id: string
+          lastUsedAt?: string | null
+          publicKey: string
+          rpId: string
+          transports?: string[] | null
+          userHandle?: string | null
+          userId: string
+        }
+        Update: {
+          aaguid?: string
+          backedUp?: boolean
+          counter?: number
+          createdAt?: string
+          credentialName?: string
+          deviceType?: string
+          id?: string
+          lastUsedAt?: string | null
+          publicKey?: string
+          rpId?: string
+          transports?: string[] | null
+          userHandle?: string | null
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passkeyCredential_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passkeyCredential_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passkeyCredential_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passkeyCredential_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passkeyCredential_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       paymentTerm: {
         Row: {
           active: boolean
