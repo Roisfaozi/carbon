@@ -198,10 +198,7 @@ msgid "Accumulation Period (Weeks)"
 msgstr "蓄積期間（週）"
 
 msgid "Accumulation Period:"
-msgstr "蓄積期間:"
-
-msgid "Acknowledge & continue"
-msgstr "確認して続行"
+msgstr "蓄積期間:<<<<<<< HEAD"
 
 msgid "Action Items"
 msgstr "アクション項目"
@@ -487,6 +484,18 @@ msgstr ""
 
 msgid "Applies to"
 msgstr "適用対象"
+
+msgid "Applies to all"
+msgstr ""
+
+msgid "Applies to all items"
+msgstr ""
+
+msgid "Applies to all storage units"
+msgstr ""
+
+msgid "Applies to all work centers"
+msgstr ""
 
 msgid "Apply pricing rules"
 msgstr "価格設定ルールを適用"
@@ -1922,6 +1931,9 @@ msgstr "カスタムフィールド<<<<<<< HEAD"
 msgid "Custom Fields"
 msgstr "カスタムフィールド"
 
+msgid "Custom Rules"
+msgstr ""
+
 msgid "Customer"
 msgstr "顧客"
 
@@ -2776,6 +2788,9 @@ msgstr "サプライヤープロセスを編集"
 msgid "Edit Supplier Type"
 msgstr "サプライヤータイプを編集"
 
+msgid "Edit the rule to remove the \"Applies to all\" flag"
+msgstr ""
+
 msgid "Edit Timecard"
 msgstr "タイムカードを編集"
 
@@ -2894,13 +2909,7 @@ msgid "End Date"
 msgstr "終了日"
 
 msgid "End Time"
-msgstr "終了時刻"
-
-msgid "Enforce constraints on receipts, shipments, transfers and job operations for this item."
-msgstr "このアイテムの領収書、出荷、転送、ジョブ操作に対する制約を適用します。"
-
-msgid "Enforce per-item validation across receipts, shipments, transfers and adjustments."
-msgstr "品目ごとの検証を領収書、出荷、転送、および調整全体に適用します。"
+msgstr "終了時刻<<<<<<< HEAD"
 
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
 msgstr "領収書、出荷、転送、および調整全体にわたって、品目ごとの検証とガイドラインを実施します。"
@@ -2996,10 +3005,7 @@ msgid "Error removing model from sales order line"
 msgstr "販売注文行からモデルを削除するエラー"
 
 msgid "Error validating serial number"
-msgstr "シリアル番号の検証エラー"
-
-msgid "Errors"
-msgstr "エラー"
+msgstr "シリアル番号の検証エラー<<<<<<< HEAD"
 
 msgid "Escalation"
 msgstr "エスカレーション"
@@ -3432,6 +3438,9 @@ msgstr "取得"
 msgid "Field"
 msgstr "フィールド"
 
+msgid "Field info"
+msgstr ""
+
 msgid "Field Mapping"
 msgstr "フィールドマッピング"
 
@@ -3758,6 +3767,9 @@ msgstr "インフラストラクチャ"
 msgid "Inherit From Materials"
 msgstr "材料から継承"
 
+msgid "Inherited from"
+msgstr ""
+
 msgid "Insert rows"
 msgstr "行を挿入"
 
@@ -3957,10 +3969,7 @@ msgid "Item ID"
 msgstr "アイテムID"
 
 msgid "Item Master"
-msgstr "アイテムマスター"
-
-msgid "Item Rules"
-msgstr "アイテムルール"
+msgstr "アイテムマスター<<<<<<< HEAD"
 
 msgid "Item Scope"
 msgstr "アイテムスコープ"
@@ -4323,6 +4332,9 @@ msgstr "棚卸資産全体で賞味期限がどのように追跡、計算、お
 
 msgid "Manage Ownership"
 msgstr "所有権を管理"
+
+msgid "Manage rules"
+msgstr ""
 
 msgid "Manage Subscription"
 msgstr "サブスクリプションを管理"
@@ -5493,10 +5505,7 @@ msgid "Pick a customer or customer type to view their pricing."
 msgstr "顧客または顧客タイプを選択して、その価格を表示します。"
 
 msgid "Pick a date or leave blank to clear it."
-msgstr "日付を選択するか、空白のままにしてクリアしてください。"
-
-msgid "Pick an existing rule from the library or create a new one to start enforcing constraints on this item."
-msgstr "ライブラリから既存のルールを選択するか、新しいルールを作成して、このアイテムに対する制約の適用を開始します。"
+msgstr "日付を選択するか、空白のままにしてクリアしてください。<<<<<<< HEAD"
 
 msgid "Pick List"
 msgstr "ピッキングリスト"
@@ -6339,10 +6348,7 @@ msgid "Rule applies to every item."
 msgstr "ルールはすべてのアイテムに適用されます。"
 
 msgid "Rule Type"
-msgstr "ルールタイプ"
-
-msgid "Rule Violation"
-msgstr "ルール違反"
+msgstr "ルールタイプ<<<<<<< HEAD"
 
 msgid "Rules"
 msgstr "ルール"
@@ -7128,6 +7134,9 @@ msgstr "ストレージタイプ"
 msgid "Storage Unit"
 msgstr "保管単位"
 
+msgid "Storage unit rules"
+msgstr ""
+
 msgid "Storage Units"
 msgstr "保管単位"
 
@@ -7756,6 +7765,9 @@ msgstr "ゴミ箱<<<<<<< HEAD"
 msgid "Trial Balance"
 msgstr "試算表"
 
+msgid "Triggers"
+msgstr ""
+
 msgid "Tuesday"
 msgstr "火曜日"
 
@@ -7782,6 +7794,9 @@ msgstr "未サンプリングされたエンティティは保留中のままに
 
 msgid "Unapproved Supplier"
 msgstr "未承認サプライヤー"
+
+msgid "Unassign from parent unit to remove"
+msgstr ""
 
 msgid "Unassign rule"
 msgstr "ルールの割り当てを解除"
@@ -7903,11 +7918,12 @@ msgstr "アップグレード"
 msgid "Upgrade to Business"
 msgstr "ビジネスプランにアップグレード"
 
-msgid "Upgrade to unlock audit history"
-msgstr "監査履歴のロックを解除するにはアップグレードしてください"
+#. placeholder {0}: targetCopy.noun
+msgid "Upgrade to unlock {0} rules"
+msgstr ""
 
-msgid "Upgrade to unlock item rules"
-msgstr "アイテムルールのロックを解除するにはアップグレードしてください"
+msgid "Upgrade to unlock audit history"
+msgstr "監査履歴のロックを解除するにはアップグレードしてください<<<<<<< HEAD"
 
 msgid "Upload"
 msgstr "アップロード"
@@ -8006,6 +8022,9 @@ msgstr "ジョブを検証中..."
 
 msgid "Value"
 msgstr "値"
+
+msgid "Value source by surface"
+msgstr ""
 
 msgid "VAT Number"
 msgstr "VAT番号"
@@ -8194,10 +8213,7 @@ msgid "Warn when the person inspecting an inbound item is the same person who re
 msgstr "受け取った人と同じ人が受け入れ品を検査する場合に警告します。"
 
 msgid "Warning"
-msgstr "警告"
-
-msgid "Warnings"
-msgstr "警告"
+msgstr "警告<<<<<<< HEAD"
 
 msgid "Watch full video"
 msgstr "フル動画を視聴"
@@ -8258,6 +8274,9 @@ msgstr "完成品の賞味期限が「計算」に設定されている場合、
 
 msgid "When expired stock is used"
 msgstr "期限切れの在庫が使用される場合"
+
+msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "誰が承認できるか"

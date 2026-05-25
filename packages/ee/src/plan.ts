@@ -11,7 +11,8 @@ export const FEATURE_PLANS = {
   INTEGRATIONS: [Plan.Business, Plan.Partner],
   ITEM_RULES: [Plan.Business],
   AUDIT_LOG: [Plan.Business],
-  EMAIL_NOTIFICATIONS: [Plan.Business]
+  EMAIL_NOTIFICATIONS: [Plan.Business, Plan.Partner],
+  CUSTOM_RULES: [Plan.Business]
 } as const satisfies Record<string, Plan[]>;
 
 export type Feature = keyof typeof FEATURE_PLANS;

@@ -200,9 +200,6 @@ msgstr "Período de Acumulación (Semanas)"
 msgid "Accumulation Period:"
 msgstr "Período de Acumulación:"
 
-msgid "Acknowledge & continue"
-msgstr "Reconocer y continuar"
-
 msgid "Action Items"
 msgstr "Elementos de Acción"
 
@@ -487,6 +484,18 @@ msgstr ""
 
 msgid "Applies to"
 msgstr "Se aplica a"
+
+msgid "Applies to all"
+msgstr ""
+
+msgid "Applies to all items"
+msgstr ""
+
+msgid "Applies to all storage units"
+msgstr ""
+
+msgid "Applies to all work centers"
+msgstr ""
 
 msgid "Apply pricing rules"
 msgstr "Aplicar reglas de precios"
@@ -1922,6 +1931,9 @@ msgstr "Campo Personalizado<<<<<<< HEAD"
 msgid "Custom Fields"
 msgstr "Campos Personalizados"
 
+msgid "Custom Rules"
+msgstr ""
+
 msgid "Customer"
 msgstr "Cliente"
 
@@ -2776,6 +2788,9 @@ msgstr "Editar proceso del proveedor"
 msgid "Edit Supplier Type"
 msgstr "Editar Tipo de Proveedor"
 
+msgid "Edit the rule to remove the \"Applies to all\" flag"
+msgstr ""
+
 msgid "Edit Timecard"
 msgstr "Editar Tarjeta de Tiempo"
 
@@ -2894,13 +2909,7 @@ msgid "End Date"
 msgstr "Fecha de Fin"
 
 msgid "End Time"
-msgstr "Hora de Finalización"
-
-msgid "Enforce constraints on receipts, shipments, transfers and job operations for this item."
-msgstr "Aplicar restricciones en recibos, envíos, transferencias y operaciones de trabajo para este artículo."
-
-msgid "Enforce per-item validation across receipts, shipments, transfers and adjustments."
-msgstr "Aplicar validación por artículo en recibos, envíos, transferencias y ajustes."
+msgstr "Hora de Finalización<<<<<<< HEAD"
 
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
 msgstr "Aplicar validación y directrices por artículo en recibos, envíos, transferencias y ajustes."
@@ -2997,9 +3006,6 @@ msgstr "Error al eliminar el modelo de la línea de orden de venta"
 
 msgid "Error validating serial number"
 msgstr "Error validando número de serie"
-
-msgid "Errors"
-msgstr "Errores"
 
 msgid "Escalation"
 msgstr "Escalada"
@@ -3432,6 +3438,9 @@ msgstr "Obtener"
 msgid "Field"
 msgstr "Campo"
 
+msgid "Field info"
+msgstr ""
+
 msgid "Field Mapping"
 msgstr "Mapeo de campos"
 
@@ -3758,6 +3767,9 @@ msgstr "Infraestructura"
 msgid "Inherit From Materials"
 msgstr "Heredar de Materiales"
 
+msgid "Inherited from"
+msgstr ""
+
 msgid "Insert rows"
 msgstr "Insertar filas"
 
@@ -3957,10 +3969,7 @@ msgid "Item ID"
 msgstr "ID de Artículo"
 
 msgid "Item Master"
-msgstr "Maestro de Artículos"
-
-msgid "Item Rules"
-msgstr "Reglas de Artículos"
+msgstr "Maestro de Artículos<<<<<<< HEAD"
 
 msgid "Item Scope"
 msgstr "Alcance de Artículos"
@@ -4323,6 +4332,9 @@ msgstr "Administra cómo se rastrea, calcula y aplica la vida útil en todo el i
 
 msgid "Manage Ownership"
 msgstr "Gestionar Propiedad"
+
+msgid "Manage rules"
+msgstr ""
 
 msgid "Manage Subscription"
 msgstr "Administrar Suscripción"
@@ -5493,10 +5505,7 @@ msgid "Pick a customer or customer type to view their pricing."
 msgstr "Selecciona un cliente o tipo de cliente para ver sus precios."
 
 msgid "Pick a date or leave blank to clear it."
-msgstr "Elige una fecha o déjala en blanco para borrarla."
-
-msgid "Pick an existing rule from the library or create a new one to start enforcing constraints on this item."
-msgstr "Elige una regla existente de la biblioteca o crea una nueva para comenzar a aplicar restricciones en este artículo."
+msgstr "Elige una fecha o déjala en blanco para borrarla.<<<<<<< HEAD"
 
 msgid "Pick List"
 msgstr "Lista de Picking"
@@ -6339,10 +6348,7 @@ msgid "Rule applies to every item."
 msgstr "La regla se aplica a todos los artículos."
 
 msgid "Rule Type"
-msgstr "Tipo de Regla"
-
-msgid "Rule Violation"
-msgstr "Violación de regla"
+msgstr "Tipo de Regla<<<<<<< HEAD"
 
 msgid "Rules"
 msgstr "Reglas"
@@ -7128,6 +7134,9 @@ msgstr "Tipos de Almacenamiento"
 msgid "Storage Unit"
 msgstr "Unidad de Almacenamiento"
 
+msgid "Storage unit rules"
+msgstr ""
+
 msgid "Storage Units"
 msgstr "Unidades de Almacenamiento"
 
@@ -7756,6 +7765,9 @@ msgstr "Papelera<<<<<<< HEAD"
 msgid "Trial Balance"
 msgstr "Balance de Comprobación"
 
+msgid "Triggers"
+msgstr ""
+
 msgid "Tuesday"
 msgstr "Martes"
 
@@ -7782,6 +7794,9 @@ msgstr "Las entidades no muestreadas permanecerán En Espera para que puedas seg
 
 msgid "Unapproved Supplier"
 msgstr "Proveedor No Aprobado"
+
+msgid "Unassign from parent unit to remove"
+msgstr ""
 
 msgid "Unassign rule"
 msgstr "Desasignar regla"
@@ -7903,11 +7918,12 @@ msgstr "Actualizar"
 msgid "Upgrade to Business"
 msgstr "Actualizar a Business"
 
-msgid "Upgrade to unlock audit history"
-msgstr "Actualizar para desbloquear el historial de auditoría"
+#. placeholder {0}: targetCopy.noun
+msgid "Upgrade to unlock {0} rules"
+msgstr ""
 
-msgid "Upgrade to unlock item rules"
-msgstr "Actualizar para desbloquear reglas de artículos"
+msgid "Upgrade to unlock audit history"
+msgstr "Actualizar para desbloquear el historial de auditoría<<<<<<< HEAD"
 
 msgid "Upload"
 msgstr "Cargar"
@@ -8006,6 +8022,9 @@ msgstr "Validando trabajo..."
 
 msgid "Value"
 msgstr "Valor"
+
+msgid "Value source by surface"
+msgstr ""
 
 msgid "VAT Number"
 msgstr "Número de IVA"
@@ -8196,9 +8215,6 @@ msgstr "Advertir cuando la persona que inspecciona un artículo entrante es la m
 msgid "Warning"
 msgstr "Advertencia"
 
-msgid "Warnings"
-msgstr "Advertencias"
-
 msgid "Watch full video"
 msgstr "Ver video completo"
 
@@ -8258,6 +8274,9 @@ msgstr "Cuando la vida útil de un producto terminado se establece en Calculada,
 
 msgid "When expired stock is used"
 msgstr "Cuando se utiliza stock vencido"
+
+msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
+msgstr ""
 
 msgid "Who Can Approve"
 msgstr "Quién Puede Aprobar"
