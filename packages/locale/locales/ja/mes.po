@@ -201,6 +201,9 @@ msgstr "会社"
 msgid "Complete"
 msgstr "完了"
 
+msgid "Complete All"
+msgstr "すべて完了"
+
 msgid "Completed"
 msgstr "完了済み"
 
@@ -217,6 +220,12 @@ msgstr "消費期限切れ"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "{0}を作成"
+
+msgid "Create Issue"
+msgstr "問題を作成"
+
+msgid "Create Quality Issue"
+msgstr "品質問題を作成"
 
 msgid "Customer"
 msgstr "顧客"
@@ -242,6 +251,9 @@ msgstr "ステップを削除"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "タイムカードを削除（{0}）"
+
+msgid "Describe the problem..."
+msgstr "問題を説明してください..."
 
 msgid "Description"
 msgstr "説明"
@@ -386,6 +398,9 @@ msgstr "払出"
 
 msgid "Issue Material"
 msgstr "材料払出"
+
+msgid "Issue Type"
+msgstr "問題タイプ"
 
 msgid "Item"
 msgstr "品目"
@@ -664,6 +679,12 @@ msgstr "プロセス一覧"
 
 msgid "Progress"
 msgstr "進捗"
+
+msgid "Quality Issue"
+msgstr "品質問題"
+
+msgid "Quality issue created"
+msgstr "品質問題が作成されました"
 
 msgid "Quantity"
 msgstr "数量"

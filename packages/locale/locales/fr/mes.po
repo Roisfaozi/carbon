@@ -201,6 +201,9 @@ msgstr "Entreprise"
 msgid "Complete"
 msgstr "Terminé"
 
+msgid "Complete All"
+msgstr "Tout compléter"
+
 msgid "Completed"
 msgstr "Terminé"
 
@@ -217,6 +220,12 @@ msgstr "Consommé expiré"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "Créer {0}"
+
+msgid "Create Issue"
+msgstr "Créer un problème"
+
+msgid "Create Quality Issue"
+msgstr "Créer un problème de qualité"
 
 msgid "Customer"
 msgstr "Client"
@@ -242,6 +251,9 @@ msgstr "Supprimer l'étape"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "Supprimer la fiche de temps ({0})"
+
+msgid "Describe the problem..."
+msgstr "Décrivez le problème..."
 
 msgid "Description"
 msgstr "Description"
@@ -386,6 +398,9 @@ msgstr "Distribuer"
 
 msgid "Issue Material"
 msgstr "Distribuer le matériau"
+
+msgid "Issue Type"
+msgstr "Type de problème"
 
 msgid "Item"
 msgstr "Article"
@@ -664,6 +679,12 @@ msgstr "Processus"
 
 msgid "Progress"
 msgstr "Progression"
+
+msgid "Quality Issue"
+msgstr "Problème de qualité"
+
+msgid "Quality issue created"
+msgstr "Problème de qualité créé"
 
 msgid "Quantity"
 msgstr "Quantité"

@@ -201,6 +201,9 @@ msgstr "कंपनी"
 msgid "Complete"
 msgstr "पूर्ण करें"
 
+msgid "Complete All"
+msgstr "सभी को पूर्ण करें"
+
 msgid "Completed"
 msgstr "पूर्ण"
 
@@ -217,6 +220,12 @@ msgstr "खपत की गई समाप्त"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "{0} बनाएं"
+
+msgid "Create Issue"
+msgstr "समस्या बनाएं"
+
+msgid "Create Quality Issue"
+msgstr "गुणवत्ता समस्या बनाएं"
 
 msgid "Customer"
 msgstr "ग्राहक"
@@ -242,6 +251,9 @@ msgstr "चरण हटाएं"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "टाइमकार्ड हटाएं ({0})"
+
+msgid "Describe the problem..."
+msgstr "समस्या का वर्णन करें..."
 
 msgid "Description"
 msgstr "विवरण"
@@ -386,6 +398,9 @@ msgstr "जारी करें"
 
 msgid "Issue Material"
 msgstr "सामग्री जारी करें"
+
+msgid "Issue Type"
+msgstr "समस्या प्रकार"
 
 msgid "Item"
 msgstr "वस्तु"
@@ -664,6 +679,12 @@ msgstr "प्रक्रियाएं"
 
 msgid "Progress"
 msgstr "प्रगति"
+
+msgid "Quality Issue"
+msgstr "गुणवत्ता समस्या"
+
+msgid "Quality issue created"
+msgstr "गुणवत्ता समस्या बनाई गई"
 
 msgid "Quantity"
 msgstr "मात्रा"

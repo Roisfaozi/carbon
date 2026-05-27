@@ -201,6 +201,9 @@ msgstr "公司"
 msgid "Complete"
 msgstr "完成"
 
+msgid "Complete All"
+msgstr "全部完成"
+
 msgid "Completed"
 msgstr "已完成"
 
@@ -217,6 +220,12 @@ msgstr "已消耗过期"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "创建 {0}"
+
+msgid "Create Issue"
+msgstr "创建问题"
+
+msgid "Create Quality Issue"
+msgstr "创建质量问题"
 
 msgid "Customer"
 msgstr "客户"
@@ -242,6 +251,9 @@ msgstr "删除步骤"
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
 msgid "Delete Timecard ({0})"
 msgstr "删除考勤记录 ({0})"
+
+msgid "Describe the problem..."
+msgstr "描述问题..."
 
 msgid "Description"
 msgstr "描述"
@@ -386,6 +398,9 @@ msgstr "发放"
 
 msgid "Issue Material"
 msgstr "发放物料"
+
+msgid "Issue Type"
+msgstr "问题类型"
 
 msgid "Item"
 msgstr "物料"
@@ -664,6 +679,12 @@ msgstr "工艺"
 
 msgid "Progress"
 msgstr "进度"
+
+msgid "Quality Issue"
+msgstr "质量问题"
+
+msgid "Quality issue created"
+msgstr "质量问题已创建"
 
 msgid "Quantity"
 msgstr "数量"
