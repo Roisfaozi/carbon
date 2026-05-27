@@ -1,10 +1,9 @@
 import { Trans } from "@lingui/react/macro";
-import DefaultAttachmentsPanel, {
-  type StorageFile
-} from "./DefaultAttachmentsPanel";
+import type { FileObject } from "@supabase/storage-js";
+import DefaultAttachmentsPanel from "./DefaultAttachmentsPanel";
 
 type Props = {
-  files: StorageFile[];
+  files: FileObject[];
 };
 
 export default function CompanyDefaultAttachmentsCard({ files }: Props) {

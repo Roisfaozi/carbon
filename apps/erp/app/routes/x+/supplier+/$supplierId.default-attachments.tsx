@@ -2,9 +2,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { Trans } from "@lingui/react/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
-import DefaultAttachmentsPanel, {
-  type StorageFile
-} from "~/components/DefaultAttachmentsPanel";
+import DefaultAttachmentsPanel from "~/components/DefaultAttachmentsPanel";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -19,7 +17,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     supplierId,
-    files: (result.data ?? []) as StorageFile[]
+    files: result.data ?? []
   };
 }
 

@@ -22,6 +22,7 @@ import {
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { FileObject } from "@supabase/storage-js";
 import type { ReactNode } from "react";
 import { useCallback, useState } from "react";
 import { LuDownload, LuEllipsisVertical, LuTrash } from "react-icons/lu";
@@ -34,14 +35,8 @@ import { getDocumentType } from "~/modules/shared";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
 
-export type StorageFile = {
-  name: string;
-  created_at?: string | null;
-  metadata?: { size?: number } | null;
-};
-
 type Props = {
-  files: StorageFile[];
+  files: FileObject[];
   storagePathPrefix: string;
   title: ReactNode;
   description: ReactNode;
@@ -62,8 +57,10 @@ export default function DefaultAttachmentsPanel({
   const revalidator = useRevalidator();
   const [deletingPath, setDeletingPath] = useState<string | null>(null);
 
-  const fullPath = (name: string) =>
-    `${company.id}/${storagePathPrefix}/${name}`;
+  const fullPath = useCallback(
+    (name: string) => `${company.id}/${storagePathPrefix}/${name}`,
+    [company.id, storagePathPrefix]
+  );
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -83,8 +80,7 @@ export default function DefaultAttachmentsPanel({
       }
       revalidator.revalidate();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [carbon, company.id, storagePathPrefix, revalidator, t]
+    [carbon, fullPath, revalidator, t]
   );
 
   const onDownload = useCallback(
@@ -106,8 +102,7 @@ export default function DefaultAttachmentsPanel({
         console.error(err);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [company.id, storagePathPrefix, t]
+    [fullPath, t]
   );
 
   const onDelete = useCallback(
@@ -132,8 +127,7 @@ export default function DefaultAttachmentsPanel({
         setDeletingPath(null);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [carbon, company.id, storagePathPrefix, revalidator, t]
+    [carbon, fullPath, revalidator, t]
   );
 
   return (

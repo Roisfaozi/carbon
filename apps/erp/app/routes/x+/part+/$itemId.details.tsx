@@ -14,9 +14,7 @@ import type {
 } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
-import DefaultAttachmentsPanel, {
-  type StorageFile
-} from "~/components/DefaultAttachmentsPanel";
+import DefaultAttachmentsPanel from "~/components/DefaultAttachmentsPanel";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
@@ -340,7 +338,7 @@ export default function PartDetailsRoute() {
           </DeferredFiles>
 
           <DefaultAttachmentsPanel
-            files={(defaultAttachments ?? []) as StorageFile[]}
+            files={defaultAttachments ?? []}
             storagePathPrefix={`default-attachments/item/${itemId}`}
             title={t`Default Attachments on Purchase Orders`}
             description={t`Files attached here ride along whenever this item appears on a purchase order email.`}
