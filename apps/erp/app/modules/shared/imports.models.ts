@@ -83,6 +83,11 @@ const supplierPartImportFields = {
     required: false,
     type: "string"
   },
+  orderMultiple: {
+    label: "Order Multiple",
+    required: false,
+    type: "string"
+  },
   conversionFactor: {
     label: "Conversion Factor",
     required: false,
@@ -90,6 +95,19 @@ const supplierPartImportFields = {
   },
   unitPrice: {
     label: "Supplier Unit Price",
+    required: false,
+    type: "string"
+  }
+} as const;
+
+// Item-level purchasing fields. Spread into every real item-type entry
+// (part / material / tool / fixture / consumable). These write to the
+// item's "itemReplenishment" row (auto-created by the create_item_related_records
+// trigger) in the edge function's post-pass — the same fields the in-app
+// "Purchasing" tab edits.
+const itemPurchasingImportFields = {
+  leadTime: {
+    label: "Lead Time (Days)",
     required: false,
     type: "string"
   }
@@ -591,7 +609,8 @@ export const fieldMappings = {
         default: "EA"
       }
     },
-    ...supplierPartImportFields
+    ...supplierPartImportFields,
+    ...itemPurchasingImportFields
   },
   tool: {
     id: {
@@ -681,7 +700,8 @@ export const fieldMappings = {
         default: "EA"
       }
     },
-    ...supplierPartImportFields
+    ...supplierPartImportFields,
+    ...itemPurchasingImportFields
   },
   fixture: {
     id: {
@@ -771,7 +791,8 @@ export const fieldMappings = {
         default: "EA"
       }
     },
-    ...supplierPartImportFields
+    ...supplierPartImportFields,
+    ...itemPurchasingImportFields
   },
   consumable: {
     id: {
@@ -861,7 +882,8 @@ export const fieldMappings = {
         default: "EA"
       }
     },
-    ...supplierPartImportFields
+    ...supplierPartImportFields,
+    ...itemPurchasingImportFields
   },
   material: {
     id: {
@@ -993,7 +1015,8 @@ export const fieldMappings = {
         default: "EA"
       }
     },
-    ...supplierPartImportFields
+    ...supplierPartImportFields,
+    ...itemPurchasingImportFields
   },
   methodMaterial: {
     level: {
@@ -1485,8 +1508,10 @@ export const importSchemas: Record<
     supplierPartId: z.string().optional(),
     supplierUnitOfMeasureCode: z.string().optional(),
     minimumOrderQuantity: z.string().optional(),
+    orderMultiple: z.string().optional(),
     conversionFactor: z.string().optional(),
-    unitPrice: z.string().optional()
+    unitPrice: z.string().optional(),
+    leadTime: z.string().optional()
   }),
   tool: z.object({
     id: z
@@ -1526,8 +1551,10 @@ export const importSchemas: Record<
     supplierPartId: z.string().optional(),
     supplierUnitOfMeasureCode: z.string().optional(),
     minimumOrderQuantity: z.string().optional(),
+    orderMultiple: z.string().optional(),
     conversionFactor: z.string().optional(),
-    unitPrice: z.string().optional()
+    unitPrice: z.string().optional(),
+    leadTime: z.string().optional()
   }),
   fixture: z.object({
     id: z
@@ -1567,8 +1594,10 @@ export const importSchemas: Record<
     supplierPartId: z.string().optional(),
     supplierUnitOfMeasureCode: z.string().optional(),
     minimumOrderQuantity: z.string().optional(),
+    orderMultiple: z.string().optional(),
     conversionFactor: z.string().optional(),
-    unitPrice: z.string().optional()
+    unitPrice: z.string().optional(),
+    leadTime: z.string().optional()
   }),
   consumable: z.object({
     id: z
@@ -1608,8 +1637,10 @@ export const importSchemas: Record<
     supplierPartId: z.string().optional(),
     supplierUnitOfMeasureCode: z.string().optional(),
     minimumOrderQuantity: z.string().optional(),
+    orderMultiple: z.string().optional(),
     conversionFactor: z.string().optional(),
-    unitPrice: z.string().optional()
+    unitPrice: z.string().optional(),
+    leadTime: z.string().optional()
   }),
   material: z.object({
     id: z
@@ -1656,8 +1687,10 @@ export const importSchemas: Record<
     supplierPartId: z.string().optional(),
     supplierUnitOfMeasureCode: z.string().optional(),
     minimumOrderQuantity: z.string().optional(),
+    orderMultiple: z.string().optional(),
     conversionFactor: z.string().optional(),
-    unitPrice: z.string().optional()
+    unitPrice: z.string().optional(),
+    leadTime: z.string().optional()
   }),
   methodMaterial: z.object({
     level: z.string().optional().describe("The level of the material"),

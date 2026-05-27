@@ -580,8 +580,14 @@ type SupplierPartImportLink = {
   supplierPartId?: string;
   supplierUnitOfMeasureCode?: string;
   minimumOrderQuantity?: string;
+  orderMultiple?: string;
   conversionFactor?: string;
   unitPrice?: string;
+};
+
+type ItemPurchasingLeadTime = {
+  itemId: string;
+  leadTime: string;
 };
 
 async function writeSupplierPartLinks(
@@ -611,6 +617,9 @@ async function writeSupplierPartLinks(
     const numericMOQ = link.minimumOrderQuantity
       ? Number.parseInt(link.minimumOrderQuantity, 10)
       : null;
+    const numericOrderMultiple = link.orderMultiple
+      ? Number.parseInt(link.orderMultiple, 10)
+      : null;
     const numericConversion = link.conversionFactor
       ? Number.parseFloat(link.conversionFactor)
       : 1;
@@ -625,6 +634,7 @@ async function writeSupplierPartLinks(
           supplierPartId: link.supplierPartId || null,
           supplierUnitOfMeasureCode: link.supplierUnitOfMeasureCode || null,
           minimumOrderQuantity: numericMOQ,
+          orderMultiple: numericOrderMultiple,
           conversionFactor: numericConversion,
           unitPrice: numericPrice,
           updatedAt: now,
@@ -641,6 +651,7 @@ async function writeSupplierPartLinks(
           supplierPartId: link.supplierPartId || null,
           supplierUnitOfMeasureCode: link.supplierUnitOfMeasureCode || null,
           minimumOrderQuantity: numericMOQ,
+          orderMultiple: numericOrderMultiple,
           conversionFactor: numericConversion,
           unitPrice: numericPrice,
           companyId,
@@ -648,6 +659,35 @@ async function writeSupplierPartLinks(
         })
         .execute();
     }
+  }
+}
+
+// Set the item-level purchasing lead time (the "Purchasing" tab field).
+// The itemReplenishment row is created by the create_item_related_records
+// AFTER INSERT trigger on item (default purchasingLeadTime 0), so within this
+// transaction the row already exists for every item we just upserted — we only
+// need to UPDATE it.
+async function writeItemPurchasingLeadTimes(
+  trx: typeof db,
+  entries: ItemPurchasingLeadTime[],
+  companyId: string,
+  userId: string
+): Promise<void> {
+  if (entries.length === 0) return;
+  const now = new Date().toISOString();
+  for (const entry of entries) {
+    const numericLeadTime = Number.parseInt(entry.leadTime, 10);
+    if (Number.isNaN(numericLeadTime)) continue;
+    await trx
+      .updateTable("itemReplenishment")
+      .set({
+        purchasingLeadTime: numericLeadTime,
+        updatedAt: now,
+        updatedBy: userId,
+      })
+      .where("itemId", "=", entry.itemId)
+      .where("companyId", "=", companyId)
+      .execute();
   }
 }
 
@@ -1233,10 +1273,17 @@ serve(async (req: Request) => {
             supplierPartId?: string;
             supplierUnitOfMeasureCode?: string;
             minimumOrderQuantity?: string;
+            orderMultiple?: string;
             conversionFactor?: string;
             unitPrice?: string;
           }> = [];
           const supplierPartLinks: SupplierPartImportLink[] = [];
+          // Item-level purchasing lead times. leadTimeForInserts is parallel to
+          // itemInserts (filled in the insert branch); purchasingLeadTimes
+          // collects the final {itemId, leadTime} entries once item ids are
+          // known (immediately for updates, post-insert for new items).
+          const leadTimeForInserts: Array<string | undefined> = [];
+          const purchasingLeadTimes: ItemPurchasingLeadTime[] = [];
 
           const itemValidator = z.object({
             id: z.string(),
@@ -1311,8 +1358,16 @@ serve(async (req: Request) => {
                   supplierPartId: record.supplierPartId,
                   supplierUnitOfMeasureCode: record.supplierUnitOfMeasureCode,
                   minimumOrderQuantity: record.minimumOrderQuantity,
+                  orderMultiple: record.orderMultiple,
                   conversionFactor: record.conversionFactor,
                   unitPrice: record.unitPrice,
+                });
+              }
+
+              if (record.leadTime) {
+                purchasingLeadTimes.push({
+                  itemId: existingEntityId,
+                  leadTime: record.leadTime,
                 });
               }
 
@@ -1359,16 +1414,18 @@ serve(async (req: Request) => {
               itemInserts.push(newItem);
               csvIdsForInserts.push(getExternalId(id));
               // New item: id will come back from the bulk insert. Capture
-              // supplier-part data in a parallel array so we can build the
-              // link once the id is known.
+              // supplier-part data and lead time in parallel arrays so we can
+              // build the link / lead-time entry once the id is known.
               supplierPartForInserts.push({
                 supplierId: record.supplierId,
                 supplierPartId: record.supplierPartId,
                 supplierUnitOfMeasureCode: record.supplierUnitOfMeasureCode,
                 minimumOrderQuantity: record.minimumOrderQuantity,
+                orderMultiple: record.orderMultiple,
                 conversionFactor: record.conversionFactor,
                 unitPrice: record.unitPrice,
               });
+              leadTimeForInserts.push(record.leadTime);
 
               if (table === "material") {
                 const material = materialValidator.safeParse(record);
@@ -1467,9 +1524,10 @@ serve(async (req: Request) => {
                 .execute();
             }
 
-            // Build supplier-part links for the items we just inserted.
-            // supplierPartForInserts is parallel to itemInserts and only the
-            // rows where supplierId is set produce a link.
+            // Build supplier-part links and lead-time entries for the items we
+            // just inserted. supplierPartForInserts / leadTimeForInserts are
+            // parallel to itemInserts; only rows with a supplier produce a
+            // link, only rows with a lead time produce a lead-time entry.
             for (let i = 0; i < insertedItems.length; i++) {
               const sp = supplierPartForInserts[i];
               if (sp?.supplierId && insertedItems[i].id) {
@@ -1479,8 +1537,16 @@ serve(async (req: Request) => {
                   supplierPartId: sp.supplierPartId,
                   supplierUnitOfMeasureCode: sp.supplierUnitOfMeasureCode,
                   minimumOrderQuantity: sp.minimumOrderQuantity,
+                  orderMultiple: sp.orderMultiple,
                   conversionFactor: sp.conversionFactor,
                   unitPrice: sp.unitPrice,
+                });
+              }
+              const leadTime = leadTimeForInserts[i];
+              if (leadTime && insertedItems[i].id) {
+                purchasingLeadTimes.push({
+                  itemId: insertedItems[i].id!,
+                  leadTime,
                 });
               }
             }
@@ -1549,6 +1615,13 @@ serve(async (req: Request) => {
           await writeSupplierPartLinks(
             trx,
             supplierPartLinks,
+            companyId,
+            userId
+          );
+
+          await writeItemPurchasingLeadTimes(
+            trx,
+            purchasingLeadTimes,
             companyId,
             userId
           );
