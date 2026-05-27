@@ -10,7 +10,7 @@ import { useCurrencyFormatter } from "./useCurrencyFormatter";
 import { useDateFormatter } from "./useDateFormatter";
 import { useFlags } from "./useFlags";
 import { useGooglePlaces } from "./useGooglePlaces";
-import { useAllModules, useModules } from "./useModules";
+import { useAllModules, useModules, useSettingsModule } from "./useModules";
 import { useMovingCellRef } from "./useMovingCellRef";
 import { useNextItemId } from "./useNextItemId";
 import { useNotifications } from "./useNotifications";
@@ -33,6 +33,7 @@ export {
   useGooglePlaces,
   useAllModules,
   useModules,
+  useSettingsModule,
   useMovingCellRef,
   useNanoStore,
   useNextItemId,
