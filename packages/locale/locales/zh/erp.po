@@ -15,6 +15,10 @@ msgstr ""
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr "供应商是向您销售零件或服务的企业或个人。"
 
+#. placeholder {0}: fieldDef?.label ?? condition.field
+msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
+msgstr ""
+
 msgid "\"{storageUnitName}\" has {childCount} direct nested storage units. Deleting it will also delete them and anything underneath them. This cannot be undone."
 msgstr "\"{storageUnitName}\"有{childCount}个直接嵌套的存储单元。删除它也会删除它们及其下面的所有内容。此操作无法撤销。"
 
@@ -190,12 +194,6 @@ msgstr "会计已启用"
 
 msgid "Accounts"
 msgstr "账户"
-
-msgid "Accounts Payable Billing Address"
-msgstr "应付账款账单地址"
-
-msgid "Accounts Receivable Billing Address"
-msgstr "应收账款账单地址"
 
 msgid "Accumulation Period (Weeks)"
 msgstr "累积期（周）"
@@ -470,6 +468,9 @@ msgstr "金额类型"
 msgid "An item cannot be added to itself."
 msgstr "一个项目不能添加到自身。"
 
+msgid "AND"
+msgstr ""
+
 msgid "and {remaining} more"
 msgstr "和 {remaining} 个更多"
 
@@ -487,6 +488,12 @@ msgstr "注释文本是必需的"
 
 msgid "Annotation updated"
 msgstr "注释已更新"
+
+msgid "Any item group"
+msgstr ""
+
+msgid "Any item type"
+msgstr ""
 
 msgid "API and Webhooks"
 msgstr "API 和 Webhooks"
@@ -511,9 +518,6 @@ msgstr "适用于"
 
 msgid "Applies to all"
 msgstr "适用于全部"
-
-msgid "Applies to all items"
-msgstr "适用于所有项目"
 
 msgid "Applies to all storage units"
 msgstr "适用于所有存储单位"
@@ -1012,6 +1016,15 @@ msgstr "自动启动作业"
 msgid "Auto-generated QR Code"
 msgstr "自动生成的二维码"
 
+msgid "Automatic Cost Updates"
+msgstr "自动成本更新"
+
+msgid "Automatic Lead Time Updates"
+msgstr "自动提前期更新"
+
+msgid "Automatic Updates"
+msgstr "自动更新"
+
 msgid "Automatically release the job when the kanban is scanned"
 msgstr "当扫描看板时自动释放作业"
 
@@ -1259,6 +1272,9 @@ msgstr "分类名称"
 msgid "CC"
 msgstr "抄送"
 
+msgid "Centralized Billing Address"
+msgstr "集中式账单地址"
+
 msgid "Change"
 msgstr "更改"
 
@@ -1386,6 +1402,9 @@ msgstr "列的可见性和顺序"
 msgid "Columns"
 msgstr "列"
 
+msgid "Combine filters"
+msgstr ""
+
 msgid "Coming soon"
 msgstr "即将推出"
 
@@ -1503,8 +1522,8 @@ msgstr "配置用于系统中各种交易类型的默认账户"
 msgid "Configure the start months for your fiscal and tax years"
 msgstr "配置您的财政年度和税务年度的开始月份"
 
-msgid "Configure when purchased item prices should be updated from supplier transactions."
-msgstr "配置何时应从供应商交易更新采购物品价格。"
+msgid "Configure when purchased item costs should be updated from supplier transactions."
+msgstr "配置何时应从供应商交易更新采购项目成本。"
 
 msgid "Configure who should receive notifications when a supplier submits a quote."
 msgstr "配置供应商提交报价时谁应该收到通知。"
@@ -2018,6 +2037,9 @@ msgstr "客户详情"
 
 msgid "Customer ID"
 msgstr "客户ID"
+
+msgid "Customer ID cannot be changed after creation"
+msgstr "客户ID创建后无法更改"
 
 msgid "Customer Invoice Number"
 msgstr "客户发票号"
@@ -2599,6 +2621,9 @@ msgstr "下载 CSV"
 msgid "Download PDF"
 msgstr "下载 PDF"
 
+msgid "Download template"
+msgstr "下载模板"
+
 msgid "Draft"
 msgstr "草稿"
 
@@ -2966,6 +2991,9 @@ msgstr "员工类型"
 msgid "Employees"
 msgstr "员工"
 
+msgid "Empty = match every item"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "空的工作中心"
 
@@ -3007,12 +3035,6 @@ msgstr "启用以为原材料生成ID和描述。"
 
 msgid "Enable to include work instructions on job traveler PDFs."
 msgstr "启用以在工作单据 PDF 上包含工作说明。"
-
-msgid "Enable to show part thumbnails on purchase order PDFs."
-msgstr "启用以在采购订单 PDF 上显示零件缩略图。"
-
-msgid "Enable to show part thumbnails on sales PDFs."
-msgstr "启用以在销售 PDF 上显示零件缩略图。"
 
 msgid "Enable to start tracking changes to your data."
 msgstr "启用以开始跟踪您的数据变化。"
@@ -3803,6 +3825,9 @@ msgstr "隐藏、固定和重新排序列"
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "更高的优先级在平局时获胜，并首先应用于加价"
 
+msgid "Hints in the first row"
+msgstr "第一行中的提示"
+
 msgid "History"
 msgstr "历史"
 
@@ -3910,6 +3935,12 @@ msgstr "在发货中包含额外零件"
 
 msgid "Include Inactive"
 msgstr "包括不活跃"
+
+msgid "Include Thumbnails on Purchasing Documents"
+msgstr "在采购文件上包含缩略图"
+
+msgid "Include Thumbnails on Sales Documents"
+msgstr "在销售文件上包含缩略图"
 
 msgid "Includes tax and shipping costs"
 msgstr "包括税费和运费"
@@ -4139,8 +4170,14 @@ msgstr "物品"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "项目 {scannedItem} 与项目 {expectedItem} 不相同"
 
+msgid "Item filters"
+msgstr ""
+
 msgid "Item Group"
 msgstr "物品组"
+
+msgid "Item groups"
+msgstr ""
 
 msgid "Item Groups"
 msgstr "物品组"
@@ -4151,11 +4188,20 @@ msgstr "物品ID"
 msgid "Item Master"
 msgstr "物料主数据"
 
+msgid "Item must match a selected type AND a selected group"
+msgstr ""
+
+msgid "Item must match a selected type OR a selected group"
+msgstr ""
+
 msgid "Item Scope"
 msgstr "物品范围"
 
 msgid "Item Type"
 msgstr "物品类型"
+
+msgid "Item types"
+msgstr ""
 
 msgid "items"
 msgstr "项目"
@@ -4291,9 +4337,6 @@ msgstr "提前期（天）"
 
 msgid "Lead Time (Days)"
 msgstr "交期（天）"
-
-msgid "Lead Time Updates"
-msgstr "提前期更新"
 
 msgid "Lead Time:"
 msgstr "交货时间："
@@ -4576,8 +4619,14 @@ msgstr "匹配"
 msgid "Match all"
 msgstr "全部匹配"
 
+msgid "Match all (AND)"
+msgstr ""
+
 msgid "Match any"
 msgstr "匹配任意"
+
+msgid "Match any (OR)"
+msgstr ""
 
 msgid "Match none"
 msgstr "不匹配任何条件"
@@ -4847,6 +4896,9 @@ msgstr "按类型分类的不符合项"
 
 msgid "Need by"
 msgstr "需要日期"
+
+msgid "Need the right columns?"
+msgstr "需要正确的列吗？"
 
 msgid "Negative Adjustment"
 msgstr "负调整"
@@ -5507,6 +5559,9 @@ msgstr "此规则的可选上下文"
 msgid "Options"
 msgstr "选项"
 
+msgid "OR"
+msgstr ""
+
 msgid "Order"
 msgstr "订单"
 
@@ -5639,12 +5694,6 @@ msgstr "零件ID"
 msgid "Part is configured for manufacturing"
 msgstr "零件已配置用于制造"
 
-msgid "Part thumbnails are shown on purchase order PDFs."
-msgstr "部件缩略图显示在采购订单 PDF 上。"
-
-msgid "Part thumbnails are shown on sales PDFs."
-msgstr "零件缩略图显示在销售 PDF 上。"
-
 msgid "Partial"
 msgstr "部分"
 
@@ -5686,9 +5735,6 @@ msgstr "PDF 页面"
 
 msgid "PDF Watermark"
 msgstr "PDF 水印"
-
-msgid "PDFs"
-msgstr "PDF"
 
 msgid "Pending"
 msgstr "待处理"
@@ -6056,9 +6102,6 @@ msgstr "采购订单"
 msgid "Purchase orders required"
 msgstr "采购订单必需"
 
-msgid "Purchase Price Updates"
-msgstr "采购价格更新"
-
 msgid "Purchase Qty"
 msgstr "采购数量"
 
@@ -6206,6 +6249,9 @@ msgid "Quoted Date"
 msgstr "报价日期"
 
 msgid "Quotes"
+msgstr "报价"
+
+msgid "Quoting"
 msgstr "报价"
 
 msgid "Rate Limit"
@@ -6608,6 +6654,12 @@ msgstr "角色"
 
 msgid "Role:"
 msgstr "角色："
+
+msgid "Route all AP invoices to one address (e.g. corporate headquarters) instead of individual purchasers."
+msgstr "将所有应付账款发票路由到一个地址（例如公司总部），而不是个别采购员。"
+
+msgid "Route all AR invoices to one address (e.g. corporate headquarters) instead of individual locations."
+msgstr "将所有应收账款发票路由到一个地址（例如公司总部），而不是各个地点。"
 
 msgid "rows"
 msgstr "行"
@@ -7186,17 +7238,29 @@ msgstr "简短描述"
 msgid "Shortcuts"
 msgstr "快捷键"
 
+msgid "Show a readable Customer ID column on the customer list, customer forms, and dropdowns. Customers are still identified internally either way."
+msgstr "在客户列表、客户表单和下拉菜单上显示可读的客户ID列。无论哪种方式，客户在内部仍然可以被识别。"
+
+msgid "Show a readable Supplier ID column on the supplier list, supplier forms, and dropdowns. Suppliers are still identified internally either way."
+msgstr "在供应商列表、供应商表单和下拉菜单上显示可读的供应商 ID 列。无论哪种方式，供应商在内部仍然可以被识别。"
+
+msgid "Show Customer IDs"
+msgstr "显示客户ID"
+
 msgid "Show Durations"
 msgstr "显示时长"
 
 msgid "Show parent items"
 msgstr "显示父项"
 
-msgid "Show part thumbnails on purchase orders."
-msgstr "在采购订单上显示零件缩略图。"
+msgid "Show part thumbnails on purchase order PDFs."
+msgstr "在采购订单 PDF 上显示零件缩略图。"
 
-msgid "Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
-msgstr "在报价单、销售订单、销售发票和发货单上显示零件缩略图。"
+msgid "Show part thumbnails on quotes, sales orders, invoices, and shipments."
+msgstr "在报价单、销售订单、发票和发货单上显示零件缩略图。"
+
+msgid "Show Supplier IDs"
+msgstr "显示供应商ID"
 
 msgid "Show sync options"
 msgstr "显示同步选项"
@@ -7528,6 +7592,9 @@ msgstr "供应商联系人"
 msgid "Supplier ID"
 msgstr "供应商 ID"
 
+msgid "Supplier ID cannot be changed after creation"
+msgstr "供应商ID创建后无法更改"
+
 msgid "Supplier Invoice Number"
 msgstr "供应商发票号"
 
@@ -7712,12 +7779,6 @@ msgstr "计算方法后可用现金折扣的天数"
 msgid "The amount of days after the calculation method that the payment is due"
 msgstr "计算方法后的天数，在该天数后付款到期"
 
-msgid "The billing address used on purchase orders and other purchasing documents."
-msgstr "用于采购订单和其他采购文件的账单地址。"
-
-msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
-msgstr "用于报价单、销售订单、发票和其他销售文件的账单地址。"
-
 msgid "The date the customer expects to receive the goods"
 msgstr "客户期望收到货物的日期"
 
@@ -7861,12 +7922,6 @@ msgstr "缩略图已移除"
 
 msgid "Thumbnail uploaded"
 msgstr "缩略图已上传"
-
-msgid "Thumbnails are included"
-msgstr "缩略图已包含"
-
-msgid "Thumbnails are not included"
-msgstr "缩略图未包含"
 
 msgid "Thursday"
 msgstr "星期四"
@@ -8183,6 +8238,9 @@ msgstr "计量单位"
 msgid "Update"
 msgstr "更新"
 
+msgid "Update costs on"
+msgstr "更新成本于"
+
 msgid "Update Inventory"
 msgstr "更新库存"
 
@@ -8203,9 +8261,6 @@ msgstr "更新密码"
 
 msgid "Update Permissions"
 msgstr "更新权限"
-
-msgid "Update prices on"
-msgstr "在以下时间更新价格"
 
 msgid "Update Quantity"
 msgstr "更新数量"

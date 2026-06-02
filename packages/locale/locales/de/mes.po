@@ -73,9 +73,6 @@ msgstr "Ersatzteil hinzufügen"
 msgid "All"
 msgstr "Alle"
 
-msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
-msgstr "Möchten Sie diesen Arbeitsgang wirklich abschließen? Dadurch werden alle aktiven Produktionsereignisse für diesen Arbeitsgang beendet."
-
 msgid "Are you sure you want to delete this step?"
 msgstr "Möchten Sie diesen Schritt wirklich löschen?"
 
@@ -84,6 +81,9 @@ msgstr "Möchten Sie diese Zeitkarte wirklich löschen? Dies kann nicht rückgä
 
 msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "Möchten Sie wirklich alle Produktionsereignisse beenden? Dadurch werden alle aktiven Arbeitsgänge beendet, ohne sie abzuschließen."
+
+msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
+msgstr "Sind Sie sicher, dass Sie diesen Arbeitsgang beenden möchten? Dies beendet alle aktiven Produktionsereignisse für diesen Arbeitsgang."
 
 msgid "Are you sure you want to leave this page?"
 msgstr "Möchten Sie diese Seite wirklich verlassen?"
@@ -102,6 +102,9 @@ msgstr "Datei anhängen"
 
 msgid "Authentication Error"
 msgstr "Authentifizierungsfehler"
+
+msgid "Batch"
+msgstr "Charge"
 
 #. placeholder {0}: batch.readableId
 #. placeholder {1}: batch.quantity
@@ -165,19 +168,6 @@ msgstr "Ausstempeln"
 msgid "Clocked in since {0}"
 msgstr "Eingestempelt seit {0}"
 
-msgid "Close"
-msgstr "Schließen"
-
-msgid "Close Anyways"
-msgstr "Trotzdem schließen"
-
-msgid "Close Out"
-msgstr "Abschließen"
-
-#. placeholder {0}: operation.itemReadableId
-msgid "Close out {0}"
-msgstr "{0} abschließen"
-
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length
@@ -230,6 +220,9 @@ msgstr "Problem erstellen"
 msgid "Create Quality Issue"
 msgstr "Qualitätsproblem erstellen"
 
+msgid "Create Rework"
+msgstr "Rework erstellen"
+
 msgid "Customer"
 msgstr "Kunde"
 
@@ -257,6 +250,9 @@ msgstr "Zeitkarte löschen ({0})"
 
 msgid "Describe the problem..."
 msgstr "Beschreiben Sie das Problem..."
+
+msgid "Describe what needs to be reworked..."
+msgstr "Beschreiben Sie, was überarbeitet werden muss..."
 
 msgid "Description"
 msgstr "Beschreibung"
@@ -357,8 +353,21 @@ msgstr "Dateien zum Auftrag und zur Anfragenposition."
 msgid "Filter"
 msgstr "Filter"
 
+msgid "Finish"
+msgstr "Fertig"
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Finish {0}"
+msgstr "Beenden {0}"
+
+msgid "Finish Anyways"
+msgstr "Trotzdem beenden"
+
 msgid "Forgot to Clock Out?"
 msgstr "Vergessen auszustempeln?"
+
+msgid "Go back to operation"
+msgstr "Zurück zur Operation"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon Support.</0>"
@@ -495,6 +504,9 @@ msgstr "Maximale Anzahl an Datensätzen erreicht"
 msgid "Model"
 msgstr "Modell"
 
+msgid "More Actions"
+msgstr "Weitere Aktionen"
+
 msgid "More options"
 msgstr "Weitere Optionen"
 
@@ -585,6 +597,9 @@ msgstr "Keine geplante Zeit"
 
 msgid "No serial numbers"
 msgstr "Keine Seriennummern"
+
+msgid "No serial numbers found"
+msgstr "Keine Seriennummern gefunden"
 
 msgid "No spare parts added yet"
 msgstr "Noch keine Ersatzteile hinzugefügt"
@@ -698,6 +713,9 @@ msgstr "Menge"
 msgid "Quantity must be greater than 0"
 msgstr "Menge muss größer als 0 sein"
 
+msgid "Reason for rework"
+msgstr "Grund für Überarbeitung"
+
 msgid "Recent"
 msgstr "Zuletzt"
 
@@ -720,6 +738,12 @@ msgstr "Bestand entfernen"
 msgid "Remove part"
 msgstr "Teil entfernen"
 
+msgid "Rework"
+msgstr "Überarbeitung"
+
+msgid "Rework created successfully"
+msgstr "Überarbeitung erfolgreich erstellt"
+
 msgid "Sales Order"
 msgstr "Kundenauftrag"
 
@@ -732,8 +756,14 @@ msgstr "Scannen"
 msgid "Scan or enter serial number"
 msgstr "Seriennummer scannen oder eingeben"
 
+msgid "Scan or search serial number..."
+msgstr "Seriennummer scannen oder suchen..."
+
 msgid "Schedule"
 msgstr "Zeitplan"
+
+msgid "Scrap"
+msgstr "Ausschuss"
 
 msgid "Scrap Reason"
 msgstr "Ausschussgrund"
@@ -785,6 +815,9 @@ msgstr "Seriennummer {0} auswählen"
 msgid "Select Serial Number"
 msgstr "Seriennummer auswählen"
 
+msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
+msgstr "Wählen Sie den Vorgang aus, zu dem Sie zurückkehren möchten. Alle Vorgänge von diesem Punkt bis zum aktuellen Vorgang werden wiederholt."
+
 msgid "Send"
 msgstr "Senden"
 
@@ -804,6 +837,9 @@ msgstr "Seriennummer ist nicht verfügbar"
 
 msgid "Serial number is required"
 msgstr "Seriennummer ist erforderlich"
+
+msgid "Serial numbers"
+msgstr "Seriennummern"
 
 msgid "Serial Numbers"
 msgstr "Seriennummern"

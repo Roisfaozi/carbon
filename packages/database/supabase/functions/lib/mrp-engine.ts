@@ -1,19 +1,18 @@
+// Pure MRP engine functions shared across Supabase edge functions.
+// The same algorithm is independently available (with unit tests) at
+// packages/mrp/src/engine.ts.
+
 export type MethodType =
   | "Make to Order"
   | "Pull from Inventory"
   | "Purchase to Order";
+
 export type ReplenishmentSystem = "Buy" | "Make" | "Buy and Make";
 
 export type BomChild = {
   itemId: string;
   quantity: number;
   methodType: MethodType;
-};
-
-export type DemandPeriod = {
-  id: string;
-  startDate: string;
-  endDate: string;
 };
 
 export type DemandContributor =
@@ -41,7 +40,7 @@ export type BomExplosionInput = {
   bomByItem: Map<string, BomChild[]>;
   replenishmentSystemByItem: Map<string, ReplenishmentSystem>;
   leadTimeByItem: Map<string, number>;
-  periods: DemandPeriod[];
+  periods: { id: string }[];
   onHandByLocationItem: Map<string, number>;
   jobSupplyByLocationPeriodItem: Map<string, number>;
   topLevelContributors: Map<string, DemandContributor[]>;
@@ -111,7 +110,7 @@ export function explodeBom(input: BomExplosionInput): BomExplosionOutput {
     replenishmentSystemByItem,
     leadTimeByItem,
     periods,
-    topLevelContributors
+    topLevelContributors,
   } = input;
 
   const grossDemand = new Map(input.grossDemand);
@@ -193,14 +192,14 @@ export function explodeBom(input: BomExplosionInput): BomExplosionOutput {
 
             const parentContributors = [
               ...(demandContributors.get(key) ?? []),
-              ...(topLevelContributors.get(key) ?? [])
+              ...(topLevelContributors.get(key) ?? []),
             ];
             if (parentContributors.length > 0) {
               const childContributors = demandContributors.get(childKey) ?? [];
               for (const pc of parentContributors) {
                 childContributors.push({
                   ...pc,
-                  quantity: pc.quantity * child.quantity
+                  quantity: pc.quantity * child.quantity,
                 });
               }
               demandContributors.set(childKey, childContributors);
