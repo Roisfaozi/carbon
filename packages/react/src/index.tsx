@@ -27,6 +27,16 @@ import {
 import type { BadgeProps } from "./Badge";
 import { Badge, BadgeCloseButton } from "./Badge";
 import { BarProgress } from "./BarProgress";
+import {
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetClose,
+  BottomSheetContent,
+  BottomSheetDescription,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetTrigger
+} from "./BottomSheet";
 import type { ButtonProps } from "./Button";
 import { Button, buttonVariants } from "./Button";
 import {
@@ -163,6 +173,7 @@ import {
 import { Kbd } from "./Kbd";
 import { Label } from "./Label";
 import { Loading } from "./Loading";
+import { LoadingBars } from "./LoadingBars";
 import {
   Menu,
   MenuCheckboxItem,
@@ -328,6 +339,14 @@ export {
   AccordionItem,
   AccordionTrigger,
   BarProgress,
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetClose,
+  BottomSheetContent,
+  BottomSheetDescription,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetTrigger,
   ActionBar,
   ActionBarButton,
   ActionMenu,
@@ -446,6 +465,7 @@ export {
   Kbd,
   Label,
   Loading,
+  LoadingBars,
   Menu,
   MenuCheckboxItem,
   MenuGroup,

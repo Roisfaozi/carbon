@@ -2,15 +2,15 @@ import { error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
-import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
-import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import { upsertDocument } from "~/modules/documents";
 import {
   dedupeViolations,
   evaluateLinesForSurface,
   isBlocked
-} from "~/modules/items/itemRules.server";
+} from "@carbon/ee/storage-rules.server";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
+import type { ActionFunctionArgs } from "react-router";
+import { redirect } from "react-router";
+import { upsertDocument } from "~/modules/documents";
 import { loader as pdfLoader } from "~/routes/file+/shipment+/$id[.]pdf";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
@@ -67,6 +67,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
       client: serviceRole,
       companyId,
       userId,
+      targetType: "item",
+      surface,
+      lines: evalLines
+    });
+    allViolations.push(...violations);
+    Object.assign(allRuleNames, ruleNames);
+  }
+
+  // Pick pass — the bin side of the shipment. Same lines, same item target;
+  // item rules own the `pick` surface. Transfers double-up via the
+  // warehouseTransfer surface (dedupe collapses the overlap).
+  const pickSurfaces: ("pick" | "warehouseTransfer")[] = ["pick"];
+  if (shipmentForSurface?.sourceDocument === "Outbound Transfer") {
+    pickSurfaces.push("warehouseTransfer");
+  }
+  for (const surface of pickSurfaces) {
+    const { violations, ruleNames } = await evaluateLinesForSurface({
+      client: serviceRole,
+      companyId,
+      userId,
+      targetType: "item",
       surface,
       lines: evalLines
     });

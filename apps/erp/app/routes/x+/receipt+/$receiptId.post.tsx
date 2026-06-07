@@ -2,13 +2,13 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
-import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
 import {
   dedupeViolations,
   evaluateLinesForSurface,
   isBlocked
-} from "~/modules/items/itemRules.server";
+} from "@carbon/ee/storage-rules.server";
+import type { ActionFunctionArgs } from "react-router";
+import { redirect } from "react-router";
 import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -63,6 +63,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
       client: serviceRole,
       companyId,
       userId,
+      targetType: "item",
+      surface,
+      lines: evalLines
+    });
+    allViolations.push(...violations);
+    Object.assign(allRuleNames, ruleNames);
+  }
+
+  // Place pass — the bin side of the receipt. Same lines, same item target;
+  // item rules own the `place` surface. Transfers double-up via the
+  // warehouseTransfer surface (dedupe collapses the overlap).
+  const placeSurfaces: ("place" | "warehouseTransfer")[] = ["place"];
+  if (receiptForSurface?.sourceDocument === "Inbound Transfer") {
+    placeSurfaces.push("warehouseTransfer");
+  }
+  for (const surface of placeSurfaces) {
+    const { violations, ruleNames } = await evaluateLinesForSurface({
+      client: serviceRole,
+      companyId,
+      userId,
+      targetType: "item",
       surface,
       lines: evalLines
     });
