@@ -5,7 +5,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, userId } = await requirePermissions(request, {
     role: "employee"
   });
 
@@ -16,7 +16,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return { users: [] };
   }
 
-  const query = await client
+  const excludeSelf = url.searchParams.get("excludeSelf") === "true";
+  const allowedIds = url.searchParams
+    .get("allowedIds")
+    ?.split(",")
+    .filter(Boolean);
+
+  const query = client
     .from("user")
     .select("id, firstName, lastName, fullName, email, avatarUrl")
     .eq("active", true)
@@ -24,12 +30,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .order("lastName")
     .limit(20);
 
-  if (query.error) {
+  if (excludeSelf) {
+    query.neq("id", userId);
+  }
+
+  if (allowedIds && allowedIds.length > 0) {
+    query.in("id", allowedIds);
+  }
+
+  const result = await query;
+
+  if (result.error) {
     return data(
-      { users: [], error: query.error },
-      await flash(request, error(query.error, "Failed to search users"))
+      { users: [], error: result.error },
+      await flash(request, error(result.error, "Failed to search users"))
     );
   }
 
-  return { users: query.data ?? [] };
+  return { users: result.data ?? [] };
 }

@@ -104,7 +104,7 @@ const Group = ({ group }: { group: OptionGroup }) => {
       {isExpanded && (
         <ul role="group" className="flex flex-col gap-0.5 py-1 pl-2">
           {group.items.map((item) => {
-            const isDisabled = item.id in []; // TODO
+            const isDisabled = alwaysSelected?.includes(item.id) ?? false;
             const isFocused = item.uid === focusedId;
             const isSelected = item.id in selectionItemsById;
 

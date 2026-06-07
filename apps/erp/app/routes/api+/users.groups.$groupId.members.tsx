@@ -1,7 +1,10 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import type { LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs
+} from "react-router";
 import { data } from "react-router";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -30,3 +33,28 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return { users: query.data.users ?? [] };
 }
+
+export async function clientLoader({
+  params,
+  serverLoader
+}: ClientLoaderFunctionArgs) {
+  const { groupId } = params;
+  if (!groupId) {
+    return await serverLoader<typeof loader>();
+  }
+
+  const queryKey = ["groupMembers", groupId];
+  const cached =
+    window?.clientCache?.getQueryData<Awaited<ReturnType<typeof loader>>>(
+      queryKey
+    );
+
+  if (cached) {
+    return cached;
+  }
+
+  const serverData = await serverLoader<typeof loader>();
+  window?.clientCache?.setQueryData(queryKey, serverData);
+  return serverData;
+}
+clientLoader.hydrate = true;
