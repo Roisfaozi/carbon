@@ -2,7 +2,6 @@ import { cn } from "@carbon/react";
 import { useEffect, useState } from "react";
 import { LuArrowDown, LuPlug, LuTerminal } from "react-icons/lu";
 import { CopyButton } from "./CopyButton";
-import { ImagePlaceholder } from "./ImagePlaceholder";
 import { CLIENTS, type Client, ENDPOINT } from "./mcp-content";
 import { SELECT_CLIENT_EVENT } from "./quickstart-nav";
 
@@ -161,7 +160,11 @@ export function SetupPipeline() {
                   </pre>
                 </div>
               )}
-              <ImagePlaceholder src={s.img} alt={s.alt} />
+              <img
+                src={s.img}
+                alt={s.alt}
+                className="w-full rounded-[9px] block outline outline-1 outline-black/10 -outline-offset-1"
+              />
             </div>
             {i < steps.length - 1 && (
               <div

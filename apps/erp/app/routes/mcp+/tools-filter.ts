@@ -1,4 +1,4 @@
-import type { CatalogTool } from "./catalog.server";
+import type { CatalogTool } from "./catalog";
 
 export interface ToolFilter {
   q: string;

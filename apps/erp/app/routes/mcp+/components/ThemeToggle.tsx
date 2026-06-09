@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react";
+import { useMode } from "@carbon/react";
 import { LuMoon, LuSun } from "react-icons/lu";
+import { useFetcher } from "react-router";
 
-// Toggles the app's light/dark mode. The token values are rendered server-side
-// from the `mode` cookie (see app/services/mode.server.ts), so we set the cookie
-// and reload to pick up the correct theme — the bulletproof, mechanism-matching way.
+// Uses the app's canonical mode mechanism: POST the new mode to the root action
+// (public — works signed-out), which sets the cookie and flips the theme
+// optimistically via useMode(). No reload.
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-  }, []);
-
-  const toggle = () => {
-    const next = !document.documentElement.classList.contains("dark");
-    document.cookie = `mode=${next ? "dark" : "light"}; path=/; max-age=31536000; samesite=lax`;
-    window.location.reload();
-  };
+  const fetcher = useFetcher();
+  const mode = useMode();
+  const next = mode === "dark" ? "light" : "dark";
 
   return (
-    <button
-      type="button"
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={toggle}
-      className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card text-foreground hover:border-muted-foreground transition-[transform,border-color] duration-150 active:scale-[0.96]"
-    >
-      {dark ? <LuSun size={16} /> : <LuMoon size={16} />}
-    </button>
+    <fetcher.Form method="post" action="/">
+      <input type="hidden" name="mode" value={next} />
+      <button
+        type="submit"
+        aria-label={
+          mode === "dark" ? "Switch to light mode" : "Switch to dark mode"
+        }
+        className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-card text-foreground hover:border-muted-foreground transition-[transform,border-color] duration-150 active:scale-[0.96]"
+      >
+        {mode === "dark" ? <LuSun size={16} /> : <LuMoon size={16} />}
+      </button>
+    </fetcher.Form>
   );
 }

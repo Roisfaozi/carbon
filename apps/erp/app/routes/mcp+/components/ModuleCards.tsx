@@ -1,8 +1,44 @@
 import { cn } from "@carbon/react";
 import type { IconType } from "react-icons";
-import { LuLayoutGrid } from "react-icons/lu";
-import type { CatalogModule } from "../catalog.server";
-import { FALLBACK_MODULE_ICON, MODULE_ICONS } from "./module-icons";
+import {
+  LuBox,
+  LuCircleUser,
+  LuCrown,
+  LuFactory,
+  LuFiles,
+  LuFolderCheck,
+  LuLandmark,
+  LuLayers,
+  LuLayoutGrid,
+  LuReceipt,
+  LuSettings,
+  LuShield,
+  LuShoppingCart,
+  LuSquareStack,
+  LuUsers,
+  LuWrench
+} from "react-icons/lu";
+import type { CatalogModule } from "../catalog";
+
+// Mirrors the ERP module icons (app/hooks/useModules.tsx). invoicing/account/
+// shared have no top-level nav icon, so the closest lucide stands in.
+const MODULE_ICONS: Record<string, IconType> = {
+  sales: LuCrown,
+  items: LuSquareStack,
+  production: LuFactory,
+  purchasing: LuShoppingCart,
+  resources: LuWrench,
+  settings: LuSettings,
+  quality: LuFolderCheck,
+  accounting: LuLandmark,
+  inventory: LuBox,
+  people: LuUsers,
+  users: LuShield,
+  documents: LuFiles,
+  invoicing: LuReceipt,
+  account: LuCircleUser,
+  shared: LuLayers
+};
 
 function Card({
   icon: Icon,
@@ -71,7 +107,7 @@ export function ModuleCards({
       {modules.map((m) => (
         <Card
           key={m.key}
-          icon={MODULE_ICONS[m.key] ?? FALLBACK_MODULE_ICON}
+          icon={MODULE_ICONS[m.key] ?? LuBox}
           label={m.label}
           count={m.count}
           active={value === m.key}

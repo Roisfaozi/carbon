@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
-import type { CatalogModule, CatalogTool } from "../catalog.server";
+import type { CatalogModule, CatalogTool } from "../catalog";
 import { filterTools } from "../tools-filter";
 import { FilterSelect } from "./FilterSelect";
 import { ModuleCards } from "./ModuleCards";

@@ -1,4 +1,4 @@
-import type { McpCatalog } from "../catalog.server";
+import type { McpCatalog } from "../catalog";
 import { Authentication } from "./Authentication";
 import { Cta } from "./Cta";
 import { Faq } from "./Faq";

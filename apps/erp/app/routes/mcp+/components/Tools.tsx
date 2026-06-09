@@ -1,4 +1,4 @@
-import type { McpCatalog } from "../catalog.server";
+import type { McpCatalog } from "../catalog";
 import { ToolBrowser } from "./ToolBrowser";
 
 export function Tools({ catalog }: { catalog: McpCatalog }) {

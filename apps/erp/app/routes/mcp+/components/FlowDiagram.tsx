@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import type { Classification } from "../catalog.server";
+import type { Classification } from "../catalog";
 import { Tag } from "./Tag";
 
 export interface FlowStep {
