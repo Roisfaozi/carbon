@@ -85,12 +85,12 @@ const Select = ({
 
       <input
         {...getInputProps({
-          id: name
+          id: name,
+          value: value ?? undefined
         })}
         type="hidden"
         name={name}
         id={name}
-        value={value ?? undefined}
       />
       <SelectBase
         {...props}
