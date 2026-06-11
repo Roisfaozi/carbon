@@ -1,0 +1,53 @@
+import { z } from "zod";
+
+/** Wrapper: every extracted field carries a confidence score */
+function confidenceField<T extends z.ZodTypeAny>(schema: T) {
+  return z.object({
+    value: schema.nullable(),
+    confidence: z.number().min(0).max(1)
+  });
+}
+
+/** Invoice line item extracted from PDF */
+const invoiceLineSchema = z.object({
+  description: confidenceField(z.string()),
+  quantity: confidenceField(z.number()),
+  unitPrice: confidenceField(z.number()),
+  totalPrice: confidenceField(z.number())
+});
+
+/** Top-level invoice extraction schema sent to AI */
+export const invoiceExtractionSchema = z.object({
+  supplierName: confidenceField(z.string()),
+  invoiceNumber: confidenceField(z.string()),
+  invoiceDate: confidenceField(z.string()),
+  dueDate: confidenceField(z.string()),
+  paymentTerms: confidenceField(z.string()),
+  purchaseOrderNumber: confidenceField(z.string()),
+  currencyCode: confidenceField(z.string()),
+  subtotal: confidenceField(z.number()),
+  taxAmount: confidenceField(z.number()),
+  shippingCost: confidenceField(z.number()),
+  totalAmount: confidenceField(z.number()),
+  lineItems: z.array(invoiceLineSchema)
+});
+
+/** RFQ line item extracted from PDF */
+const rfqLineSchema = z.object({
+  partNumber: confidenceField(z.string()),
+  description: confidenceField(z.string()),
+  quantity: confidenceField(z.number())
+});
+
+/** Top-level RFQ extraction schema sent to AI */
+export const rfqExtractionSchema = z.object({
+  customerName: confidenceField(z.string()),
+  rfqNumber: confidenceField(z.string()),
+  rfqDate: confidenceField(z.string()),
+  dueDate: confidenceField(z.string()),
+  requestedDeliveryDate: confidenceField(z.string()),
+  lineItems: z.array(rfqLineSchema)
+});
+
+export type InvoiceExtraction = z.infer<typeof invoiceExtractionSchema>;
+export type RfqExtraction = z.infer<typeof rfqExtractionSchema>;
