@@ -1187,6 +1187,24 @@ msgstr "Anuluj"
 msgid "Cancel Job"
 msgstr "Anuluj zadanie"
 
+msgid "Cancel Sales Order"
+msgstr "Anuluj Zamówienie Sprzedaży"
+
+msgid "Cancel SO"
+msgstr "Anuluj SO"
+
+#. placeholder {0}: selectedIds.length
+#. placeholder {1}: selectedIds.length === 1 ? "" : "s"
+msgid "Cancel SO + {0} job{1}"
+msgstr "Anuluj ZS + {0} zadanie{1}"
+
+#. placeholder {0}: selectedIds.length
+msgid "Cancel SO + {0} selected"
+msgstr "Anuluj SO + {0} wybranych"
+
+msgid "Cancel SO only"
+msgstr "Anuluj tylko SO"
+
 msgid "Canceled"
 msgstr "Anulowano"
 
@@ -1393,7 +1411,7 @@ msgid "Columns"
 msgstr "Kolumny"
 
 msgid "Combine filters"
-msgstr "Łącz filtry"
+msgstr "Połącz filtry"
 
 msgid "Coming soon"
 msgstr "Wkrótce"
@@ -1632,6 +1650,9 @@ msgstr "Skopiuj wszystkie pozycje i ceny do innego klienta lub typu."
 
 msgid "Copy API Key"
 msgstr "Skopiuj klucz API"
+
+msgid "Copy company unique identifier"
+msgstr "Skopiuj unikalny identyfikator firmy"
 
 msgid "Copy consumable number"
 msgstr "Skopiuj numer artykułu zużywalnego"
@@ -4396,6 +4417,9 @@ msgstr "Odświeżanie na żywo"
 msgid "Load Templates"
 msgstr "Załaduj szablony"
 
+msgid "Loading associated jobs..."
+msgstr "Ładowanie powiązanych zadań..."
+
 msgid "Loading item details..."
 msgstr "Ładowanie szczegółów przedmiotu..."
 
@@ -5136,6 +5160,9 @@ msgstr "Brak dostępu"
 
 msgid "No action needed"
 msgstr "Brak wymaganych działań"
+
+msgid "No active jobs found for this sales order. The order will be cancelled directly."
+msgstr "Nie znaleziono aktywnych zadań dla tego zamówienia sprzedaży. Zamówienie zostanie anulowane bezpośrednio."
 
 msgid "No active plan"
 msgstr "Brak aktywnego planu"
@@ -6859,6 +6886,9 @@ msgstr "Wybierz powód, dla którego oferta nie została utworzona."
 msgid "Select a team"
 msgstr "Wybierz zespół"
 
+msgid "Select all"
+msgstr "Zaznacz wszystko"
+
 msgid "Select an assignee"
 msgstr "Wybierz osobę przydzieloną"
 
@@ -7797,6 +7827,9 @@ msgstr "To zadanie zostanie przyjęte do magazynu. Nie będzie już dostępne na
 
 msgid "This job will no longer be available on the shop floor."
 msgstr "Ta praca nie będzie już dostępna na hali produkcyjnej."
+
+msgid "This sales order has associated jobs. Choose what to do with them."
+msgstr "To zamówienie sprzedaży ma powiązane zadania. Wybierz, co z nimi zrobić."
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "To zamówienie sprzedaży zawiera linie, które wymagają utworzenia zadań"
