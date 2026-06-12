@@ -1,4 +1,4 @@
-import type { ComboboxProps } from "@carbon/form";
+import type { CreatableComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { Avatar, HStack, useDisclosure } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
@@ -12,7 +12,7 @@ import { SupplierContactForm } from "~/modules/purchasing/ui/Supplier";
 import { path } from "~/utils/path";
 
 type SupplierContactSelectProps = Omit<
-  ComboboxProps,
+  CreatableComboboxProps,
   "options" | "onChange" | "inline"
 > & {
   supplier?: string;
@@ -20,6 +20,8 @@ type SupplierContactSelectProps = Omit<
     supplier: { id: string; contact: SupplierContactType["contact"] } | null
   ) => void;
   inline?: boolean;
+  extractedValue?: string;
+  extractedEmail?: string;
 };
 
 const SupplierContactPreview = (
@@ -39,7 +41,11 @@ const SupplierContactPreview = (
   );
 };
 
-const SupplierContact = (props: SupplierContactSelectProps) => {
+const SupplierContact = ({
+  extractedValue,
+  extractedEmail,
+  ...props
+}: SupplierContactSelectProps) => {
   const { t } = useLingui();
   const supplierContactsFetcher =
     useFetcher<Awaited<ReturnType<typeof getSupplierContacts>>>();
@@ -48,7 +54,15 @@ const SupplierContact = (props: SupplierContactSelectProps) => {
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const [firstName, ...lastName] = created.split(" ");
+  const [firstName, ...lastName] = created ? created.split(" ") : [];
+  const initialFirstName =
+    firstName || (extractedValue ? extractedValue.split(" ")[0] : "");
+  const initialLastName =
+    lastName && lastName.length > 0
+      ? lastName.join(" ")
+      : extractedValue
+        ? extractedValue.split(" ").slice(1).join(" ")
+        : "";
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
@@ -86,6 +100,7 @@ const SupplierContact = (props: SupplierContactSelectProps) => {
         ref={triggerRef}
         options={options}
         {...props}
+        extractedValue={extractedValue}
         placeholder={t`Select Contact`}
         inline={props.inline ? SupplierContactPreview : undefined}
         label={props?.label ?? t`Supplier Contact`}
@@ -105,9 +120,9 @@ const SupplierContact = (props: SupplierContactSelectProps) => {
             triggerRef.current?.click();
           }}
           initialValues={{
-            email: "",
-            firstName: firstName,
-            lastName: lastName.join(" ")
+            email: extractedEmail ?? "",
+            firstName: initialFirstName,
+            lastName: initialLastName
           }}
         />
       )}

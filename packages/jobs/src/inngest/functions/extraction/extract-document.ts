@@ -101,6 +101,9 @@ Return your response ONLY as a valid JSON object matching this schema. Do not in
 Schema structure:
 {
   "supplierName": { "value": string or null, "confidence": number },
+  "supplierContactName": { "value": string or null, "confidence": number },
+  "supplierContactEmail": { "value": string or null, "confidence": number },
+  "supplierAddress": { "value": string or null, "confidence": number },
   "invoiceNumber": { "value": string or null, "confidence": number },
   "invoiceDate": { "value": string or null, "confidence": number },
   "dueDate": { "value": string or null, "confidence": number },

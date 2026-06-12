@@ -19,6 +19,9 @@ const invoiceLineSchema = z.object({
 /** Top-level invoice extraction schema sent to AI */
 export const invoiceExtractionSchema = z.object({
   supplierName: confidenceField(z.string()),
+  supplierContactName: confidenceField(z.string()),
+  supplierContactEmail: confidenceField(z.string()),
+  supplierAddress: confidenceField(z.string()),
   invoiceNumber: confidenceField(z.string()),
   invoiceDate: confidenceField(z.string()),
   dueDate: confidenceField(z.string()),

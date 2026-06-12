@@ -1,8 +1,8 @@
-import type { ComboboxProps } from "@carbon/form";
+import type { CreatableComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { formatAddress } from "@carbon/utils";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type {
   getSupplierLocations,
@@ -12,12 +12,13 @@ import { SupplierLocationForm } from "~/modules/purchasing/ui/Supplier";
 import { path } from "~/utils/path";
 
 type SupplierLocationSelectProps = Omit<
-  ComboboxProps,
+  CreatableComboboxProps,
   "options" | "onChange" | "inline"
 > & {
   supplier?: string;
   inline?: boolean;
   onChange?: (supplier: SupplierLocationType | null) => void;
+  extractedValue?: string;
 };
 
 const SupplierLocationPreview = (
@@ -29,9 +30,12 @@ const SupplierLocationPreview = (
   return <span>{location.label}</span>;
 };
 
-const SupplierLocation = (props: SupplierLocationSelectProps) => {
+const SupplierLocation = ({
+  extractedValue,
+  ...props
+}: SupplierLocationSelectProps) => {
   const newLocationModal = useDisclosure();
-  // const [created, setCreated] = useState<string>("");
+  const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const supplierLocationsFetcher =
     useFetcher<Awaited<ReturnType<typeof getSupplierLocations>>>();
@@ -77,12 +81,13 @@ const SupplierLocation = (props: SupplierLocationSelectProps) => {
         ref={triggerRef}
         options={options}
         {...props}
+        extractedValue={extractedValue}
         inline={props?.inline ? SupplierLocationPreview : undefined}
         label={props?.label ?? "Supplier Location"}
         onChange={onChange}
         onCreateOption={(option) => {
           newLocationModal.onOpen();
-          // setCreated(option);
+          setCreated(option);
         }}
       />
       {newLocationModal.isOpen && (
@@ -90,11 +95,14 @@ const SupplierLocation = (props: SupplierLocationSelectProps) => {
           supplierId={props.supplier!}
           type="modal"
           onClose={() => {
-            // setCreated("");
+            setCreated("");
             newLocationModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{ name: "" }}
+          initialValues={{
+            name: "",
+            addressLine1: created || (extractedValue ?? "")
+          }}
         />
       )}
     </>

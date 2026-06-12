@@ -61,6 +61,15 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
   const [extractedSupplierName, setExtractedSupplierName] = useState<
     string | undefined
   >();
+  const [extractedContactName, setExtractedContactName] = useState<
+    string | undefined
+  >();
+  const [extractedContactEmail, setExtractedContactEmail] = useState<
+    string | undefined
+  >();
+  const [extractedAddress, setExtractedAddress] = useState<
+    string | undefined
+  >();
   const [extractedLineItems, setExtractedLineItems] = useState<any[]>([]);
 
   const [formKey, setFormKey] = useState(0);
@@ -72,6 +81,8 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
     let resolvedCurrencyCode = currentValues.currencyCode;
 
     let foundSupplierInDb = false;
+    let resolvedContactId: string | undefined = undefined;
+    let resolvedLocationId: string | undefined = undefined;
 
     if (carbon) {
       if (data.supplierName) {
@@ -100,36 +111,84 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
           resolvedPaymentTermId = termData[0].id;
         }
       }
+
+      if (resolvedSupplierId) {
+        const [contactResult, locationResult] = await Promise.all([
+          carbon
+            .from("supplierContact")
+            .select("id, contact(id, fullName, email)")
+            .eq("supplierId", resolvedSupplierId),
+          carbon
+            .from("supplierLocation")
+            .select("id, address(id, addressLine1)")
+            .eq("supplierId", resolvedSupplierId)
+        ]);
+
+        if (contactResult.data) {
+          const contactNameLower = data.supplierContactName
+            ?.trim()
+            .toLowerCase();
+          const contactEmailLower = data.supplierContactEmail
+            ?.trim()
+            .toLowerCase();
+
+          const matchedContact = contactResult.data.find((c: any) => {
+            const dbEmail = c.contact?.email?.trim().toLowerCase();
+            const dbName = c.contact?.fullName?.trim().toLowerCase();
+            if (contactEmailLower && dbEmail === contactEmailLower) return true;
+            if (contactNameLower && dbName === contactNameLower) return true;
+            return false;
+          });
+
+          if (matchedContact) {
+            resolvedContactId = matchedContact.id;
+          }
+        }
+
+        if (locationResult.data) {
+          const addressLower = data.supplierAddress?.trim().toLowerCase();
+          if (addressLower) {
+            const matchedLocation = locationResult.data.find((l: any) => {
+              const dbAddress = l.address?.addressLine1?.trim().toLowerCase();
+              if (!dbAddress) return false;
+              return (
+                addressLower.includes(dbAddress) ||
+                dbAddress.includes(addressLower)
+              );
+            });
+
+            if (matchedLocation) {
+              resolvedLocationId = matchedLocation.id;
+            }
+          }
+        }
+      }
     }
 
     if (data.currencyCode) {
       resolvedCurrencyCode = data.currencyCode;
     }
 
-    setCurrentValues((prev) => ({
-      ...prev,
-      supplierId: resolvedSupplierId || prev.supplierId,
-      invoiceSupplierId: resolvedSupplierId || prev.invoiceSupplierId,
-      supplierReference: data.invoiceNumber || prev.supplierReference,
-      dateIssued: data.invoiceDate || prev.dateIssued,
-      dateDue: data.dueDate || prev.dateDue,
-      currencyCode: resolvedCurrencyCode || prev.currencyCode,
-      paymentTermId: resolvedPaymentTermId || prev.paymentTermId,
-      supplierShippingCost: data.shippingCost || prev.supplierShippingCost
-    }));
-
-    if (data.supplierName && !foundSupplierInDb) {
-      setExtractedSupplierName(data.supplierName);
-      toast.info(
-        t`Extracted supplier "${data.supplierName}" was not found. Please create it or select an existing one.`
-      );
+    if (data.supplierContactName && !resolvedContactId) {
+      setExtractedContactName(data.supplierContactName);
     } else {
-      setExtractedSupplierName(undefined);
+      setExtractedContactName(undefined);
     }
 
-    if (data.lineItems && Array.isArray(data.lineItems)) {
-      setExtractedLineItems(data.lineItems);
+    if (data.supplierContactEmail && !resolvedContactId) {
+      setExtractedContactEmail(data.supplierContactEmail);
+    } else {
+      setExtractedContactEmail(undefined);
     }
+
+    if (data.supplierAddress && !resolvedLocationId) {
+      setExtractedAddress(data.supplierAddress);
+    } else {
+      setExtractedAddress(undefined);
+    }
+
+    let finalContactId = resolvedContactId;
+    let finalLocationId = resolvedLocationId;
 
     if (resolvedSupplierId && resolvedSupplierId !== invoiceSupplier.id) {
       flushSync(() => {
@@ -138,8 +197,8 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
           id: resolvedSupplierId,
           currencyCode: resolvedCurrencyCode ?? undefined,
           paymentTermId: resolvedPaymentTermId ?? undefined,
-          invoiceSupplierContactId: undefined,
-          invoiceSupplierLocationId: undefined
+          invoiceSupplierContactId: resolvedContactId,
+          invoiceSupplierLocationId: resolvedLocationId
         });
       });
 
@@ -164,16 +223,21 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
         paymentTermData &&
         !paymentTermData.error
       ) {
+        finalContactId =
+          resolvedContactId ??
+          paymentTermData.data.invoiceSupplierContactId ??
+          supplierDetails.data.purchasingContactId ??
+          undefined;
+        finalLocationId =
+          resolvedLocationId ??
+          paymentTermData.data.invoiceSupplierLocationId ??
+          supplierDetails.data.supplierShipping?.shippingSupplierLocationId ??
+          undefined;
+
         setInvoiceSupplier((prev) => ({
           ...prev,
-          invoiceSupplierContactId:
-            paymentTermData.data.invoiceSupplierContactId ??
-            supplierDetails.data.purchasingContactId ??
-            undefined,
-          invoiceSupplierLocationId:
-            paymentTermData.data.invoiceSupplierLocationId ??
-            supplierDetails.data.supplierShipping?.shippingSupplierLocationId ??
-            undefined,
+          invoiceSupplierContactId: finalContactId,
+          invoiceSupplierLocationId: finalLocationId,
           currencyCode:
             resolvedCurrencyCode ??
             supplierDetails.data.currencyCode ??
@@ -185,11 +249,46 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
         }));
       }
     } else {
+      finalContactId =
+        resolvedContactId ?? invoiceSupplier.invoiceSupplierContactId;
+      finalLocationId =
+        resolvedLocationId ?? invoiceSupplier.invoiceSupplierLocationId;
+
       setInvoiceSupplier((prev) => ({
         ...prev,
         currencyCode: resolvedCurrencyCode ?? prev.currencyCode,
-        paymentTermId: resolvedPaymentTermId ?? prev.paymentTermId
+        paymentTermId: resolvedPaymentTermId ?? prev.paymentTermId,
+        invoiceSupplierContactId: finalContactId,
+        invoiceSupplierLocationId: finalLocationId
       }));
+    }
+
+    setCurrentValues((prev) => ({
+      ...prev,
+      supplierId: resolvedSupplierId || prev.supplierId,
+      invoiceSupplierId: resolvedSupplierId || prev.invoiceSupplierId,
+      supplierReference: data.invoiceNumber || prev.supplierReference,
+      dateIssued: data.invoiceDate || prev.dateIssued,
+      dateDue: data.dueDate || prev.dateDue,
+      currencyCode: resolvedCurrencyCode || prev.currencyCode,
+      paymentTermId: resolvedPaymentTermId || prev.paymentTermId,
+      supplierShippingCost: data.shippingCost || prev.supplierShippingCost,
+      invoiceSupplierContactId: finalContactId || prev.invoiceSupplierContactId,
+      invoiceSupplierLocationId:
+        finalLocationId || prev.invoiceSupplierLocationId
+    }));
+
+    if (data.supplierName && !foundSupplierInDb) {
+      setExtractedSupplierName(data.supplierName);
+      toast.info(
+        t`Extracted supplier "${data.supplierName}" was not found. Please create it or select an existing one.`
+      );
+    } else {
+      setExtractedSupplierName(undefined);
+    }
+
+    if (data.lineItems && Array.isArray(data.lineItems)) {
+      setExtractedLineItems(data.lineItems);
     }
 
     setFormKey((prev) => prev + 1);
@@ -221,6 +320,9 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
     } | null
   ) => {
     setSupplier({ id: newValue?.value });
+    setExtractedContactName(undefined);
+    setExtractedContactEmail(undefined);
+    setExtractedAddress(undefined);
     if (newValue?.value !== invoiceSupplier.id) {
       onInvoiceSupplierChange(newValue);
     }
@@ -235,6 +337,10 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
       toast.error(t`Carbon client not found`);
       return;
     }
+
+    setExtractedContactName(undefined);
+    setExtractedContactEmail(undefined);
+    setExtractedAddress(undefined);
 
     if (newValue?.value) {
       flushSync(() => {
@@ -376,6 +482,7 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
                 label={t`Invoice Supplier Location`}
                 supplier={supplier.id}
                 value={invoiceSupplier.invoiceSupplierLocationId}
+                extractedValue={extractedAddress}
                 onChange={(newValue) => {
                   if (newValue?.id) {
                     setInvoiceSupplier((prevSupplier) => ({
@@ -390,6 +497,8 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
                 label={t`Invoice Supplier Contact`}
                 supplier={supplier.id}
                 value={invoiceSupplier.invoiceSupplierContactId}
+                extractedValue={extractedContactName}
+                extractedEmail={extractedContactEmail}
                 onChange={(newValue) => {
                   if (newValue?.id) {
                     setInvoiceSupplier((prevSupplier) => ({
