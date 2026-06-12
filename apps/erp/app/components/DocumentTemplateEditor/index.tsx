@@ -10,6 +10,7 @@ import {
   Button,
   Combobox,
   Heading,
+  IconButton,
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
@@ -20,16 +21,21 @@ import {
   TabsTrigger
 } from "@carbon/react";
 import { type ReactNode, useState } from "react";
-import { LuArrowLeft, LuPalette } from "react-icons/lu";
+import { LuArrowLeft, LuPalette, LuRefreshCw } from "react-icons/lu";
 import { Link } from "react-router";
 import { path } from "~/utils/path";
 import { BlockConfig } from "./BlockConfig";
 import { BlockList } from "./BlockList";
 import type { CustomFieldRef, PreviewEntity, SectionRef } from "./context";
-import { DocumentTemplateProvider, useDocumentTemplate } from "./context";
+import {
+  DocumentTemplateProvider,
+  useDocumentTemplate,
+  useEditorStore
+} from "./context";
 import { FontConfig } from "./FontConfig";
 import { TemplatePreview } from "./TemplatePreview";
 import { ThemeConfig } from "./ThemeConfig";
+import { useTemplateConflict } from "./useTemplateConflict";
 
 export function DocumentTemplateEditor({
   documentType,
@@ -80,6 +86,7 @@ export function DocumentTemplateEditor({
           title={getDocumentLabel(documentType)}
           canEdit={canEdit}
         />
+        <ConflictBanner documentType={documentType} />
         <ResizablePanelGroup
           direction="horizontal"
           autoSaveId="document-template-editor"
@@ -138,6 +145,10 @@ const RAIL_HEADING =
  */
 function ControlRail() {
   const [tab, setTab] = useState<"style">("style");
+  // Labels render on monochrome thermal stock — theme colors don't apply.
+  const showThemeColors = useEditorStore(
+    (s) => s.documentType !== "trackingLabel"
+  );
 
   return (
     <ScrollArea className="h-full bg-card">
@@ -160,10 +171,12 @@ function ControlRail() {
               <h3 className={RAIL_HEADING}>Typography</h3>
               <FontConfig />
             </section>
-            <section className="flex flex-col gap-2">
-              <h3 className={RAIL_HEADING}>Theme colors</h3>
-              <ThemeConfig />
-            </section>
+            {showThemeColors && (
+              <section className="flex flex-col gap-2">
+                <h3 className={RAIL_HEADING}>Theme colors</h3>
+                <ThemeConfig />
+              </section>
+            )}
           </TabsContent>
         </Tabs>
       </div>
@@ -192,6 +205,37 @@ function UnderlineTab({
   );
 }
 
+/**
+ * Realtime warning shown when another user saves this template while it's open.
+ * The editor never auto-reloads (that would discard in-progress edits) — the
+ * user chooses to refresh to their version or keep editing (overwrite on save).
+ */
+function ConflictBanner({
+  documentType
+}: {
+  documentType: DocumentTemplateType;
+}) {
+  const { conflict, dismiss } = useTemplateConflict(documentType);
+  if (!conflict) return null;
+
+  return (
+    <div className="flex items-center justify-between gap-3 border-b border-amber-500/40 bg-amber-500/10 px-4 py-2">
+      <p className="text-sm text-amber-700 dark:text-amber-400">
+        Someone else just saved this template. Refresh to load their version, or
+        keep editing to overwrite it when you save.
+      </p>
+      <div className="flex shrink-0 items-center gap-2">
+        <Button variant="secondary" size="sm" onClick={dismiss}>
+          Keep mine
+        </Button>
+        <Button size="sm" onClick={() => window.location.reload()}>
+          Refresh
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function EditorToolbar({
   title,
   canEdit
@@ -208,6 +252,7 @@ function EditorToolbar({
     previewId,
     setPreviewId
   } = useDocumentTemplate();
+  const refreshPreview = useEditorStore((s) => s.refreshPreview);
 
   return (
     <div className="flex items-center justify-between gap-3 border-b bg-card px-4 py-3">
@@ -241,6 +286,12 @@ function EditorToolbar({
       )}
       {canEdit && (
         <div className="flex items-center gap-2">
+          <IconButton
+            aria-label="Refresh preview"
+            variant="secondary"
+            icon={<LuRefreshCw />}
+            onClick={refreshPreview}
+          />
           <Button
             variant="secondary"
             onClick={reset}

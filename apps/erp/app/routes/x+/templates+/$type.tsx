@@ -24,6 +24,8 @@ import {
   getDocumentSections,
   getDocumentTemplate,
   getTerms,
+  resolveSections,
+  upsertDocumentSection,
   upsertDocumentTemplate
 } from "~/modules/settings";
 import { listPreviewEntities } from "~/modules/settings/documentPreview.server";
@@ -142,8 +144,35 @@ export async function action({ request }: ActionFunctionArgs) {
     theme,
     settings,
     headerSectionId,
-    footerSectionId
+    footerSectionId,
+    headerConfig
   } = validation.data;
+
+  // The logo/header layout is edited inline but lives on the (company-global)
+  // header section. Persist it onto that section first, preserving its current
+  // name/content, so the change applies wherever the header is referenced.
+  if (headerConfig && headerSectionId) {
+    const resolved = await resolveSections(client, companyId, [
+      headerSectionId
+    ]);
+    const header = resolved[headerSectionId];
+    const section = await upsertDocumentSection(client, {
+      id: headerSectionId,
+      companyId,
+      name: header?.name ?? "Default Header",
+      placement: "header",
+      content: (header?.content ?? { type: "doc", content: [] }) as JSONContent,
+      config: headerConfig as Record<string, unknown>,
+      createdBy: userId,
+      updatedBy: userId
+    });
+    if (section.error) {
+      return data(
+        { success: false },
+        await flash(request, error(section.error, "Failed to save header"))
+      );
+    }
+  }
 
   const upsert = await upsertDocumentTemplate(client, {
     companyId,

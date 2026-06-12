@@ -7,6 +7,7 @@ import {
   DEFAULT_DOCUMENT_SETTINGS,
   documentSettingsSchema,
   documentTemplateTypeSchema,
+  sectionConfigSchema,
   themeSchema
 } from "@carbon/documents/template";
 import { getPreferenceHeaders } from "@carbon/react";
@@ -57,6 +58,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
     companyId,
     collectSectionIds({ blocks: parsed.data, headerSectionId, footerSectionId })
   );
+
+  // Apply the live (unsaved) header config draft so logo/header edits show in
+  // the preview instantly, without waiting for a Save + revalidation.
+  const headerConfig = sectionConfigSchema.safeParse(
+    JSON.parse(String(formData.get("headerConfig") ?? "{}"))
+  );
+  if (headerConfig.success && headerSectionId && sections[headerSectionId]) {
+    sections[headerSectionId] = {
+      ...sections[headerSectionId],
+      config: {
+        ...sections[headerSectionId].config,
+        ...headerConfig.data
+      }
+    };
+  }
 
   const { locale } = getPreferenceHeaders(request);
 
