@@ -335,9 +335,6 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
     } | null
   ) => {
     setSupplier({ id: newValue?.value });
-    setExtractedContactName(undefined);
-    setExtractedContactEmail(undefined);
-    setExtractedAddress(undefined);
     if (newValue?.value !== invoiceSupplier.id) {
       onInvoiceSupplierChange(newValue);
     }
@@ -352,10 +349,6 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
       toast.error(t`Carbon client not found`);
       return;
     }
-
-    setExtractedContactName(undefined);
-    setExtractedContactEmail(undefined);
-    setExtractedAddress(undefined);
 
     if (newValue?.value) {
       flushSync(() => {
