@@ -366,7 +366,7 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
         carbon
           ?.from("supplier")
           .select(
-            "currencyCode, purchasingContactId, supplierShipping!supplierId(shippingSupplierLocationId)"
+            "name, currencyCode, purchasingContactId, supplierShipping!supplierId(shippingSupplierLocationId)"
           )
           .eq("id", newValue.value)
           .single(),
@@ -380,6 +380,13 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
       if (supplierData.error || paymentTermData.error) {
         toast.error(t`Error fetching supplier data`);
       } else {
+        if (supplierData.data.name !== extractedSupplierName) {
+          setExtractedContactName(undefined);
+          setExtractedContactEmail(undefined);
+          setExtractedContactPhone(undefined);
+          setExtractedAddress(undefined);
+        }
+
         setInvoiceSupplier((prev) => ({
           ...prev,
           id: newValue.value,
