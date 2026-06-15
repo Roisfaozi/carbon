@@ -118,6 +118,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const extractedTaxAmountStr = formData.get("extractedTaxAmount") as string;
   const extractedTaxAmount = Number.parseFloat(extractedTaxAmountStr) || 0;
 
+  const promises: Promise<any>[] = [];
+
   if (extractedLineItems.length > 0) {
     let taxApplied = false;
 
@@ -127,19 +129,21 @@ export async function action({ request }: ActionFunctionArgs) {
       const lineTax = !taxApplied ? extractedTaxAmount : 0;
       taxApplied = true;
 
-      await upsertPurchaseInvoiceLine(client, {
-        invoiceId: result.data.id,
-        invoiceLineType: "Comment",
-        description: item.description || item.partNumber || "Line Item",
-        quantity: item.quantity || 1,
-        supplierUnitPrice: item.unitPrice || 0,
-        supplierShippingCost: 0,
-        supplierTaxAmount: lineTax,
-        locationId: d.locationId,
-        companyId,
-        createdBy: userId,
-        customFields: {}
-      });
+      promises.push(
+        upsertPurchaseInvoiceLine(client, {
+          invoiceId: result.data.id,
+          invoiceLineType: "Comment",
+          description: item.description || item.partNumber || "Line Item",
+          quantity: item.quantity || 1,
+          supplierUnitPrice: item.unitPrice || 0,
+          supplierShippingCost: 0,
+          supplierTaxAmount: lineTax,
+          locationId: d.locationId,
+          companyId,
+          createdBy: userId,
+          customFields: {}
+        })
+      );
     }
   }
 
@@ -147,39 +151,48 @@ export async function action({ request }: ActionFunctionArgs) {
     | string
     | undefined;
 
+  const resultDataId = result.data.id;
+
   if (extractedStoragePath) {
-    const fetchedInvoice = await getPurchaseInvoice(client, result.data.id);
-    const interactionId = fetchedInvoice.data?.supplierInteractionId;
+    promises.push(
+      (async () => {
+        const fetchedInvoice = await getPurchaseInvoice(client, resultDataId);
+        const interactionId = fetchedInvoice.data?.supplierInteractionId;
 
-    if (interactionId) {
-      const filenameParts = extractedStoragePath.split("/");
-      const basename =
-        filenameParts[filenameParts.length - 1] || "Extracted_Invoice.pdf";
-      // Usually the filename has a prefix like 123456_FileName.pdf
-      const originalFilename = basename.includes("_")
-        ? basename.split("_").slice(1).join("_")
-        : basename;
-      const safeFilename = stripSpecialCharacters(originalFilename);
-      const newStoragePath = `${companyId}/supplier-interaction/${interactionId}/${safeFilename}`;
+        if (interactionId) {
+          const filenameParts = extractedStoragePath.split("/");
+          const basename =
+            filenameParts[filenameParts.length - 1] || "Extracted_Invoice.pdf";
+          const originalFilename = basename.includes("_")
+            ? basename.split("_").slice(1).join("_")
+            : basename;
+          const safeFilename = stripSpecialCharacters(originalFilename);
+          const newStoragePath = `${companyId}/supplier-interaction/${interactionId}/${safeFilename}`;
 
-      const copyResult = await client.storage
-        .from("private")
-        .copy(extractedStoragePath, newStoragePath);
+          const copyResult = await client.storage
+            .from("private")
+            .copy(extractedStoragePath, newStoragePath);
 
-      if (!copyResult.error) {
-        await upsertDocument(client, {
-          path: newStoragePath,
-          name: originalFilename,
-          size: 0, // Fallback since we don't know the exact size here
-          sourceDocument: "Purchase Invoice",
-          sourceDocumentId: result.data.id,
-          readGroups: [userId],
-          writeGroups: [userId],
-          createdBy: userId,
-          companyId
-        });
-      }
-    }
+          if (!copyResult.error) {
+            await upsertDocument(client, {
+              path: newStoragePath,
+              name: originalFilename,
+              size: 0,
+              sourceDocument: "Purchase Invoice",
+              sourceDocumentId: resultDataId,
+              readGroups: [userId],
+              writeGroups: [userId],
+              createdBy: userId,
+              companyId
+            });
+          }
+        }
+      })()
+    );
+  }
+
+  if (promises.length > 0) {
+    await Promise.all(promises);
   }
 
   throw redirect(path.to.purchaseInvoice(result.data.id));
