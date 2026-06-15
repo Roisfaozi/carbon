@@ -7,6 +7,7 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
+import { upsertDocument } from "~/modules/documents";
 import type { SalesRFQStatusType } from "~/modules/sales";
 import {
   insertSalesRFQ,
@@ -17,6 +18,7 @@ import { SalesRFQForm } from "~/modules/sales/ui/SalesRFQ";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+import { stripSpecialCharacters } from "~/utils/string";
 
 export const handle: Handle = {
   breadcrumb: msg`RFQs`,
@@ -61,23 +63,70 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
+  const promises: Promise<any>[] = [];
+
   if (extractedLineItems.length > 0) {
     let order = 10;
     for (const item of extractedLineItems) {
       if (!item.partNumber && !item.description) continue;
-      await upsertSalesRFQLine(client, {
-        salesRfqId: result.data.id,
-        customerPartId: item.partNumber || "Unknown",
-        description: item.description || item.partNumber || "Line Item",
-        quantity: [item.quantity || 1],
-        unitOfMeasureCode: "EA",
-        order: order,
-        companyId,
-        createdBy: userId,
-        customFields: {}
-      });
+      promises.push(
+        upsertSalesRFQLine(client, {
+          salesRfqId: result.data.id,
+          customerPartId: item.partNumber || "Unknown",
+          description: item.description || item.partNumber || "Line Item",
+          quantity: [item.quantity || 1],
+          unitOfMeasureCode: "EA",
+          order: order,
+          companyId,
+          createdBy: userId,
+          customFields: {}
+        })
+      );
       order += 10;
     }
+  }
+
+  const extractedStoragePath = formData.get("extractedStoragePath") as
+    | string
+    | undefined;
+
+  const resultDataId = result.data.id;
+
+  if (extractedStoragePath) {
+    promises.push(
+      (async () => {
+        const filenameParts = extractedStoragePath.split("/");
+        const basename =
+          filenameParts[filenameParts.length - 1] || "Extracted_RFQ.pdf";
+        const originalFilename = basename.includes("_")
+          ? basename.split("_").slice(1).join("_")
+          : basename;
+        const safeFilename = stripSpecialCharacters(originalFilename);
+        const newStoragePath = `${companyId}/sales-rfq/${resultDataId}/${safeFilename}`;
+
+        const copyResult = await client.storage
+          .from("private")
+          .copy(extractedStoragePath, newStoragePath);
+
+        if (!copyResult.error) {
+          await upsertDocument(client, {
+            path: newStoragePath,
+            name: originalFilename,
+            size: 0,
+            sourceDocument: "Request for Quote",
+            sourceDocumentId: resultDataId,
+            readGroups: [userId],
+            writeGroups: [userId],
+            createdBy: userId,
+            companyId
+          });
+        }
+      })()
+    );
+  }
+
+  if (promises.length > 0) {
+    await Promise.all(promises);
   }
 
   throw redirect(path.to.salesRfq(result.data.id));

@@ -20,6 +20,12 @@ type CustomerContactSelectProps = Omit<
     customer: { id: string; contact: CustomerContactType["contact"] } | null
   ) => void;
   inline?: boolean;
+  extractedContact?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
 };
 
 const CustomerContactPreview = (
@@ -72,6 +78,16 @@ const CustomerContact = (props: CustomerContactSelectProps) => {
           newContactModal.onOpen();
           setCreated(option);
         }}
+        extractedValue={
+          props.extractedContact?.firstName || props.extractedContact?.email
+            ? [
+                props.extractedContact.firstName,
+                props.extractedContact.lastName
+              ]
+                .filter(Boolean)
+                .join(" ") || props.extractedContact.email!
+            : undefined
+        }
       />
       {newContactModal.isOpen && (
         <CustomerContactForm
@@ -83,9 +99,11 @@ const CustomerContact = (props: CustomerContactSelectProps) => {
             triggerRef.current?.click();
           }}
           initialValues={{
-            email: "",
-            firstName: firstName,
-            lastName: lastName.join(" ")
+            email: props.extractedContact?.email || "",
+            firstName: props.extractedContact?.firstName || firstName || "",
+            lastName:
+              props.extractedContact?.lastName || lastName.join(" ") || "",
+            mobilePhone: props.extractedContact?.phone || ""
           }}
         />
       )}

@@ -65,6 +65,28 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
     string | undefined
   >();
   const [extractedLineItems, setExtractedLineItems] = useState<any[]>([]);
+  const [extractedLocation, setExtractedLocation] = useState<{
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    stateProvince?: string | null;
+    postalCode?: string | null;
+    countryCode?: string | null;
+  }>();
+  const [extractedPurchasingContact, setExtractedPurchasingContact] = useState<{
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  }>();
+  const [extractedEngineeringContact, setExtractedEngineeringContact] =
+    useState<{
+      firstName?: string | null;
+      lastName?: string | null;
+      email?: string | null;
+      phone?: string | null;
+    }>();
+  const [extractedStoragePath, setExtractedStoragePath] = useState<string>();
   const isDraft = ["Draft", "Ready to Quote"].includes(
     initialValues.status ?? ""
   );
@@ -109,6 +131,45 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
 
     if (data.lineItems && Array.isArray(data.lineItems)) {
       setExtractedLineItems(data.lineItems);
+    }
+
+    if (data.customerAddressLine1 || data.customerCity) {
+      setExtractedLocation({
+        addressLine1: data.customerAddressLine1,
+        addressLine2: data.customerAddressLine2,
+        city: data.customerCity,
+        stateProvince: data.customerStateProvince,
+        postalCode: data.customerPostalCode,
+        countryCode: data.customerCountry
+      });
+    }
+
+    if (data.purchasingContactName || data.purchasingContactEmail) {
+      const parts = (data.purchasingContactName || "").split(" ");
+      const firstName = parts[0];
+      const lastName = parts.slice(1).join(" ");
+      setExtractedPurchasingContact({
+        firstName,
+        lastName,
+        email: data.purchasingContactEmail,
+        phone: data.purchasingContactPhone
+      });
+    }
+
+    if (data.engineeringContactName || data.engineeringContactEmail) {
+      const parts = (data.engineeringContactName || "").split(" ");
+      const firstName = parts[0];
+      const lastName = parts.slice(1).join(" ");
+      setExtractedEngineeringContact({
+        firstName,
+        lastName,
+        email: data.engineeringContactEmail,
+        phone: data.engineeringContactPhone
+      });
+    }
+
+    if (data._storagePath) {
+      setExtractedStoragePath(data._storagePath);
     }
 
     if (resolvedCustomerId && resolvedCustomerId !== customer.id) {
@@ -223,6 +284,13 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
             name="extractedLineItems"
             value={JSON.stringify(extractedLineItems)}
           />
+          {extractedStoragePath && (
+            <input
+              type="hidden"
+              name="extractedStoragePath"
+              value={extractedStoragePath}
+            />
+          )}
           <VStack>
             <div
               className={cn(
@@ -253,17 +321,20 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
                 label={t`Purchasing Contact`}
                 customer={customer.id}
                 value={customer.customerContactId}
+                extractedContact={extractedPurchasingContact}
               />
               <CustomerContact
                 name="customerEngineeringContactId"
                 label={t`Engineering Contact`}
                 customer={customer.id}
+                extractedContact={extractedEngineeringContact}
               />
               <CustomerLocation
                 name="customerLocationId"
                 label={t`Customer Location`}
                 customer={customer.id}
                 value={customer.customerLocationId}
+                extractedLocation={extractedLocation}
               />
               <DatePicker
                 name="rfqDate"

@@ -48,9 +48,20 @@ const rfqLineSchema = z.object({
   quantity: confidenceField(z.number())
 });
 
-/** Top-level RFQ extraction schema sent to AI */
 export const rfqExtractionSchema = z.object({
   customerName: confidenceField(z.string()),
+  purchasingContactName: confidenceField(z.string()),
+  purchasingContactEmail: confidenceField(z.string()),
+  purchasingContactPhone: confidenceField(z.string()),
+  engineeringContactName: confidenceField(z.string()),
+  engineeringContactEmail: confidenceField(z.string()),
+  engineeringContactPhone: confidenceField(z.string()),
+  customerAddressLine1: confidenceField(z.string()),
+  customerAddressLine2: confidenceField(z.string()),
+  customerCity: confidenceField(z.string()),
+  customerStateProvince: confidenceField(z.string()),
+  customerPostalCode: confidenceField(z.string()),
+  customerCountry: confidenceField(z.string()),
   rfqNumber: confidenceField(z.string()),
   rfqDate: confidenceField(z.string()),
   dueDate: confidenceField(z.string()),

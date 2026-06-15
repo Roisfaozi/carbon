@@ -19,6 +19,14 @@ type CustomerLocationSelectProps = Omit<
   customer?: string;
   inline?: boolean;
   onChange?: (customer: CustomerLocationType | null) => void;
+  extractedLocation?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    stateProvince?: string | null;
+    postalCode?: string | null;
+    countryCode?: string | null;
+  };
 };
 
 const CustomerLocationPreview = (
@@ -88,6 +96,17 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
           newLocationModal.onOpen();
           setCreated(option);
         }}
+        extractedValue={
+          props.extractedLocation?.addressLine1 || props.extractedLocation?.city
+            ? [
+                props.extractedLocation.addressLine1,
+                props.extractedLocation.city,
+                props.extractedLocation.stateProvince
+              ]
+                .filter(Boolean)
+                .join(", ")
+            : undefined
+        }
       />
       {newLocationModal.isOpen && (
         <CustomerLocationForm
@@ -98,7 +117,15 @@ const CustomerLocation = (props: CustomerLocationSelectProps) => {
             newLocationModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{ name: created }}
+          initialValues={{
+            name: created,
+            addressLine1: props.extractedLocation?.addressLine1 || "",
+            addressLine2: props.extractedLocation?.addressLine2 || "",
+            city: props.extractedLocation?.city || "",
+            stateProvince: props.extractedLocation?.stateProvince || "",
+            postalCode: props.extractedLocation?.postalCode || "",
+            countryCode: props.extractedLocation?.countryCode || ""
+          }}
         />
       )}
     </>
