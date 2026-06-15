@@ -10,6 +10,7 @@ import { useUrlParams, useUser } from "~/hooks";
 import { upsertDocument } from "~/modules/documents";
 import type { SalesRFQStatusType } from "~/modules/sales";
 import {
+  getSalesRFQ,
   insertSalesRFQ,
   salesRfqValidator,
   upsertSalesRFQLine
@@ -95,31 +96,36 @@ export async function action({ request }: ActionFunctionArgs) {
   if (extractedStoragePath) {
     promises.push(
       (async () => {
-        const filenameParts = extractedStoragePath.split("/");
-        const basename =
-          filenameParts[filenameParts.length - 1] || "Extracted_RFQ.pdf";
-        const originalFilename = basename.includes("_")
-          ? basename.split("_").slice(1).join("_")
-          : basename;
-        const safeFilename = stripSpecialCharacters(originalFilename);
-        const newStoragePath = `${companyId}/sales-rfq/${resultDataId}/${safeFilename}`;
+        const fetchedRFQ = await getSalesRFQ(client, resultDataId);
+        const opportunityId = fetchedRFQ.data?.opportunityId;
 
-        const copyResult = await client.storage
-          .from("private")
-          .copy(extractedStoragePath, newStoragePath);
+        if (opportunityId) {
+          const filenameParts = extractedStoragePath.split("/");
+          const basename =
+            filenameParts[filenameParts.length - 1] || "Extracted_RFQ.pdf";
+          const originalFilename = basename.includes("_")
+            ? basename.split("_").slice(1).join("_")
+            : basename;
+          const safeFilename = stripSpecialCharacters(originalFilename);
+          const newStoragePath = `${companyId}/opportunity/${opportunityId}/${safeFilename}`;
 
-        if (!copyResult.error) {
-          await upsertDocument(client, {
-            path: newStoragePath,
-            name: originalFilename,
-            size: 0,
-            sourceDocument: "Request for Quote",
-            sourceDocumentId: resultDataId,
-            readGroups: [userId],
-            writeGroups: [userId],
-            createdBy: userId,
-            companyId
-          });
+          const copyResult = await client.storage
+            .from("private")
+            .copy(extractedStoragePath, newStoragePath);
+
+          if (!copyResult.error) {
+            await upsertDocument(client, {
+              path: newStoragePath,
+              name: originalFilename,
+              size: 0,
+              sourceDocument: "Request for Quote",
+              sourceDocumentId: resultDataId,
+              readGroups: [userId],
+              writeGroups: [userId],
+              createdBy: userId,
+              companyId
+            });
+          }
         }
       })()
     );
