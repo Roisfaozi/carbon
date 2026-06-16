@@ -506,6 +506,7 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
                 name="supplierId"
                 label={t`Supplier`}
                 extractedValue={extractedSupplierName}
+                defaultCurrencyCode={invoiceSupplier.currencyCode}
                 onChange={onSupplierChange}
                 onlyApproved={supplierApprovalRequired}
               />
@@ -519,6 +520,7 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
                 label={t`Invoice Supplier`}
                 extractedValue={extractedSupplierName}
                 value={invoiceSupplier.id}
+                defaultCurrencyCode={invoiceSupplier.currencyCode}
                 onChange={onInvoiceSupplierChange}
                 onlyApproved={supplierApprovalRequired}
               />
