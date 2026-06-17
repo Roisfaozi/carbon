@@ -309,12 +309,15 @@ export async function updatePurchaseInvoiceExchangeRate(
   data: {
     id: string;
     exchangeRate: number;
+    updatedBy: string;
   }
 ) {
   const update = {
     id: data.id,
     exchangeRate: data.exchangeRate,
-    exchangeRateUpdatedAt: new Date().toISOString()
+    exchangeRateUpdatedAt: new Date().toISOString(),
+    updatedBy: data.updatedBy,
+    updatedAt: new Date().toISOString()
   };
 
   return client.from("purchaseInvoice").update(update).eq("id", update.id);
@@ -348,12 +351,15 @@ export async function updateSalesInvoiceExchangeRate(
   data: {
     id: string;
     exchangeRate: number;
+    updatedBy: string;
   }
 ) {
   const update = {
     id: data.id,
     exchangeRate: data.exchangeRate,
-    exchangeRateUpdatedAt: new Date().toISOString()
+    exchangeRateUpdatedAt: new Date().toISOString(),
+    updatedBy: data.updatedBy,
+    updatedAt: new Date().toISOString()
   };
 
   return client.from("salesInvoice").update(update).eq("id", update.id);
