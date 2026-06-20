@@ -315,6 +315,11 @@ export const fieldMappings = {
         }
       }
     },
+    phone: {
+      label: "Phone",
+      required: false,
+      type: "string"
+    },
     fax: {
       label: "Fax",
       required: false,
@@ -1039,69 +1044,6 @@ export const fieldMappings = {
     ...supplierPartImportFields,
     ...itemPurchasingImportFields
   },
-  methodMaterial: {
-    level: {
-      label: "Level",
-      required: false,
-      type: "string"
-    },
-    partId: {
-      label: "Part ID",
-      required: true,
-      type: "string"
-    },
-    description: {
-      label: "Description",
-      required: false,
-      type: "string"
-    },
-    methodType: {
-      label: "Method Type",
-      required: true,
-      type: "enum",
-      enumData: {
-        description:
-          "The method type of the part, which describes whether it is bought or made",
-        options: methodType,
-        default: "Pull from Inventory"
-      }
-    },
-    quantity: {
-      label: "Quantity",
-      required: true,
-      type: "number"
-    },
-    unitOfMeasureCode: {
-      label: "Unit of Measure",
-      required: true,
-      type: "enum",
-      enumData: {
-        description: "The unit of measure of the part",
-        fetcher: async (
-          client: SupabaseClient<Database>,
-          companyId: string
-        ) => {
-          const { data, error } = await client
-            .from("unitOfMeasure")
-            .select("name, code")
-            .eq("companyId", companyId);
-
-          if (error) {
-            return { data: null, error };
-          }
-
-          return {
-            data: data.map((item) => ({
-              name: item.name,
-              id: item.code
-            }))
-          };
-        },
-        default: "EA"
-      }
-    },
-    ...supplierPartImportFields
-  },
   workCenter: {
     id: {
       label: "Unique ID",
@@ -1192,7 +1134,7 @@ export const fieldMappings = {
       enumData: {
         description:
           "Whether the process is Inside (in-house), Outside (outsourced), or both",
-        options: ["Inside", "Outside", "Inside and Outside"],
+        options: ["Inside", "Outside"],
         default: "Inside"
       }
     },
@@ -1230,63 +1172,6 @@ export const fieldMappings = {
         default: "false"
       }
     }
-  },
-  fixedAsset: {
-    name: {
-      label: "Name",
-      required: true,
-      type: "string"
-    },
-    fixedAssetClassId: {
-      label: "Asset Class ID",
-      required: true,
-      type: "string"
-    },
-    serialNumber: {
-      label: "Serial Number",
-      required: false,
-      type: "string"
-    },
-    acquisitionCost: {
-      label: "Acquisition Cost",
-      required: true,
-      type: "string"
-    },
-    acquisitionDate: {
-      label: "Acquisition Date",
-      required: true,
-      type: "string"
-    },
-    accumulatedDepreciation: {
-      label: "Accumulated Depreciation",
-      required: false,
-      type: "string"
-    },
-    depreciationMethod: {
-      label: "Depreciation Method",
-      required: false,
-      type: "enum",
-      enumData: {
-        description: "The depreciation method for this asset",
-        options: ["Straight Line", "Declining Balance", "Units of Production"],
-        default: "Straight Line"
-      }
-    },
-    usefulLifeMonths: {
-      label: "Useful Life (Months)",
-      required: false,
-      type: "string"
-    },
-    residualValuePercent: {
-      label: "Residual Value %",
-      required: false,
-      type: "string"
-    },
-    locationId: {
-      label: "Location ID",
-      required: false,
-      type: "string"
-    }
   }
 } as const;
 
@@ -1297,13 +1182,11 @@ export const importPermissions: Record<keyof typeof fieldMappings, string> = {
   supplierContact: "purchasing",
   part: "parts",
   material: "parts",
-  methodMaterial: "parts",
   tool: "parts",
   fixture: "parts",
   consumable: "parts",
   workCenter: "production",
-  process: "production",
-  fixedAsset: "accounting"
+  process: "production"
 };
 
 export const importSchemas: Record<
@@ -1504,6 +1387,7 @@ export const importSchemas: Record<
       .describe(
         "The readable id of the part. Usually a number or set of alphanumeric characters."
       ),
+    revision: z.string().optional().describe("The revision of the part"),
     name: z
       .string()
       .min(1, { message: "Name is required" })
@@ -1547,6 +1431,7 @@ export const importSchemas: Record<
       .describe(
         "The readable id of the tool. Usually a number or set of alphanumeric characters."
       ),
+    revision: z.string().optional().describe("The revision of the tool"),
     name: z
       .string()
       .min(1, { message: "Name is required" })
@@ -1590,6 +1475,7 @@ export const importSchemas: Record<
       .describe(
         "The readable id of the fixture. Usually a number or set of alphanumeric characters."
       ),
+    revision: z.string().optional().describe("The revision of the fixture"),
     name: z
       .string()
       .min(1, { message: "Name is required" })
@@ -1633,6 +1519,7 @@ export const importSchemas: Record<
       .describe(
         "The readable id of the part. Usually a number or set of alphanumeric characters."
       ),
+    revision: z.string().optional().describe("The revision of the consumable"),
     name: z
       .string()
       .min(1, { message: "Name is required" })
@@ -1676,6 +1563,7 @@ export const importSchemas: Record<
       .describe(
         "The readable id of the material. Usually a number or set of alphanumeric characters."
       ),
+    revision: z.string().optional().describe("The revision of the material"),
     name: z
       .string()
       .min(1, { message: "Name is required" })
@@ -1712,25 +1600,6 @@ export const importSchemas: Record<
     conversionFactor: z.string().optional(),
     unitPrice: z.string().optional(),
     leadTime: z.string().optional()
-  }),
-  methodMaterial: z.object({
-    level: z.string().optional().describe("The level of the material"),
-    partId: z
-      .string()
-      .min(1, { message: "Part ID is required" })
-      .describe("The id of the part"),
-    description: z.string().optional().describe("The description of the part"),
-    quantity: z.string().describe("The quantity of the part"),
-    methodType: z
-      .string()
-      .optional()
-      .describe(
-        "The method type of the part, which describes whether it is bought or made"
-      ),
-    unitOfMeasureCode: z
-      .string()
-      .optional()
-      .describe("The unit of measure of the part")
   }),
   workCenter: z.object({
     id: z
@@ -1784,49 +1653,5 @@ export const importSchemas: Record<
       .describe(
         "Whether scanning a barcode should complete all operations for this process"
       )
-  }),
-  fixedAsset: z.object({
-    name: z
-      .string()
-      .min(1, { message: "Name is required" })
-      .describe("The name of the fixed asset"),
-    fixedAssetClassId: z
-      .string()
-      .min(1, { message: "Asset Class is required" })
-      .describe("The ID of the fixed asset class"),
-    serialNumber: z
-      .string()
-      .optional()
-      .describe("The serial number of the asset"),
-    acquisitionCost: z
-      .string()
-      .optional()
-      .describe("The acquisition cost of the asset"),
-    acquisitionDate: z
-      .string()
-      .optional()
-      .describe("The date the asset was acquired (YYYY-MM-DD)"),
-    accumulatedDepreciation: z
-      .string()
-      .optional()
-      .describe("The accumulated depreciation to date"),
-    depreciationMethod: z
-      .string()
-      .optional()
-      .describe(
-        "The depreciation method: Straight Line, Declining Balance, or Units of Production"
-      ),
-    usefulLifeMonths: z
-      .string()
-      .optional()
-      .describe("The useful life of the asset in months"),
-    residualValuePercent: z
-      .string()
-      .optional()
-      .describe("The residual value as a percentage of acquisition cost"),
-    locationId: z
-      .string()
-      .optional()
-      .describe("The location ID where the asset is located")
   })
 } as const;

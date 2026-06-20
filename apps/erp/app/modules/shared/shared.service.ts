@@ -956,7 +956,7 @@ export async function importCsv(
     table: string;
     filePath: string;
     columnMappings: Record<string, string>;
-    enumMappings?: Record<string, string[]>;
+    enumMappings?: Record<string, Record<string, string>>;
     companyId: string;
     userId: string;
   }
