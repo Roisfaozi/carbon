@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "scenario": "golden-happy-v1",
+  "tables": [
+    "customer",
+    "customerContact",
+    "supplier",
+    "supplierContact",
+    "part",
+    "material",
+    "tool",
+    "fixture",
+    "consumable",
+    "workCenter",
+    "process"
+  ],
+  "knownUnsupportedTables": []
+}

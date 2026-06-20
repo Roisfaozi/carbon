@@ -1,0 +1,2 @@
+id,readableId,revision,name,unitOfMeasureCode,replenishmentSystem,defaultMethodType,itemTrackingType
+FIX-001,PLATE-FIX-01,0,Modular Fixture Plate,EA,Buy and Make,Make,Inventory

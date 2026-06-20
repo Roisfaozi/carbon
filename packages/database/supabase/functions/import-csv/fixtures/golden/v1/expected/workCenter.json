@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "scenario": "golden-happy-v1-work-center",
+  "table": "workCenter",
+  "status": "pass",
+  "summary": { "inserted": 1, "updated": 0, "skipped": 0, "errors": [] },
+  "effects": {
+    "create": [{ "entity": "workCenter", "count": 1 }],
+    "update": [],
+    "upsert": []
+  },
+  "notes": []
+}

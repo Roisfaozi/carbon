@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "scenario": "golden-happy-v1",
+  "table": "all",
+  "status": "pass",
+  "summary": {
+    "inserted": 15,
+    "updated": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  "effects": {
+    "create": [{ "entity": "all", "count": 17 }],
+    "update": [],
+    "upsert": []
+  },
+  "notes": []
+}

@@ -1,0 +1,2 @@
+id,readableId,revision,name,materialSubstanceId,materialFormId,unitOfMeasureCode,defaultMethodType,itemTrackingType,finish,grade,dimensions
+MAT-001,AL-6061-PLATE-25,0,6061 Aluminum Plate 0.25,ALUMINUM,PLATE,SHEET,Purchase to Order,Inventory,Mill,6061,48x96x0.25

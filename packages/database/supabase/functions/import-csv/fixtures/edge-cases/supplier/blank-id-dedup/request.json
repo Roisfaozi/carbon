@@ -1,0 +1,8 @@
+{
+  "table": "supplier",
+  "columnMappings": {
+    "id": "id",
+    "name": "name"
+  },
+  "enumMappings": {}
+}

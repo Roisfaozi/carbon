@@ -1,0 +1,2 @@
+id,name,description,laborRate,machineRate,overheadRate,locationId
+WC-ERR,Lathe Cell,No location,50,75,25,

@@ -1,0 +1,11 @@
+{
+  "externalIntegrationMappings": [],
+  "entities": {
+    "customer": [],
+    "supplier": [],
+    "item": [],
+    "contact": [],
+    "workCenter": [],
+    "process": []
+  }
+}

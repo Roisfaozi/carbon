@@ -1,0 +1,23 @@
+{
+  "companyId": "golden-company",
+  "location": [
+    { "id": "LOC-MAIN", "name": "Main Plant" },
+    { "id": "LOC-QA", "name": "QA Lab" }
+  ],
+  "unitOfMeasure": [
+    { "code": "EA", "name": "Each" },
+    { "code": "LB", "name": "Pound" },
+    { "code": "SHEET", "name": "Sheet" }
+  ],
+  "materialSubstance": [
+    { "id": "ALUMINUM", "name": "Aluminum" },
+    { "id": "STEEL", "name": "Steel" }
+  ],
+  "materialForm": [
+    { "id": "PLATE", "name": "Plate" },
+    { "id": "BAR", "name": "Bar" }
+  ],
+  "customerStatus": [{ "id": "customer-status-active", "name": "Active" }],
+  "customerType": [{ "id": "customer-type-oem", "name": "OEM" }],
+  "supplierType": [{ "id": "supplier-type-raw", "name": "Raw Material" }]
+}

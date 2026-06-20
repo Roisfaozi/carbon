@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "scenario": "work-center-missing-location",
+  "table": "workCenter",
+  "status": "pass",
+  "summary": {
+    "inserted": 0,
+    "updated": 0,
+    "skipped": 1,
+    "errors": [{ "row": 0, "reason": "Missing required locationId" }]
+  },
+  "effects": {
+    "create": [],
+    "update": [],
+    "upsert": []
+  },
+  "notes": ["Work center import requires locationId lookup."]
+}

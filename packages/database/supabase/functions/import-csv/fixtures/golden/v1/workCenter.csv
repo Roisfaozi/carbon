@@ -1,0 +1,2 @@
+id,name,description,defaultStandardFactor,laborRate,machineRate,overheadRate,locationId
+WC-001,VF2 Mill,Haas VF2 machining center,Hours/Piece,50,75,25,LOC-MAIN

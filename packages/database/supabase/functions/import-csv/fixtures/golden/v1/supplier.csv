@@ -1,0 +1,3 @@
+id,name,phone,supplierStatus,supplierTypeId,website
+SUP-001,Atlas Metals,555-0201,Active,Raw Material,https://atlas.example.com
+SUP-002,Prime Tooling Supply,555-0202,Active,Raw Material,https://prime.example.com

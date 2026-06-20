@@ -1,0 +1,13 @@
+{
+  "table": "workCenter",
+  "columnMappings": {
+    "id": "id",
+    "name": "name",
+    "description": "description",
+    "laborRate": "laborRate",
+    "machineRate": "machineRate",
+    "overheadRate": "overheadRate",
+    "locationId": "locationId"
+  },
+  "enumMappings": {}
+}

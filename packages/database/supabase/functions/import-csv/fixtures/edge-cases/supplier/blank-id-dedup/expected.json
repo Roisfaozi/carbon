@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "scenario": "supplier-blank-id-dedup",
+  "table": "supplier",
+  "status": "pass",
+  "summary": { "inserted": 2, "updated": 0, "skipped": 0, "errors": [] },
+  "effects": {
+    "create": [{ "entity": "supplier", "count": 2 }],
+    "update": [],
+    "upsert": []
+  },
+  "notes": ["Blank IDs should not collapse distinct name rows."]
+}

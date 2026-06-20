@@ -1,0 +1,2 @@
+id,name,processType,defaultStandardFactor,completeAllOnScan
+PROC-001,CNC Mill,Inside,Hours/Piece,false

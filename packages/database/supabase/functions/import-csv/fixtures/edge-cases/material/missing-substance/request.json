@@ -1,0 +1,10 @@
+{
+  "table": "material",
+  "columnMappings": {
+    "id": "id",
+    "readableId": "readableId",
+    "name": "name",
+    "materialSubstanceId": "materialSubstanceId"
+  },
+  "enumMappings": {}
+}

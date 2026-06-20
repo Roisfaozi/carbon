@@ -1,0 +1,2 @@
+id,readableId,revision,name,unitOfMeasureCode,replenishmentSystem,defaultMethodType,itemTrackingType
+PART-001,NS-1001,0,Servo Mount Plate,EA,Buy and Make,Make,Inventory

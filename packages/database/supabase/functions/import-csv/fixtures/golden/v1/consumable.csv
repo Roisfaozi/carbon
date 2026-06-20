@@ -1,0 +1,2 @@
+id,readableId,revision,name,unitOfMeasureCode,replenishmentSystem,defaultMethodType,itemTrackingType
+CON-001,COOLANT-A,0,Coolant Type A,EA,Buy and Make,Make,Inventory

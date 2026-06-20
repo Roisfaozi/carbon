@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "scenario": "golden-happy-v1-consumable",
+  "table": "consumable",
+  "status": "pass",
+  "summary": { "inserted": 1, "updated": 0, "skipped": 0, "errors": [] },
+  "effects": {
+    "create": [{ "entity": "consumable", "count": 1 }],
+    "update": [],
+    "upsert": []
+  },
+  "notes": []
+}
