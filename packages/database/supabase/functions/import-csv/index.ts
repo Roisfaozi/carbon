@@ -8,6 +8,15 @@ import { corsHeaders } from "../lib/headers.ts";
 import { requirePermissions } from "../lib/supabase.ts";
 import { Database } from "../lib/types.ts";
 import { getReadableIdWithRevision } from "../lib/utils.ts";
+import {
+  buildAddressFields,
+  extractPartnerExtensions,
+  hasAnyAddressField,
+  nullifyEmptyStrings,
+  parsePermissiveCsv,
+  type PartnerExtensionData,
+  prepareMappedRecords,
+} from "./import-runner.ts";
 import { classifyImportRow } from "./classify-import-row.ts";
 
 const pool = getConnectionPool(1);
@@ -20,7 +29,6 @@ const importCsvValidator = z.object({
     "customerContact",
     "fixture",
     "material",
-    "methodMaterial",
     "part",
     "supplier",
     "supplierContact",
@@ -36,66 +44,6 @@ const importCsvValidator = z.object({
 });
 
 const EXTERNAL_ID_KEY = "csv";
-
-/**
- * Fallback CSV parser used when std/csv rejects a row-length mismatch.
- * Handles RFC-4180 quoting but tolerates uneven row widths (extra cells
- * dropped, missing cells become "").
- */
-function parsePermissiveCsv(text: string): Record<string, string>[] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += c;
-      }
-    } else if (c === '"') {
-      inQuotes = true;
-    } else if (c === ",") {
-      row.push(field);
-      field = "";
-    } else if (c === "\n" || c === "\r") {
-      // \r\n: consume the \n that follows
-      if (c === "\r" && text[i + 1] === "\n") i++;
-      row.push(field);
-      field = "";
-      // Skip blank rows that arise from trailing newlines
-      if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
-        rows.push(row);
-      }
-      row = [];
-    } else {
-      field += c;
-    }
-  }
-  if (field !== "" || row.length > 0) {
-    row.push(field);
-    if (row.length > 1 || (row.length === 1 && row[0] !== "")) {
-      rows.push(row);
-    }
-  }
-
-  if (rows.length === 0) return [];
-  const headers = rows[0];
-  return rows.slice(1).map((r) => {
-    const obj: Record<string, string> = {};
-    for (let i = 0; i < headers.length; i++) {
-      obj[headers[i]] = r[i] ?? "";
-    }
-    return obj;
-  });
-}
 
 type CsvEntityType =
   | "customer"
@@ -232,21 +180,6 @@ async function getCsvExternalIdMap(
 }
 
 /**
- * Convert empty-string values to undefined. Kysely drops undefined keys from
- * the INSERT, so the column gets its DB default (NULL). Empty CSV cells would
- * otherwise become literal "" and fail FK or enum constraints.
- */
-function nullifyEmptyStrings<T extends Record<string, unknown>>(
-  obj: T
-): Partial<T> {
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(obj)) {
-    out[k] = v === "" ? undefined : v;
-  }
-  return out as Partial<T>;
-}
-
-/**
  * Upsert CSV external ID mappings into the externalIntegrationMapping table.
  * Uses ON CONFLICT to handle re-imports idempotently.
  */
@@ -293,76 +226,6 @@ async function upsertCsvMappings(
         }))
     )
     .execute();
-}
-
-/**
- * Address/payment/shipping fields that can ride along on a supplier or
- * customer CSV row. Written to side-tables (address + supplierLocation /
- * supplierPayment / supplierShipping, mirror for customer) after the parent
- * upsert lands.
- */
-type PartnerExtensionData = {
-  locationName?: string;
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  state?: string;
-  postalCode?: string;
-  countryCode?: string;
-  paymentTermId?: string;
-  shippingMethodId?: string;
-  incoterm?: string;
-  incotermLocation?: string;
-};
-
-function extractPartnerExtensions(
-  record: Record<string, string>
-): PartnerExtensionData {
-  return {
-    locationName: record.locationName,
-    addressLine1: record.addressLine1,
-    addressLine2: record.addressLine2,
-    city: record.city,
-    state: record.state,
-    postalCode: record.postalCode,
-    countryCode: record.countryCode,
-    paymentTermId: record.paymentTermId,
-    shippingMethodId: record.shippingMethodId,
-    incoterm: record.incoterm,
-    incotermLocation: record.incotermLocation,
-  };
-}
-
-function hasAnyAddressField(ext: PartnerExtensionData): boolean {
-  // Require addressLine1 to recognize a row as having an address. It's the
-  // most distinguishing line of a postal address and also doubles as the
-  // location-name fallback when `Location Name` is blank — without it,
-  // creating a supplierLocation/customerLocation would have no usable label.
-  return !!ext.addressLine1;
-}
-
-function buildAddressFields(
-  ext: PartnerExtensionData
-): {
-  addressLine1: string | null;
-  addressLine2: string | null;
-  city: string | null;
-  stateProvince: string | null;
-  postalCode: string | null;
-  countryCode: string | null;
-} {
-  return {
-    addressLine1: ext.addressLine1 || null,
-    addressLine2: ext.addressLine2 || null,
-    city: ext.city || null,
-    // The CSV field is `state` (user-facing label "State / Region"); the
-    // column was renamed to stateProvince in migration 20240928155702.
-    stateProvince: ext.state || null,
-    postalCode: ext.postalCode || null,
-    // address.countryCode is TEXT storing ISO 3166-1 alpha-2 (e.g., "US"),
-    // post-20240928155702_country-codes.
-    countryCode: ext.countryCode || null,
-  };
 }
 
 /**
@@ -831,39 +694,11 @@ serve(async (req: Request) => {
       parsedCsv = parsePermissiveCsv(csvText);
     }
 
-    let mappedRecords = parsedCsv.map((row) => {
-      const record: Record<string, string> = {};
-      for (const [key, value] of Object.entries(columnMappings)) {
-        if (key in enumMappings) {
-          const enumMapping = enumMappings[key];
-          const csvValue = row[value];
-          if (csvValue in enumMapping) {
-            record[key] = enumMapping[csvValue];
-          } else {
-            record[key] = enumMapping["Default"];
-          }
-        } else if (value && value !== "N/A") {
-          record[key] = row[value] || "";
-        }
-      }
-      return record;
-    });
-
-    const missingEnumKeys = Object.keys(enumMappings).filter(
-      (key) => !(key in mappedRecords[0])
+    const mappedRecords = prepareMappedRecords(
+      parsedCsv,
+      columnMappings,
+      enumMappings
     );
-
-    if (missingEnumKeys.length > 0) {
-      mappedRecords = mappedRecords.map((record) => {
-        const processedRecord = { ...record };
-
-        missingEnumKeys.forEach((key) => {
-          processedRecord[key] = enumMappings[key]["Default"];
-        });
-
-        return processedRecord;
-      });
-    }
 
     const summary = {
       inserted: 0,
@@ -1353,9 +1188,9 @@ serve(async (req: Request) => {
           const materialValidator = itemValidator.extend({
             materialSubstanceId: z.string().optional(),
             materialFormId: z.string().optional(),
-            finishId: z.string().optional(),
-            dimensionId: z.string().optional(),
-            gradeId: z.string().optional(),
+            finish: z.string().optional(),
+            dimensions: z.string().optional(),
+            grade: z.string().optional(),
           });
 
           for (const record of mappedRecords) {
@@ -1432,9 +1267,9 @@ serve(async (req: Request) => {
                       materialSubstanceId:
                         material.data.materialSubstanceId || undefined,
                       materialFormId: material.data.materialFormId || undefined,
-                      dimensionId: material.data.dimensionId || undefined,
-                      gradeId: material.data.gradeId || undefined,
-                      finishId: material.data.finishId || undefined,
+                      dimensions: material.data.dimensions || undefined,
+                      grade: material.data.grade || undefined,
+                      finish: material.data.finish || undefined,
                       companyId,
                       updatedAt: new Date().toISOString(),
                       updatedBy: userId,
@@ -1559,9 +1394,9 @@ serve(async (req: Request) => {
                     materialSubstanceId:
                       materialData.materialSubstanceId || undefined,
                     materialFormId: materialData.materialFormId || undefined,
-                    dimensionId: materialData.dimensionId || undefined,
-                    gradeId: materialData.gradeId || undefined,
-                    finishId: materialData.finishId || undefined,
+                    dimensions: materialData.dimensions || undefined,
+                    grade: materialData.grade || undefined,
+                    finish: materialData.finish || undefined,
                     companyId,
                     createdAt: new Date().toISOString(),
                     createdBy: userId,
@@ -2127,9 +1962,6 @@ serve(async (req: Request) => {
           }
         });
         break;
-      }
-      case "methodMaterial": {
-        throw new Error("Not implemented");
       }
       default: {
         throw new Error(`Invalid table: ${table}`);
