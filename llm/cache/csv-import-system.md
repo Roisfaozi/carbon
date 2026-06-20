@@ -98,21 +98,17 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 
    - Fields: Same as part
 
-10. **methodMaterial** - Permission: `parts`
-    - Fields: level, partId, description, methodType, quantity, unitOfMeasureCode
-    - Status: Not yet implemented
-
-### NEW: Production Tables
-
-11. **workCenter** - Permission: `production`
+10. **workCenter** - Permission: `production`
 
     - Required Fields: id, name, description, defaultStandardFactor, laborRate, machineRate, overheadRate, locationId
     - Description: Bulk import work centers with cost rates and location assignment
 
-12. **process** - Permission: `production`
+11. **process** - Permission: `production`
     - Required Fields: id, name, processType
     - Optional Fields: defaultStandardFactor (required for Inside processes), completeAllOnScan
     - Description: Bulk import processes (Inside/Outside) with default standards
+
+`fixedAsset` and `methodMaterial` are intentionally not exposed as supported CSV imports until their edge import semantics are implemented end-to-end.
 
 ## Import Process Flow
 
@@ -136,6 +132,7 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 2. **Edge Function** (`import-csv/index.ts`):
    - Downloads CSV from private storage
    - Parses CSV into records
+   - Uses `import-runner.ts` helpers for permissive parsing, column mapping, enum defaulting, and partner side-table field extraction
    - Maps CSV columns to field names using columnMappings
    - Applies enum mappings for enum fields
    - Validates records
@@ -174,9 +171,8 @@ Import permissions are defined in `importPermissions`:
   tool: "parts",
   fixture: "parts",
   consumable: "parts",
-  methodMaterial: "parts",
-  workCenter: "production",    // NEW
-  process: "production"         // NEW
+  workCenter: "production",
+  process: "production"
 }
 ```
 
@@ -267,13 +263,23 @@ PROC-003,Plating,Outside,,false
 
 - `/packages/database/supabase/functions/import-csv/index.ts` - Edge function
 
+## Test Foundation
+
+The import CSV package includes a migration test foundation under `/packages/database/supabase/functions/import-csv/fixtures/`:
+
+- `golden/v1/` contains replayable happy-path CSV data, reference data, existing state, and expected semantic results.
+- `edge-cases/` contains focused scenarios for supported import paths such as supplier blank-ID deduplication, missing work-center location, and missing material substance.
+- `fixture-schema.ts` defines the manifest, expected-result, reference-data, and existing-state schemas used by the fixture validation tests.
+- `imports.contract.test.ts` keeps ERP import tables, app schemas, edge-supported tables, material field names, and enum-mapping payload typing aligned.
+
 ## Limitations & Future Work
 
-1. **methodMaterial**: Not yet implemented
-2. **Process-WorkCenter Association**: Currently manual association after import
-3. **Bulk Updates**: No bulk update from existing records
-4. **Error Reporting**: Limited line-by-line error reporting for malformed rows
-5. **Preview**: No CSV preview before import confirmation
+1. **methodMaterial**: Not exposed as a supported CSV import until BOM/method semantics are implemented end-to-end
+2. **fixedAsset**: Not exposed as a supported CSV import until accounting/asset semantics are implemented end-to-end
+3. **Process-WorkCenter Association**: Currently manual association after import
+4. **Bulk Updates**: No bulk update from existing records
+5. **Error Reporting**: Limited line-by-line error reporting for malformed rows
+6. **Preview**: No CSV preview before import confirmation
 
 ## Related Systems
 
