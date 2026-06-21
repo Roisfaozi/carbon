@@ -152,10 +152,29 @@ Each `##` heading becomes a sidebar rail entry — so structure chapters as 3–
     `branch` = a temporary returnable hold (Paused, On Hold, Needs Approval); `terminal` = an off-path exit
     (Cancelled, Voided, Lost, Expired). Use it ONLY for a **linear** lifecycle — a 2-axis comparison matrix
     (e.g. invoices sales-vs-purchase) or a small enum list stays a markdown table.
-  - `<PlanBadge plan="Business" />` — flags a paid-tier feature. Whole-page gate → set `plan: Business` in
-    frontmatter (renders inline with the page title); section gate → drop `<PlanBadge>` in-body. Gated
-    features = `packages/ee/src/plan.ts` (Business/Partner). **Don't** badge free ones (email, exchange-rates).
-    The gate is **Cloud-only** — self-hosted isn't plan-gated; note that where it matters.
+  - `<PlanBadge plan="Business" />` — flags a paid feature. Whole-page gate → set `plan: Business` in
+    frontmatter; renders a small **"Paid"** pill inline with the page title (label is fixed to "Paid"; the
+    `plan` value only feeds the hover tooltip + the banner copy). Section gate → drop `<PlanBadge>` in-body.
+    Gated features = `packages/ee/src/plan.ts`. **Don't** badge free ones (email, exchange-rates).
+  - **Plan-gated pages also get a full-width announcement bar** (`components/plan-banner-bar.tsx`,
+    `PlanBannerBar`) rendered by the docs **layout** (`app/docs/[[...slug]]/layout` builds a url→plan map from
+    `plan` frontmatter and passes it in) — sticky under the header, spanning the content area. Adding
+    `plan: Business` frontmatter is all it takes; the badge and the bar both light up. Don't hand-place a
+    banner in MDX.
+  - **Licensing model — get this right, it's been wrong before.** See `docs/content/docs/platform/licensing.mdx`
+    (the canonical page). Editions (`packages/utils/src/types.ts` `enum Edition`): **Community** (self-host,
+    AGPLv3 open core), **Enterprise** (self-host + commercial license), **Cloud** (managed). EE features =
+    code under `packages/ee` or any `.ee` file → require a commercial license per the repo `LICENSE`.
+    - **Carbon Cloud = the hosted SaaS at https://app.carbon.ms** — NOT the `/docs/platform/...` deployment
+      docs. Self-hosting recipes (Docker with Caddy, AWS with SST) live under
+      `docs/content/docs/platform/self-hosting/`.
+    - **Cloud plans = Starter and Business only.** `Plan` enum also has `Partner`, but Partner is
+      **internal-only — never mention it in reader-facing docs.** Don't write "Business and Partner plans".
+    - **Never write "self-hosted isn't plan-gated."** The *runtime* gate is Cloud-only
+      (`packages/ee/src/plan.server.ts` returns early when `CarbonEdition !== Edition.Cloud`), but the
+      *license* still governs: self-hosting runs in **community mode**; Enterprise/EE features need a
+      commercial license. Frame it as a license boundary, not a technical lockout — features aren't
+      "disabled" in Community.
   - `<Steps>/<Step>`, `<Tabs>/<Tab>` (fumadocs-ui), markdown tables, and code fences (dark panel).
   - `<Term id?>…</Term>` — inline glossary term (dotted underline → definition popover). The same component
     as the Guide; see "Interlinking & the glossary" below.

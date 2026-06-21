@@ -51,13 +51,13 @@ export function Callout({
 }
 
 /* Plan gate marker — flags a feature that needs a paid plan. Carbon's gated
- * features (`packages/ee/src/plan.ts`) all require the Business or Partner plan, so
- * the badge reads "Business plan" by default. Drop it at the top of a gated page, or
- * right under the heading of a gated section. */
+ * features (`packages/ee/src/plan.ts`) require the Business plan, so the badge reads
+ * "Business plan" by default. Drop it at the top of a gated page, or right under the
+ * heading of a gated section. */
 export function PlanBadge({ plan = "Business", className = "" }: { plan?: string; className?: string }) {
   return (
     <span
-      title={`Available on the ${plan} and Partner plans`}
+      title={`Available on the ${plan} plan`}
       className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-ed-amber-stroke bg-ed-amber-fill px-2.5 py-[3.5px] font-mono text-ed-10 font-semibold uppercase tracking-[0.04em] text-ed-amber-text ${className}`}
     >
       <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="shrink-0">
