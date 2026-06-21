@@ -20,7 +20,7 @@ type DocTreeNode = {
 
 // Display title of the top-level folder that owns a page, read from the docs
 // meta.json via the page tree — so the breadcrumb tracks the real folder titles
-// (and renames like integrate → "Building") instead of a hardcoded map.
+// (so a folder can carry a title different from its slug) instead of a hardcoded map.
 function groupLabelFor(slug0: string | undefined): string | undefined {
   if (!slug0) return undefined;
   const prefix = `/docs/${slug0}`;

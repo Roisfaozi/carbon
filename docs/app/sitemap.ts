@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     out.push({ url: abs(page.url), changeFrequency: "monthly", priority: 0.8 });
   }
 
-  // Reference docs (platform + product reference + integrate)
+  // Reference docs (platform + product reference + building)
   for (const page of source.getPages()) {
     out.push({ url: abs(page.url), changeFrequency: "monthly", priority: 0.7 });
   }
