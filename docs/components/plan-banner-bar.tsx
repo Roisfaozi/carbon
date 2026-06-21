@@ -39,7 +39,7 @@ export function PlanBannerBar({ plans }: { plans: Record<string, string> }) {
         <a href="https://app.carbon.ms" className={link}>
           Carbon Cloud
         </a>
-        . Self-host and you need a commercial license.{" "}
+        . If you'd like to self-host this feature, you need a commercial license.{" "}
         <a href="/docs/platform/licensing" className={`${link} whitespace-nowrap`}>
           Licensing →
         </a>
