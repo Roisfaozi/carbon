@@ -271,6 +271,13 @@ The import CSV package includes a migration test foundation under `/packages/dat
 - `edge-cases/` contains focused scenarios for supported import paths such as supplier blank-ID deduplication, missing work-center location, and missing material substance.
 - `fixture-schema.ts` defines the manifest, expected-result, reference-data, and existing-state schemas used by the fixture validation tests.
 - `imports.contract.test.ts` keeps ERP import tables, app schemas, edge-supported tables, material field names, and enum-mapping payload typing aligned.
+- `migration-source-profiles.ts` defines the canonical Carbon source profile and table execution order for migration planning.
+- `migration-runner.ts` builds deterministic dry-run reports, validates required and unique fields, and plans `import-csv` requests without executing database writes.
+- `migration-runner.test.ts` covers golden-row counting, required-field failures, duplicate-id failures, import-request planning, golden summary comparison, and supported edge-case scenarios.
+- The canonical source profile and golden manifest must stay aligned so migration coverage and fixture coverage do not drift.
+- The dry-run runner is intentionally pure and deterministic; orchestration may consume it later, but it does not write to Supabase or Postgres itself.
+- `fixedAsset` and `methodMaterial` remain excluded from supported CSV imports until their end-to-end semantics are implemented.
+- Future phases should build orchestration and execution on top of this source-profile + dry-run layer, not bypass it.
 
 ## Limitations & Future Work
 
