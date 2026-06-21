@@ -31,12 +31,12 @@ minimum is 0), so for them approval is simply on or off.
 
 Rules live under **Settings → Approval Rules**, grouped by document type. Each rule:
 
-| Field | Description |
-| --- | --- |
-| Minimum amount | The tier floor — approval applies at or above this, up to the next rule's minimum. (Purchase orders only.) |
-| Who can approve | Groups **and/or** individual users eligible to decide. |
-| Default approver | A named fallback approver for the tier. |
-| Enabled | Whether the rule is live. |
+<FieldTable>
+  <Field name="Minimum amount">The tier floor — approval applies at or above this, up to the next rule's minimum. (Purchase orders only.)</Field>
+  <Field name="Who can approve">Groups **and/or** individual users eligible to decide.</Field>
+  <Field name="Default approver">A named fallback approver for the tier.</Field>
+  <Field name="Enabled">Whether the rule is live.</Field>
+</FieldTable>
 
 For purchase orders, several rules form **amount tiers** — each band runs from its minimum up to the next
 rule's minimum, and the top tier is "over $X". An order matches the single highest tier its total clears.

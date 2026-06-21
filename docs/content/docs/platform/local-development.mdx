@@ -7,21 +7,33 @@ Carbon is a **pnpm + Turborepo** monorepo — the ERP and MES apps plus their sh
 
 ## Setup
 
-Add `crbn` to your `PATH` (it installs a small shell wrapper):
+<Steps>
+  <Step>
+  ### Add `crbn` to your `PATH`
 
-```bash
-source ./setup.sh
-```
+  Source the setup script — it installs a small shell wrapper:
 
-## Bring up the stack
+  ```bash
+  source ./setup.sh
+  ```
+  </Step>
+  <Step>
+  ### Bring up the stack
 
-From any worktree:
+  From any worktree, boot the compose stack and the ERP and MES dev servers:
 
-```bash
-crbn up
-```
+  ```bash
+  crbn up
+  ```
 
-This boots the compose stack and the ERP and MES dev servers, and generates a `.env.local` with per-worktree ports, local Supabase keys, `REDIS_URL`, Inngest dev settings, and `DEV_BYPASS_EMAIL` so you can sign in without a magic link. Reach the apps at their portless `.dev` URLs or at `localhost:<port>`.
+  This generates a `.env.local` with per-worktree ports, local Supabase keys, `REDIS_URL`, Inngest dev settings, and `DEV_BYPASS_EMAIL` so you can sign in without a magic link.
+  </Step>
+  <Step>
+  ### Reach the apps
+
+  Open the apps at their portless `.dev` URLs or at `localhost:<port>`.
+  </Step>
+</Steps>
 
 <Callout type="warn">
 `DEV_BYPASS_EMAIL` is local-only — it signs you in as that email with no magic link. Never set it in a deployed environment.

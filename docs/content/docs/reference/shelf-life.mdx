@@ -48,13 +48,13 @@ inputs that themselves carry a shelf-life policy is the company's *calculated in
 
 The policy lives on the item's pick method:
 
-| Field | Applies to | Description |
-| --- | --- | --- |
-| Mode | all | *Fixed Duration*, *Calculated*, or *Set on Receipt*. |
-| Days | Fixed Duration | The shelf-life length added to the start event. |
-| Trigger process | Fixed Duration (made) | The operation that starts the clock; blank means any operation. |
-| Timing | Fixed Duration (made) | Whether the clock starts **Before** or **After** that process. |
-| Calculate from BOM | Fixed Duration | Also cap the date at the earliest expiry of the consumed components. |
+<FieldTable>
+  <Field name="Mode">*Fixed Duration*, *Calculated*, or *Set on Receipt*. *(applies to: all)*</Field>
+  <Field name="Days">The shelf-life length added to the start event. *(applies to: Fixed Duration)*</Field>
+  <Field name="Trigger process">The operation that starts the clock; blank means any operation. *(applies to: Fixed Duration (made))*</Field>
+  <Field name="Timing">Whether the clock starts **Before** or **After** that process. *(applies to: Fixed Duration (made))*</Field>
+  <Field name="Calculate from BOM">Also cap the date at the earliest expiry of the consumed components. *(applies to: Fixed Duration)*</Field>
+</FieldTable>
 
 <Callout type="note">
 The expiration date is only ever written once, where it was blank — Carbon never silently overwrites a date a
@@ -87,12 +87,12 @@ lists; set its lead time (in days) in company settings — leaving it blank turn
 
 Set company-wide in **Settings → Inventory**:
 
-| Setting | Description |
-| --- | --- |
-| Expired-entity policy | *Warn*, *Block*, or *BlockWithOverride* for issues and transfers. |
-| Near-expiry warning (days) | Lead time for the amber "expiring soon" badges; blank disables them. |
-| Default shelf-life days | Fallback length when a policy needs a default. |
-| Calculated input scope | `AllInputs` or `ManagedInputsOnly` for *Calculated* mode. |
+<FieldTable>
+  <Field name="Expired-entity policy">*Warn*, *Block*, or *BlockWithOverride* for issues and transfers.</Field>
+  <Field name="Near-expiry warning (days)">Lead time for the amber "expiring soon" badges; blank disables them.</Field>
+  <Field name="Default shelf-life days">Fallback length when a policy needs a default.</Field>
+  <Field name="Calculated input scope">`AllInputs` or `ManagedInputsOnly` for *Calculated* mode.</Field>
+</FieldTable>
 
 ## Where you set it
 

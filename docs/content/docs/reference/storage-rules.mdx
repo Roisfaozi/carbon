@@ -87,16 +87,16 @@ A rule reaches the lines it applies to in one of two ways:
 
 ## Rule fields
 
-| Field | Description |
-| --- | --- |
-| Name | A unique name for the rule. |
-| Severity | `error` (block) or `warn` (acknowledge and continue). |
-| Conditions | The match kind plus the field / operator / value rows. |
-| Message | Shown on a violation; supports `{token}` interpolation. |
-| Surfaces | Which transactions the rule fires on. |
-| Target | `item` or `workCenter`. |
-| Item filters | Item types and/or groups to scope an item rule (empty = all items). |
-| Active | Whether the rule is currently evaluated. |
+<FieldTable>
+  <Field name="Name">A unique name for the rule.</Field>
+  <Field name="Severity">`error` (block) or `warn` (acknowledge and continue).</Field>
+  <Field name="Conditions">The match kind plus the field / operator / value rows.</Field>
+  <Field name="Message">Shown on a violation; supports `{token}` interpolation.</Field>
+  <Field name="Surfaces">Which transactions the rule fires on.</Field>
+  <Field name="Target">`item` or `workCenter`.</Field>
+  <Field name="Item filters">Item types and/or groups to scope an item rule (empty = all items).</Field>
+  <Field name="Active">Whether the rule is currently evaluated.</Field>
+</FieldTable>
 
 ## Where to manage them
 

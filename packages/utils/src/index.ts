@@ -20,6 +20,7 @@ export * from "./math";
 export * from "./object";
 export * from "./ssr";
 export * from "./status";
+export * from "./status-colors";
 export * from "./storageRules";
 export * from "./string";
 export * from "./supabase";

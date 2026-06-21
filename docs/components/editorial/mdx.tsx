@@ -1,5 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { Field, FieldTable } from "./field-table";
 import { type IllustrationKey, illustrations } from "./illustrations";
+import { Status, StatusFlow } from "./status-flow";
 import { Term } from "./term";
 import { Zoomable } from "./zoomable";
 
@@ -238,4 +240,8 @@ export const editorialMdxComponents = {
   Callout,
   Divider,
   Term,
+  FieldTable,
+  Field,
+  StatusFlow,
+  Status,
 };

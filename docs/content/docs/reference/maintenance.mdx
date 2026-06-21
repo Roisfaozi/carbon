@@ -9,13 +9,13 @@ Maintenance in Carbon keeps the machines on the floor running. The unit of work 
 
 A **maintenance dispatch** is one job of upkeep: what's wrong, which work center, who's on it, and the time and parts it took. It moves through a short lifecycle:
 
-| Status | Meaning |
-| --- | --- |
-| Open | Raised, not yet picked up. |
-| Assigned | Given to someone. |
-| In Progress | Being worked, with the clock running. |
-| Completed | Done — any running time entries are closed automatically. |
-| Cancelled | Dropped without completing. |
+<StatusFlow entity="maintenanceDispatch">
+  <Status name="Open">Raised, not yet picked up.</Status>
+  <Status name="Assigned">Given to someone.</Status>
+  <Status name="In Progress">Being worked, with the clock running.</Status>
+  <Status name="Completed" accent>Done — any running time entries are closed automatically.</Status>
+  <Status name="Cancelled" terminal>Dropped without completing.</Status>
+</StatusFlow>
 
 Every dispatch carries a **priority** (Low, Medium, High, Critical) and a **source** that says where it came from: **Reactive** (a breakdown — the default), **Scheduled** (generated from a preventive schedule), or **Non-Conformance** (raised from a <Term id="nonconformance">quality issue</Term>). Time is tracked as events against the dispatch, and parts as dispatch items.
 

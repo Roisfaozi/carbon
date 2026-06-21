@@ -87,6 +87,32 @@
   --color-brand: hsl(var(--brand));
 }
 
+/* Editorial warm-paper palette as Tailwind theme tokens — single source of truth for the
+ * hand-built editorial components (FieldTable, StatusFlow). Defining them in @theme both
+ * generates utilities (text-ed-ink, bg-ed-paper, border-ed-hairline, fill-ed-*, …) and
+ * exposes them as CSS variables (var(--color-ed-*)) for inline SVG styles. They mirror the
+ * exact hex the components were hardcoded with — a zero-drift swap, tweakable in one place.
+ * Light-only surface by design. */
+@theme {
+  --color-ed-ink: #262323;
+  --color-ed-ink-78: rgba(38, 35, 35, 0.78);
+  --color-ed-ink-66: rgba(38, 35, 35, 0.66);
+  --color-ed-ink-60: rgba(38, 35, 35, 0.6);
+  --color-ed-ink-45: rgba(38, 35, 35, 0.45);
+  --color-ed-hairline: #e7e7e3;
+  --color-ed-paper: #fbfbf8;
+  --color-ed-svg-line: #d8d7d2;
+  --color-ed-brand: #00b0ff;
+  --color-ed-brand-ink: #1e84b0;
+  --color-ed-accent-fill: #eaf8ff;
+  --color-ed-amber-fill: #fff2d8;
+  --color-ed-amber-stroke: #e6cfa3;
+  --color-ed-amber-text: #9c7136;
+  --color-ed-header: #f1f1ec; /* table header strip */
+  --color-ed-inset: #f6f6f1; /* expanded row panel */
+  --color-ed-row-hover: rgba(38, 35, 35, 0.025); /* row hover */
+}
+
 /* Map Fumadocs' own theme variables onto Carbon tokens — one palette everywhere */
 :root,
 .dark {
@@ -183,6 +209,21 @@
 
   table {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Site-wide focus ring. Single brand-accent style on every focusable element,
+   * shown only for keyboard navigation (:focus-visible) — never on mouse/touch
+   * click. `outline` (not box-shadow) follows each element's own shape and can't
+   * be clipped by overflow. Components with their own focus-visible ring still
+   * win via specificity; this is the consistent default for everything else. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 2px;
+  }
+  /* Belt-and-suspenders: suppress the UA outline on pointer focus, including any
+   * third-party rule that targets plain :focus. */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 

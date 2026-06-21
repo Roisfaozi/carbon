@@ -13,13 +13,13 @@ nothing to estimate run time from. The routing is the bridge between *what* you'
 
 ## Fields
 
-| Field | Type | Description |
-| --- | --- | --- |
-| Operation | text | The step performed, in sequence (e.g. *Cut*, *Weld*, *Inspect*). |
-| Work center | reference | Where the operation runs; supplies the rates used for scheduling. |
-| Setup time | minutes | Fixed time to prepare the operation, independent of quantity. |
-| Run time | minutes/unit | Time per unit produced. |
-| Sequence | number | Order of operations; lower runs first. |
+<FieldTable>
+  <Field name="Operation" type="text">The step performed, in sequence (e.g. *Cut*, *Weld*, *Inspect*).</Field>
+  <Field name="Work center" type="reference">Where the operation runs; supplies the rates used for scheduling.</Field>
+  <Field name="Setup time" type="minutes">Fixed time to prepare the operation, independent of quantity.</Field>
+  <Field name="Run time" type="minutes/unit">Time per unit produced.</Field>
+  <Field name="Sequence" type="number">Order of operations; lower runs first.</Field>
+</FieldTable>
 
 ## Per-revision routings
 

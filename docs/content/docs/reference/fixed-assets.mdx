@@ -7,12 +7,12 @@ A **fixed asset** is a piece of capital equipment you capitalize and depreciate 
 
 ## Lifecycle
 
-| Status | Meaning |
-| --- | --- |
-| Draft | Created, not yet on the books. |
-| Active | Capitalized and depreciating. |
-| Fully Depreciated | Written down to its residual value; no longer accruing. |
-| Disposed | Retired or sold off the books. |
+<StatusFlow entity="fixedAsset">
+  <Status name="Draft">Created, not yet on the books.</Status>
+  <Status name="Active" accent>Capitalized and depreciating.</Status>
+  <Status name="Fully Depreciated">Written down to its residual value; no longer accruing.</Status>
+  <Status name="Disposed" terminal>Retired or sold off the books.</Status>
+</StatusFlow>
 
 ## Acquiring
 

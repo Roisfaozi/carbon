@@ -9,25 +9,25 @@ A quote is where pricing is negotiated and recorded. Lines support quantity brea
 
 ## Fields
 
-| Field | Type | Description |
-| --- | --- | --- |
-| Customer | reference | Who the offer is for. |
-| Lines | list | The items quoted, each with quantity-break pricing. |
-| Revision | number | Bumped as the quote is reworked, so history isn't overwritten. |
-| Expiration | date | When the offer lapses. |
-| Status | enum | Where the quote is in its lifecycle (below). |
+<FieldTable>
+  <Field name="Customer" type="reference">Who the offer is for.</Field>
+  <Field name="Lines" type="list">The items quoted, each with quantity-break pricing.</Field>
+  <Field name="Revision" type="number">Bumped as the quote is reworked, so history isn't overwritten.</Field>
+  <Field name="Expiration" type="date">When the offer lapses.</Field>
+  <Field name="Status" type="enum">Where the quote is in its lifecycle (below).</Field>
+</FieldTable>
 
 ## Status lifecycle
 
-| Status | Meaning |
-| --- | --- |
-| Draft | Being prepared; pricing still in progress. |
-| Sent | Finalized and issued to the customer — the state that unlocks digital acceptance. |
-| Ordered | Converted into a sales order. |
-| Partial | Some lines converted to an order, others not. |
-| Lost | The customer declined. |
-| Cancelled | Withdrawn before a decision. |
-| Expired | Lapsed past its expiration date. |
+<StatusFlow entity="quote">
+  <Status name="Draft">Being prepared; pricing still in progress.</Status>
+  <Status name="Sent" accent>Finalized and issued to the customer — the state that unlocks digital acceptance.</Status>
+  <Status name="Ordered">Converted into a sales order.</Status>
+  <Status name="Partial">Some lines converted to an order, others not.</Status>
+  <Status name="Lost" terminal>The customer declined.</Status>
+  <Status name="Cancelled" terminal>Withdrawn before a decision.</Status>
+  <Status name="Expired" terminal>Lapsed past its expiration date.</Status>
+</StatusFlow>
 
 Each line tracks its own progress too — **Not Started**, **In Progress**, **Complete**, or **No Quote** for a line you decline to bid. Finalizing a quote moves it to **Sent** and marks its lines **Complete**.
 

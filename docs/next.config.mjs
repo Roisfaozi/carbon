@@ -5,6 +5,9 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  // Consume the shared status→color constants (@carbon/utils/status-colors) — a pure-TS
+  // workspace module, so Next must transpile it.
+  transpilePackages: ["@carbon/utils"],
   // The monorepo pins React 18 (catalog) while this app runs React 19, so two
   // @types/react versions coexist and `next build` trips on the ReactNode /
   // ReactPortal type skew (a types-only artifact, not a runtime bug). Skip Next's
@@ -15,7 +18,6 @@ const config = {
   // internals (RSC navigation, HMR) unless the tunnel origin is whitelisted,
   // which otherwise breaks client-side navigation while SSR still renders.
   allowedDevOrigins: [
-    "grown-outgoing-shad.ngrok-free.app",
     "*.ngrok-free.app",
     "*.ngrok.app",
     "*.ngrok.io",
