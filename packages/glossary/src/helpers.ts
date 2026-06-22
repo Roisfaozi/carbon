@@ -32,11 +32,19 @@ function getAliasIndex(): Map<string, TermId> {
   return index;
 }
 
-/** Type-safe lookup. The id can be a canonical `TermId` or a known alias
- * (typed as `string` since aliases aren't in the literal union). Returns
- * `undefined` for an unknown alias — call `hasEntry` first if you need
- * that narrowed away. */
-export function getEntry(id: TermId | string): GlossaryEntry | undefined {
+/** Canonical lookup — total over `TermId`. Every member of `keyof typeof terms`
+ * is a key of `terms`, so this can't return `undefined`; call-sites that have a
+ * literal-typed id (e.g. `LabelWithHelp` props) don't have to handle a missing
+ * entry. For free-text or alias slugs use `lookupEntry` instead. */
+export function getEntry(id: TermId): GlossaryEntry {
+  return terms[id];
+}
+
+/** Partial lookup for free-text or alias slugs — e.g. the docs MDX
+ * `<Term>purchase to order</Term>` slugifies the text and probes the glossary.
+ * Returns the canonical entry for a known alias, `undefined` for an unknown
+ * slug. App code with a `TermId` should call `getEntry` instead. */
+export function lookupEntry(id: string): GlossaryEntry | undefined {
   if (Object.hasOwn(terms, id)) return terms[id as TermId];
   const canonical = getAliasIndex().get(id);
   return canonical ? terms[canonical] : undefined;

@@ -3,6 +3,7 @@ export {
   glossaryEntries,
   hasEntry,
   listEntries,
+  lookupEntry,
   type TermId,
   termSlug
 } from "./helpers";

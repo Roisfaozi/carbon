@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getEntry, hasEntry, termSlug } from "./helpers";
+import { getEntry, hasEntry, lookupEntry, termSlug } from "./helpers";
 import { terms } from "./terms";
 import type { GlossaryEntry } from "./types";
 
@@ -48,20 +48,26 @@ describe("glossary", () => {
     expect(termSlug("  Mixed-Case TEXT  ")).toBe("mixed-case-text");
   });
 
-  it("hasEntry / getEntry resolve canonical ids", () => {
-    expect(hasEntry("method")).toBe(true);
-    expect(hasEntry("not-a-real-slug")).toBe(false);
-    expect(getEntry("method")?.term).toBe("Method");
-    expect(getEntry("not-a-real-slug")).toBeUndefined();
+  it("getEntry is total over TermId", () => {
+    // `getEntry` is typed as `(id: TermId) => GlossaryEntry` — no undefined.
+    // Free-text/alias probes go through `lookupEntry` instead.
+    expect(getEntry("method").term).toBe("Method");
   });
 
-  it("hasEntry / getEntry resolve aliases to the canonical entry", () => {
+  it("hasEntry / lookupEntry resolve unknown slugs to nothing", () => {
+    expect(hasEntry("method")).toBe(true);
+    expect(hasEntry("not-a-real-slug")).toBe(false);
+    expect(lookupEntry("method")?.term).toBe("Method");
+    expect(lookupEntry("not-a-real-slug")).toBeUndefined();
+  });
+
+  it("hasEntry / lookupEntry resolve aliases to the canonical entry", () => {
     // `cogs` declares `aliases: ["cost-of-goods-sold"]`. The spelled-out slug
     // is not in `terms` but must resolve to the same canonical entry — that's
     // the whole point of the alias mechanism (lets MDX prose write either
     // form and land on the same definition).
     expect(hasEntry("cost-of-goods-sold")).toBe(true);
-    expect(getEntry("cost-of-goods-sold")).toBe(getEntry("cogs"));
+    expect(lookupEntry("cost-of-goods-sold")).toBe(getEntry("cogs"));
   });
 
   it("every declared alias points at exactly one canonical entry", () => {

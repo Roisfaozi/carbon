@@ -78,8 +78,8 @@ export function LabelWithHelp({
   className,
   tooltipDelayDuration = 200
 }: LabelWithHelpProps) {
-  const entry = termId !== undefined ? getEntry(termId) : undefined;
-  if (!entry) return <>{children}</>;
+  if (termId === undefined) return <>{children}</>;
+  const entry = getEntry(termId);
 
   // When the call-site provides a JSX override, it's responsible for any
   // in-app routing it wants to surface — auto-appending "Learn more" would
