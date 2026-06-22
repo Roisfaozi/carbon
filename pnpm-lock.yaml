@@ -568,9 +568,6 @@ importers:
       '@carbon/env':
         specifier: workspace:*
         version: link:../../packages/env
-      '@carbon/field-help':
-        specifier: workspace:*
-        version: link:../../packages/field-help
       '@carbon/form':
         specifier: workspace:*
         version: link:../../packages/form
@@ -2158,42 +2155,8 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
-  packages/field-help:
-    dependencies:
-      '@carbon/glossary':
-        specifier: workspace:*
-        version: link:../glossary
-    devDependencies:
-      '@carbon/config':
-        specifier: workspace:*
-        version: link:../config
-      '@carbon/react':
-        specifier: workspace:*
-        version: link:../react
-      '@types/react':
-        specifier: 'catalog:'
-        version: 18.3.28
-      react:
-        specifier: 'catalog:'
-        version: 18.3.1
-      react-icons:
-        specifier: 'catalog:'
-        version: 5.6.0(react@18.3.1)
-      rimraf:
-        specifier: 'catalog:'
-        version: 5.0.10
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.21.0)(typescript@5.8.3)(yaml@2.8.3)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-
   packages/form:
     dependencies:
-      '@carbon/field-help':
-        specifier: workspace:*
-        version: link:../field-help
       '@carbon/glossary':
         specifier: workspace:*
         version: link:../glossary
@@ -2629,6 +2592,9 @@ importers:
       '@carbon/env':
         specifier: workspace:*
         version: link:../env
+      '@carbon/glossary':
+        specifier: workspace:*
+        version: link:../glossary
       '@carbon/tiptap':
         specifier: workspace:*
         version: link:../tiptap

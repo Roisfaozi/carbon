@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { InputProps } from "@carbon/react";
 import {
@@ -8,7 +7,8 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputRightElement
+  InputRightElement,
+  LabelWithHelp
 } from "@carbon/react";
 import { forwardRef, useState } from "react";
 import { BiHide, BiShowAlt } from "react-icons/bi";

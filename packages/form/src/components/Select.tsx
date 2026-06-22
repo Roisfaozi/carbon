@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import {
   buttonVariants,
@@ -10,6 +9,7 @@ import {
   FormLabel,
   HStack,
   IconButton,
+  LabelWithHelp,
   SelectContent,
   SelectItem,
   SelectTrigger,

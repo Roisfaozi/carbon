@@ -1,9 +1,9 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  LabelWithHelp,
   TimePicker as TimePickerBase
 } from "@carbon/react";
 import type {

@@ -1,11 +1,11 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import { useFormContext } from "@carbon/form";
 import type { TermId } from "@carbon/glossary";
 import {
   DatePicker as DatePickerBase,
   FormControl,
   FormErrorMessage,
-  FormLabel
+  FormLabel,
+  LabelWithHelp
 } from "@carbon/react";
 import { formatDate } from "@carbon/utils";
 import type { CalendarDate } from "@internationalized/date";

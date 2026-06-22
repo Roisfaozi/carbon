@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import { useField } from "@carbon/form";
 import type { TermId } from "@carbon/glossary";
 import type { InputProps } from "@carbon/react";
@@ -10,7 +9,8 @@ import {
   FormHelperText,
   FormLabel,
   IconButton,
-  Input
+  Input,
+  LabelWithHelp
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { forwardRef, useState } from "react";

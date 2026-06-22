@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import { useControlField, useField } from "@carbon/form";
 import type { TermId } from "@carbon/glossary";
 import {
@@ -10,6 +9,7 @@ import {
   FormHelperText,
   FormLabel,
   HStack,
+  LabelWithHelp,
   Modal,
   ModalBody,
   ModalContent,

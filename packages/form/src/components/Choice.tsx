@@ -1,6 +1,5 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
-import { cn, RadioGroup, RadioGroupItem } from "@carbon/react";
+import { cn, LabelWithHelp, RadioGroup, RadioGroupItem } from "@carbon/react";
 import type { ReactNode } from "react";
 
 /**

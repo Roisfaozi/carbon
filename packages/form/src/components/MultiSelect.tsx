@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { MultiSelectProps as MultiSelectBaseProps } from "@carbon/react";
 import {
@@ -7,6 +6,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  LabelWithHelp,
   MultiSelect as MultiSelectBase
 } from "@carbon/react";
 

@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { InputProps } from "@carbon/react";
 import {
@@ -9,7 +8,8 @@ import {
   Input as InputBase,
   InputGroup,
   InputLeftAddon,
-  InputRightAddon
+  InputRightAddon,
+  LabelWithHelp
 } from "@carbon/react";
 import type { ChangeEvent, ReactNode } from "react";
 import { forwardRef, useState } from "react";

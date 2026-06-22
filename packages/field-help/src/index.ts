@@ -1,1 +1,0 @@
-export { LabelWithHelp } from "./LabelWithHelp";

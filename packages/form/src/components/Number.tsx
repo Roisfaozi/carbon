@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { NumberFieldProps } from "@carbon/react";
 import {
@@ -6,6 +5,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
+  LabelWithHelp,
   NumberDecrementStepper,
   NumberField,
   NumberIncrementStepper,

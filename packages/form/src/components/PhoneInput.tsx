@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { InputProps } from "@carbon/react";
 import {
@@ -14,6 +13,7 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  LabelWithHelp,
   Popover,
   PopoverContent,
   PopoverTrigger

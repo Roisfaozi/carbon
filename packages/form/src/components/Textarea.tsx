@@ -1,10 +1,10 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { TextareaProps } from "@carbon/react";
 import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  LabelWithHelp,
   Textarea as TextAreaBase
 } from "@carbon/react";
 import type { ChangeEvent } from "react";

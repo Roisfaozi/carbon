@@ -25,7 +25,6 @@
     "vitest": "catalog:"
   },
   "dependencies": {
-    "@carbon/field-help": "workspace:*",
     "@carbon/glossary": "workspace:*",
     "@internationalized/date": "catalog:",
     "@react-aria/i18n": "catalog:",

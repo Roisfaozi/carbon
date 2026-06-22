@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import {
   cn,
@@ -8,6 +7,7 @@ import {
   FormLabel,
   HStack,
   Label,
+  LabelWithHelp,
   Switch,
   VStack
 } from "@carbon/react";

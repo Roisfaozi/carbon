@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { ComboboxProps as ComboboxBaseProps } from "@carbon/react";
 import {
@@ -6,7 +5,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
-  FormLabel
+  FormLabel,
+  LabelWithHelp
 } from "@carbon/react";
 import { useEffect } from "react";
 import { flushSync } from "react-dom";

@@ -1,4 +1,3 @@
-import { LabelWithHelp } from "@carbon/field-help";
 import type { TermId } from "@carbon/glossary";
 import type { InputProps } from "@carbon/react";
 import {
@@ -9,6 +8,7 @@ import {
   HStack,
   IconButton,
   Input as InputBase,
+  LabelWithHelp,
   VStack
 } from "@carbon/react";
 import { forwardRef, useRef } from "react";
