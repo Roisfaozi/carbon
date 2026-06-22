@@ -3,7 +3,11 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { buildDryRunReport } from "./migration-runner.ts";
+import {
+  buildDryRunReport,
+  executeMigrationPlan,
+  type MigrationImportExecutionResult,
+} from "./migration-runner.ts";
 import { carbonCanonicalProfile } from "./migration-source-profiles.ts";
 import { expectedScenarioSchema } from "./fixture-schema.ts";
 
@@ -196,4 +200,197 @@ test("buildDryRunReport accepts supplier blank IDs without duplicate failures", 
   });
 
   assert.equal(report.status, "pass");
+});
+
+test("executeMigrationPlan refuses to run when dry-run validation fails", async () => {
+  const report = buildDryRunReport({
+    scenario: "missing-required-customer-name",
+    profile: {
+      id: "test-profile",
+      name: "Test Profile",
+      tables: [
+        {
+          table: "customer",
+          fileName: "customer.csv",
+          columnMappings: { id: "id", name: "name" },
+          requiredFields: ["id", "name"],
+        },
+      ],
+    },
+    files: {
+      "customer.csv": "id,name\nCUST-1,\n",
+    },
+  });
+  let executorCalls = 0;
+
+  const execution = await executeMigrationPlan(report, async () => {
+    executorCalls += 1;
+    return { inserted: 1, updated: 0, skipped: 0, errors: [] };
+  });
+
+  assert.equal(executorCalls, 0);
+  assert.equal(execution.status, "fail");
+  assert.deepEqual(execution.errors, [
+    { table: "customer", row: 0, reason: "Missing required field: name" },
+  ]);
+});
+
+test("executeMigrationPlan runs import requests sequentially in profile order", async () => {
+  const report = buildDryRunReport({
+    scenario: "golden-happy-v1",
+    profile: carbonCanonicalProfile,
+    files: Object.fromEntries(
+      carbonCanonicalProfile.tables.map((table) => [table.fileName, csvFile(table.fileName)])
+    ),
+  });
+  const calls: string[] = [];
+  const result: MigrationImportExecutionResult = {
+    inserted: 1,
+    updated: 2,
+    skipped: 3,
+    errors: [],
+  };
+
+  const execution = await executeMigrationPlan(report, async (request) => {
+    calls.push(request.table);
+    return result;
+  });
+
+  assert.deepEqual(
+    calls,
+    carbonCanonicalProfile.tables.map((table) => table.table)
+  );
+  assert.equal(execution.status, "pass");
+  assert.deepEqual(execution.summary, {
+    inserted: carbonCanonicalProfile.tables.length,
+    updated: carbonCanonicalProfile.tables.length * 2,
+    skipped: carbonCanonicalProfile.tables.length * 3,
+  });
+});
+
+test("executeMigrationPlan stops after first table result with row errors", async () => {
+  const report = buildDryRunReport({
+    scenario: "three-table-fail-fast",
+    profile: {
+      id: "test-profile",
+      name: "Test Profile",
+      tables: [
+        {
+          table: "customer",
+          fileName: "customer.csv",
+          columnMappings: { id: "id", name: "name" },
+          requiredFields: ["id", "name"],
+        },
+        {
+          table: "supplier",
+          fileName: "supplier.csv",
+          columnMappings: { id: "id", name: "name" },
+          requiredFields: ["id", "name"],
+        },
+        {
+          table: "process",
+          fileName: "process.csv",
+          columnMappings: { id: "id", name: "name", processType: "processType" },
+          requiredFields: ["id", "name", "processType"],
+        },
+      ],
+    },
+    files: {
+      "customer.csv": "id,name\nCUST-1,Acme\n",
+      "supplier.csv": "id,name\nSUP-1,Supplier\n",
+      "process.csv": "id,name,processType\nPROC-1,Process,Inside\n",
+    },
+  });
+  const calls: string[] = [];
+
+  const execution = await executeMigrationPlan(report, async (request) => {
+    calls.push(request.table);
+    if (request.table === "supplier") {
+      return {
+        inserted: 0,
+        updated: 0,
+        skipped: 1,
+        errors: [{ row: 0, reason: "Supplier import failed" }],
+      };
+    }
+    return { inserted: 1, updated: 0, skipped: 0, errors: [] };
+  });
+
+  assert.deepEqual(calls, ["customer", "supplier"]);
+  assert.equal(execution.status, "fail");
+  assert.deepEqual(
+    execution.executedTables.map((table) => table.table),
+    ["customer", "supplier"]
+  );
+  assert.deepEqual(execution.errors, [
+    { table: "supplier", row: 0, reason: "Supplier import failed" },
+  ]);
+});
+
+test("executeMigrationPlan captures thrown executor errors and stops", async () => {
+  const report = buildDryRunReport({
+    scenario: "executor-throws",
+    profile: {
+      id: "test-profile",
+      name: "Test Profile",
+      tables: [
+        {
+          table: "customer",
+          fileName: "customer.csv",
+          columnMappings: { id: "id", name: "name" },
+          requiredFields: ["id", "name"],
+        },
+        {
+          table: "supplier",
+          fileName: "supplier.csv",
+          columnMappings: { id: "id", name: "name" },
+          requiredFields: ["id", "name"],
+        },
+      ],
+    },
+    files: {
+      "customer.csv": "id,name\nCUST-1,Acme\n",
+      "supplier.csv": "id,name\nSUP-1,Supplier\n",
+    },
+  });
+  const calls: string[] = [];
+
+  const execution = await executeMigrationPlan(report, async (request) => {
+    calls.push(request.table);
+    throw new Error("Edge function unavailable");
+  });
+
+  assert.deepEqual(calls, ["customer"]);
+  assert.equal(execution.status, "fail");
+  assert.deepEqual(execution.errors, [
+    { table: "customer", reason: "Edge function unavailable" },
+  ]);
+});
+
+test("executeMigrationPlan can replay golden fixture requests with deterministic fake counts", async () => {
+  const report = buildDryRunReport({
+    scenario: "golden-happy-v1",
+    profile: carbonCanonicalProfile,
+    files: Object.fromEntries(
+      carbonCanonicalProfile.tables.map((table) => [table.fileName, csvFile(table.fileName)])
+    ),
+    filePathPrefix: "migration/golden",
+  });
+  const rowCountByTable = new Map(report.tables.map((table) => [table.table, table.rowCount]));
+
+  const execution = await executeMigrationPlan(report, async (request) => ({
+    inserted: rowCountByTable.get(request.table) ?? 0,
+    updated: 0,
+    skipped: 0,
+    errors: [],
+  }));
+
+  assert.equal(execution.status, "pass");
+  assert.equal(execution.summary.inserted, report.totalRows);
+  assert.equal(execution.summary.updated, 0);
+  assert.equal(execution.summary.skipped, 0);
+  assert.deepEqual(
+    execution.executedTables.map((table) => table.filePath),
+    carbonCanonicalProfile.tables.map((table) => `migration/golden/${table.fileName}`)
+  );
 });

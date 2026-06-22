@@ -67,6 +67,36 @@ export type MigrationDryRunReport = {
   importRequests: MigrationImportRequest[];
 };
 
+export type MigrationImportExecutionResult = {
+  inserted: number;
+  updated: number;
+  skipped: number;
+  errors: Array<{ row: number; reason: string }>;
+};
+
+export type MigrationImportExecutor = (
+  request: MigrationImportRequest
+) => Promise<MigrationImportExecutionResult>;
+
+export type MigrationExecutionTable = MigrationImportExecutionResult & {
+  table: string;
+  filePath: string;
+  status: "pass" | "fail";
+};
+
+export type MigrationExecutionReport = {
+  scenario: string;
+  status: "pass" | "fail";
+  dryRun: MigrationDryRunReport;
+  executedTables: MigrationExecutionTable[];
+  summary: {
+    inserted: number;
+    updated: number;
+    skipped: number;
+  };
+  errors: Array<{ table: string; row?: number; reason: string }>;
+};
+
 export function buildDryRunReport(args: {
   scenario: string;
   profile: SourceProfile;
@@ -121,5 +151,71 @@ export function buildDryRunReport(args: {
     errors,
     warnings,
     importRequests,
+  };
+}
+
+export async function executeMigrationPlan(
+  report: MigrationDryRunReport,
+  executor: MigrationImportExecutor
+): Promise<MigrationExecutionReport> {
+  if (report.status === "fail") {
+    return {
+      scenario: report.scenario,
+      status: "fail",
+      dryRun: report,
+      executedTables: [],
+      summary: { inserted: 0, updated: 0, skipped: 0 },
+      errors: report.errors,
+    };
+  }
+
+  const executedTables: MigrationExecutionTable[] = [];
+  const errors: Array<{ table: string; row?: number; reason: string }> = [];
+  const summary = { inserted: 0, updated: 0, skipped: 0 };
+
+  for (const request of report.importRequests) {
+    try {
+      const result = await executor(request);
+      executedTables.push({
+        table: request.table,
+        filePath: request.filePath,
+        status: result.errors.length > 0 ? "fail" : "pass",
+        ...result,
+      });
+      summary.inserted += result.inserted;
+      summary.updated += result.updated;
+      summary.skipped += result.skipped;
+
+      if (result.errors.length > 0) {
+        errors.push(
+          ...result.errors.map((error) => ({ table: request.table, ...error }))
+        );
+        break;
+      }
+    } catch (err) {
+      errors.push({
+        table: request.table,
+        reason: err instanceof Error ? err.message : "Execution failed",
+      });
+      executedTables.push({
+        table: request.table,
+        filePath: request.filePath,
+        status: "fail",
+        inserted: 0,
+        updated: 0,
+        skipped: 0,
+        errors: [{ row: 0, reason: err instanceof Error ? err.message : "Execution failed" }],
+      });
+      break;
+    }
+  }
+
+  return {
+    scenario: report.scenario,
+    status: errors.length > 0 ? "fail" : "pass",
+    dryRun: report,
+    executedTables,
+    summary,
+    errors,
   };
 }
