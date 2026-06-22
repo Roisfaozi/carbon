@@ -19,7 +19,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  useDisclosure,
   useOptimisticLocation,
   VStack
 } from "@carbon/react";
@@ -39,7 +38,6 @@ import {
 import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 import { MethodIcon, MethodItemTypeIcon } from "~/components";
 import { OnshapeStatus } from "~/components/Icons";
-import { ImportCSVModal } from "~/components/ImportCSVModal";
 import { OnshapeSync } from "~/components/OnshapeSync";
 import type { FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
@@ -156,8 +154,6 @@ const BoMExplorer = ({
       if (node?.id) selectNode(node?.id);
     }
   }, [selectedMaterialId, params.methodId]);
-
-  const importBomDisclosure = useDisclosure();
 
   return (
     <>
@@ -409,12 +405,6 @@ const BoMExplorer = ({
           />
         </div>
       </VStack>
-      {importBomDisclosure.isOpen && (
-        <ImportCSVModal
-          table={"methodMaterial"}
-          onClose={() => importBomDisclosure.onClose()}
-        />
-      )}
     </>
   );
 };

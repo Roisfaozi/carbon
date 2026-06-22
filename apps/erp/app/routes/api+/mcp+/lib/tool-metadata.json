@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-20T20:51:51.796Z",
-  "totalTools": 1207,
+  "generated": "2026-06-22T02:53:05.724Z",
+  "totalTools": 1209,
   "modules": 15,
   "tools": [
     {
@@ -36040,7 +36040,7 @@
       "module": "shared",
       "classification": "WRITE",
       "description": "import csv",
-      "paramCount": 4,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "args"
@@ -36051,19 +36051,52 @@
       "schema": {
         "type": "object",
         "properties": {
-          "table": {
-            "type": "string"
-          },
-          "filePath": {
-            "type": "string"
-          },
-          "columnMappings": {},
-          "enumMappings": {}
+          "args": {}
         },
         "required": [
-          "table",
-          "filePath",
-          "columnMappings"
+          "args"
+        ]
+      }
+    },
+    {
+      "name": "shared_createImportCsvExecutor",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "create import csv executor",
+      "paramCount": 0,
+      "serviceParams": [
+        "client"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shared_executeMigrationImportPlan",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "execute migration import plan",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "report"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "report": {}
+        },
+        "required": [
+          "report"
         ]
       }
     },

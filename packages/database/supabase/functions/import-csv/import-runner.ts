@@ -66,11 +66,13 @@ export function parsePermissiveCsv(text: string): Record<string, string>[] {
 
   if (rows.length === 0) return [];
 
-  const headers = rows[0];
+  const headers = rows[0] ?? [];
   return rows.slice(1).map((r) => {
     const obj: Record<string, string> = {};
     for (let i = 0; i < headers.length; i++) {
-      obj[headers[i]] = r[i] ?? "";
+      const header = headers[i];
+      if (header === undefined) continue;
+      obj[header] = r[i] ?? "";
     }
     return obj;
   });
@@ -87,14 +89,15 @@ export function mapCsvRecords(
     for (const [key, value] of Object.entries(columnMappings)) {
       if (key in enumMappings) {
         const enumMapping = enumMappings[key];
-        const csvValue = row[value];
+        if (!enumMapping) continue;
+        const csvValue = row[value] ?? "";
         if (csvValue in enumMapping) {
-          record[key] = enumMapping[csvValue];
+          record[key] = enumMapping[csvValue] ?? "";
         } else {
-          record[key] = enumMapping["Default"];
+          record[key] = enumMapping["Default"] ?? "";
         }
       } else if (value && value !== "N/A") {
-        record[key] = row[value] || "";
+        record[key] = row[value] ?? "";
       }
     }
 
@@ -109,7 +112,7 @@ export function applyMissingEnumDefaults(
   if (mappedRecords.length === 0) return mappedRecords;
 
   const missingEnumKeys = Object.keys(enumMappings).filter(
-    (key) => !(key in mappedRecords[0])
+    (key) => !(key in (mappedRecords[0] ?? {}))
   );
 
   if (missingEnumKeys.length === 0) return mappedRecords;
@@ -118,7 +121,7 @@ export function applyMissingEnumDefaults(
     const processedRecord = { ...record };
 
     for (const key of missingEnumKeys) {
-      processedRecord[key] = enumMappings[key]["Default"];
+      processedRecord[key] = enumMappings[key]?.["Default"] ?? "";
     }
 
     return processedRecord;

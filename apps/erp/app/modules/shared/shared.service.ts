@@ -1,5 +1,11 @@
 import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
+import type {
+  MigrationDryRunReport,
+  MigrationExecutionReport,
+  MigrationImportExecutor,
+  MigrationImportRequest
+} from "@carbon/database/migration";
 import { getPurchaseOrderStatus, supportedModelTypes } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -950,20 +956,49 @@ export async function hasPendingApproval(
   return (result.data?.length ?? 0) > 0;
 }
 
+export type ImportCsvArgs = {
+  table: string;
+  filePath: string;
+  columnMappings: Record<string, string>;
+  enumMappings?: Record<string, Record<string, string>>;
+  companyId: string;
+  userId: string;
+};
+
 export async function importCsv(
   client: SupabaseClient<Database>,
-  args: {
-    table: string;
-    filePath: string;
-    columnMappings: Record<string, string>;
-    enumMappings?: Record<string, Record<string, string>>;
-    companyId: string;
-    userId: string;
-  }
+  args: ImportCsvArgs
 ) {
   return client.functions.invoke("import-csv", {
     body: args
   });
+}
+
+export function createImportCsvExecutor(
+  client: SupabaseClient<Database>
+): MigrationImportExecutor {
+  return async (request: MigrationImportRequest) => {
+    const result = await importCsv(client, request);
+
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
+    return {
+      inserted: result.data?.inserted ?? 0,
+      updated: result.data?.updated ?? 0,
+      skipped: result.data?.skipped ?? 0,
+      errors: result.data?.errors ?? []
+    };
+  };
+}
+
+export async function executeMigrationImportPlan(
+  client: SupabaseClient<Database>,
+  report: MigrationDryRunReport
+): Promise<MigrationExecutionReport> {
+  const { executeMigrationPlan } = await import("@carbon/database/migration");
+  return executeMigrationPlan(report, createImportCsvExecutor(client));
 }
 
 export async function insertNote(
