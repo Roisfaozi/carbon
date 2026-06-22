@@ -273,9 +273,10 @@ The import CSV package includes a migration test foundation under `/packages/dat
 - `imports.contract.test.ts` keeps ERP import tables, app schemas, edge-supported tables, material field names, and enum-mapping payload typing aligned.
 - `migration-source-profiles.ts` defines the canonical Carbon source profile and table execution order for migration planning.
 - `migration-runner.ts` builds deterministic dry-run reports, validates required and unique fields, and plans `import-csv` requests without executing database writes.
-- `migration-runner.test.ts` covers golden-row counting, required-field failures, duplicate-id failures, import-request planning, golden summary comparison, and supported edge-case scenarios.
+- `executeMigrationPlan` in `migration-runner.ts` adds deterministic apply orchestration over dry-run `importRequests` via an injected executor; it refuses failed dry-runs, executes sequentially, aggregates counts, and fails fast on table errors or executor exceptions without directly calling Supabase or Postgres.
+- `migration-runner.test.ts` covers golden-row counting, required-field failures, duplicate-id failures, import-request planning, golden summary comparison, supported edge-case scenarios, dry-run execution guards, sequential execution order, fail-fast execution, thrown executor errors, and fixture-backed fake apply summaries.
 - The canonical source profile and golden manifest must stay aligned so migration coverage and fixture coverage do not drift.
-- The dry-run runner is intentionally pure and deterministic; orchestration may consume it later, but it does not write to Supabase or Postgres itself.
+- The dry-run/apply runner is intentionally pure and deterministic; real execution is injected by callers, so the runner itself does not write to Supabase or Postgres.
 - `fixedAsset` and `methodMaterial` remain excluded from supported CSV imports until their end-to-end semantics are implemented.
 - Future phases should build orchestration and execution on top of this source-profile + dry-run layer, not bypass it.
 
