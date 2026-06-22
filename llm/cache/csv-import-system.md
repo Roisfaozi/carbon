@@ -274,6 +274,9 @@ The import CSV package includes a migration test foundation under `/packages/dat
 - `migration-source-profiles.ts` defines the canonical Carbon source profile and table execution order for migration planning.
 - `migration-runner.ts` builds deterministic dry-run reports, validates required and unique fields, and plans `import-csv` requests without executing database writes.
 - `executeMigrationPlan` in `migration-runner.ts` adds deterministic apply orchestration over dry-run `importRequests` via an injected executor; it refuses failed dry-runs, executes sequentially, aggregates counts, and fails fast on table errors or executor exceptions without directly calling Supabase or Postgres.
+- `@carbon/database/migration` re-exports the migration runner and canonical source-profile API for ERP app code without importing raw `supabase/functions` files.
+- `apps/erp/app/modules/shared/shared.service.ts` now exposes `ImportCsvArgs`, `createImportCsvExecutor(client)`, and `executeMigrationImportPlan(client, report)` so real migration apply can reuse the existing `importCsv(...)` edge-function wrapper while keeping the runner pure.
+- `apps/erp/app/routes/x+/shared+/import.$tableId.tsx` remains the single-table import seam; route tests now lock validation failure and edge-function error passthrough behavior.
 - `migration-runner.test.ts` covers golden-row counting, required-field failures, duplicate-id failures, import-request planning, golden summary comparison, supported edge-case scenarios, dry-run execution guards, sequential execution order, fail-fast execution, thrown executor errors, and fixture-backed fake apply summaries.
 - The canonical source profile and golden manifest must stay aligned so migration coverage and fixture coverage do not drift.
 - The dry-run/apply runner is intentionally pure and deterministic; real execution is injected by callers, so the runner itself does not write to Supabase or Postgres.
