@@ -35,7 +35,7 @@ const Shape = (props: ShapeSelectProps) => {
     onCreate: () => newShapeModal.onOpen()
   });
 
-  return permissions.can("create", "inventory") ? (
+  return permissions.can("create", "parts") ? (
     <>
       <CreatableCombobox
         ref={triggerRef}

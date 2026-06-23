@@ -7492,9 +7492,6 @@ msgstr "Sürüm {0}\"ü Aktif Sürüm Olarak Ayarla?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Bir depolama birimi seçmek için varsayılan konumunuzu profil ayarlarınızda belirleyin."
 
-msgid "settings"
-msgstr ""
-
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -8147,12 +8144,6 @@ msgstr "Tablo"
 
 msgid "Table actions"
 msgstr "Tablo işlemleri"
-
-msgid "tag"
-msgstr ""
-
-msgid "tags"
-msgstr ""
 
 msgid "Tags"
 msgstr "Etiketler"

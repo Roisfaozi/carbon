@@ -216,7 +216,7 @@ function useNewStorageUnitModal(locationId?: string | null) {
     modal.onOpen();
   };
 
-  return { triggerRef, onCreateOption, node };
+  return { triggerRef, onCreateOption, onOpen: modal.onOpen, node };
 }
 
 const storageUnitPreview = (
@@ -279,15 +279,13 @@ function StorageUnit({
   onChange
 }: StorageUnitProps) {
   const options = useStorageUnitLeafOptions(locationId, itemId);
-  const { triggerRef, onCreateOption, node } =
+  const { triggerRef, onCreateOption, onOpen, node } =
     useNewStorageUnitModal(locationId);
   const readOnly = isReadOnly || disabled;
 
   const emptyMessage = useEmptyState(
     "storageUnit",
-    allowCreate && locationId
-      ? { onCreate: () => onCreateOption("") }
-      : undefined
+    allowCreate && locationId ? { onCreate: onOpen } : undefined
   );
 
   if (name) {

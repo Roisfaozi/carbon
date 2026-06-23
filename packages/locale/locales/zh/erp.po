@@ -7492,9 +7492,6 @@ msgstr "将版本 {0} 设置为活跃版本？"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "在个人资料设置中设置默认位置以选择存储单位。"
 
-msgid "settings"
-msgstr ""
-
 msgid "Settings"
 msgstr "设置"
 
@@ -8147,12 +8144,6 @@ msgstr "表"
 
 msgid "Table actions"
 msgstr "表格操作"
-
-msgid "tag"
-msgstr ""
-
-msgid "tags"
-msgstr ""
 
 msgid "Tags"
 msgstr "标签"

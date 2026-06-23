@@ -65,9 +65,12 @@ const Items = (props: ItemsSelectProps) => {
     triggerRef.current?.click();
   };
 
-  const emptyMessage = useEmptyState("item", {
+  const storeEmptyMessage = useEmptyState("item", {
     onCreate: () => selectTypeModal.onOpen()
   });
+  // Suppress when the store has inactive items but no active ones (filter
+  // narrowed to zero) — see Item.tsx for the same pattern.
+  const emptyMessage = items.length === 0 ? storeEmptyMessage : undefined;
 
   return (
     <>

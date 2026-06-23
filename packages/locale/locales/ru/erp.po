@@ -7492,9 +7492,6 @@ msgstr "Установить версию {0} как активную верси
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Установите местоположение по умолчанию в настройках профиля, чтобы выбрать единицу хранения."
 
-msgid "settings"
-msgstr ""
-
 msgid "Settings"
 msgstr "Параметры"
 
@@ -8147,12 +8144,6 @@ msgstr "Таблица"
 
 msgid "Table actions"
 msgstr "Действия таблицы"
-
-msgid "tag"
-msgstr ""
-
-msgid "tags"
-msgstr ""
 
 msgid "Tags"
 msgstr "Теги"

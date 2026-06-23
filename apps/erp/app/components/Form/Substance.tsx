@@ -35,7 +35,7 @@ const Substance = (props: SubstanceSelectProps) => {
     onCreate: () => newSubstanceModal.onOpen()
   });
 
-  return permissions.can("create", "inventory") ? (
+  return permissions.can("create", "parts") ? (
     <>
       <CreatableCombobox
         ref={triggerRef}

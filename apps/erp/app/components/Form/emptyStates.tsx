@@ -49,7 +49,6 @@ export type EntityKey =
   | "supplierLocation"
   | "supplierProcess"
   | "item"
-  | "tag"
   | "gauge"
   | "storageUnit"
   | "unitOfMeasure"
@@ -349,15 +348,6 @@ const useEntityCopy = (entity: EntityKey): EntityCopy => {
         noun: t`item`,
         pluralNoun: t`items`,
         moduleLabel: t`parts`
-      };
-    case "tag":
-      return {
-        module: "settings",
-        action: "create",
-        route: path.to.tags,
-        noun: t`tag`,
-        pluralNoun: t`tags`,
-        moduleLabel: t`settings`
       };
     case "gauge":
       return {

@@ -6,7 +6,6 @@ import { LuTags } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import type { action } from "~/routes/x+/settings+/tags.new";
 import { path } from "~/utils/path";
-import { useEmptyState } from "./emptyStates";
 
 type TagsSelectProps = Omit<
   CreatableMultiSelectProps,
@@ -58,8 +57,6 @@ const Tags = ({ table, availableTags, ...props }: TagsSelectProps) => {
     [availableTags]
   );
 
-  const emptyMessage = useEmptyState("tag");
-
   return (
     <CreatableMultiSelect
       label={props?.label ?? "Tag"}
@@ -68,7 +65,6 @@ const Tags = ({ table, availableTags, ...props }: TagsSelectProps) => {
       showCreateOptionOnEmpty={false}
       inline={props.inline ? TagsPreview : undefined}
       inlineIcon={<LuTags />}
-      emptyMessage={emptyMessage}
       onCreateOption={(option) => {
         if (!option) return;
 

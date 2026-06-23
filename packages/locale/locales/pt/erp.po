@@ -7492,9 +7492,6 @@ msgstr "Definir Versão {0} como Versão Ativa?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Defina sua localização padrão nas configurações de perfil para escolher uma unidade de armazenamento."
 
-msgid "settings"
-msgstr ""
-
 msgid "Settings"
 msgstr "Configurações"
 
@@ -8147,12 +8144,6 @@ msgstr "Tabela"
 
 msgid "Table actions"
 msgstr "Ações da tabela"
-
-msgid "tag"
-msgstr ""
-
-msgid "tags"
-msgstr ""
 
 msgid "Tags"
 msgstr "Etiquetas"

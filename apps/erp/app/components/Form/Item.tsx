@@ -201,7 +201,7 @@ const Item = ({
             ? "consumable"
             : "item";
 
-  const emptyMessage = useEmptyState(entityKey, {
+  const storeEmptyMessage = useEmptyState(entityKey, {
     onCreate: () => {
       if (type === "Item") {
         selectTypeModal.onOpen();
@@ -210,6 +210,10 @@ const Item = ({
       }
     }
   });
+  // Only surface the empty state when the underlying store has no items at all
+  // — when filters (validItemTypes, replenishmentSystem, whitelist, …) narrow
+  // to zero, fall back to the bare empty list so the CTA doesn't mislead.
+  const emptyMessage = items.length === 0 ? storeEmptyMessage : undefined;
 
   return (
     <>
