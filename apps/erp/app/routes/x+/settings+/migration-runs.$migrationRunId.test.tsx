@@ -1,6 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { describe, expect, it, vi } from "vitest";
-import { loader } from "./migration-runs.$migrationRunId";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 const { getMigrationRun } = vi.hoisted(() => ({
   getMigrationRun: vi.fn()
@@ -10,9 +9,17 @@ vi.mock("@carbon/auth/auth.server", () => ({
   requirePermissions: vi.fn()
 }));
 
+vi.mock("~/modules/settings", () => ({
+  MigrationRunDetail: vi.fn(() => null)
+}));
+
 vi.mock("~/modules/shared", () => ({
   getMigrationRun
 }));
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
 
 describe("migration-runs detail loader", () => {
   it("returns persisted snapshots for one run", async () => {
@@ -30,6 +37,7 @@ describe("migration-runs detail loader", () => {
       error: null
     } as any);
 
+    const { loader } = await import("./migration-runs.$migrationRunId");
     const result = await loader({
       request: new Request("http://localhost/x/settings/migration-runs/run-1"),
       params: { migrationRunId: "run-1" }

@@ -28,6 +28,10 @@ vi.mock("@carbon/jobs", () => ({
   trigger
 }));
 
+vi.mock("~/modules/settings", () => ({
+  MigrationRunForm: vi.fn(() => null)
+}));
+
 vi.mock("~/modules/shared", () => ({
   createMigrationRun
 }));
