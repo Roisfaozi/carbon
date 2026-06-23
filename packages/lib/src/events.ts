@@ -297,6 +297,16 @@ export type Events = {
     };
   };
 
+  // Migration run events
+  "carbon/migration-run": {
+    data: {
+      migrationRunId: string;
+      companyId: string;
+      userId: string;
+      action: "dry-run" | "apply";
+    };
+  };
+
   // Cleanup tasks
   "carbon/cleanup": {
     data: Record<string, never>;

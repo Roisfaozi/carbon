@@ -39,6 +39,7 @@ import {
   weeklyFunction
 } from "./functions/scheduled";
 import {
+  migrationRunFunction,
   modelThumbnailFunction,
   onboardFunction,
   postTransactionFunction,
@@ -72,6 +73,7 @@ export const functions = [
   postTransactionFunction,
   rescheduleJobFunction,
   onboardFunction,
+  migrationRunFunction,
   printJobFunction,
   printJobDeliverFunction,
   // Scheduled

@@ -1,1 +1,4 @@
-export { type InngestClient, inngest } from "@carbon/lib/inngest";
+import { Inngest } from "inngest";
+
+export const inngest = new Inngest({ id: "carbon" });
+export type InngestClient = typeof inngest;

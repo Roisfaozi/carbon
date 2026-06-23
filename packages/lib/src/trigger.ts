@@ -8,6 +8,7 @@ import { inngest } from "./inngest/client.ts";
  */
 const taskToEvent = {
   "accounting-backfill": "carbon/accounting-backfill",
+  "migration-run": "carbon/migration-run",
   "model-thumbnail": "carbon/model-thumbnail",
   notify: "carbon/notify",
   onboard: "carbon/onboard",
