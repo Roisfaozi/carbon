@@ -4813,6 +4813,9 @@ msgstr "メートル法の単位は無効です"
 msgid "Metric units are enabled"
 msgstr "メートル法単位が有効です"
 
+msgid "Migration Runs"
+msgstr ""
+
 msgid "Min Qty"
 msgstr "最小数量"
 

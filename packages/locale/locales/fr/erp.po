@@ -4813,6 +4813,9 @@ msgstr "Les unités métriques sont désactivées"
 msgid "Metric units are enabled"
 msgstr "Les unités métriques sont activées"
 
+msgid "Migration Runs"
+msgstr ""
+
 msgid "Min Qty"
 msgstr "Qté min"
 

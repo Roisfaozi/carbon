@@ -4813,6 +4813,9 @@ msgstr "मीट्रिक इकाइयाँ अक्षम हैं"
 msgid "Metric units are enabled"
 msgstr "मीट्रिक इकाइयाँ सक्षम हैं"
 
+msgid "Migration Runs"
+msgstr ""
+
 msgid "Min Qty"
 msgstr "न्यूनतम मात्रा"
 
