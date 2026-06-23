@@ -47,7 +47,17 @@ export type EntityKey =
   | "customerLocation"
   | "supplierContact"
   | "supplierLocation"
-  | "supplierProcess";
+  | "supplierProcess"
+  | "item"
+  | "tag"
+  | "gauge"
+  | "storageUnit"
+  | "unitOfMeasure"
+  | "materialDimension"
+  | "materialFinish"
+  | "materialGrade"
+  | "materialSubstance"
+  | "materialShape";
 
 const useEntityCopy = (entity: EntityKey): EntityCopy => {
   const { t } = useLingui();
@@ -330,6 +340,96 @@ const useEntityCopy = (entity: EntityKey): EntityCopy => {
         noun: t`supplier process`,
         pluralNoun: t`supplier processes`,
         moduleLabel: t`purchasing`
+      };
+    case "item":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.parts,
+        noun: t`item`,
+        pluralNoun: t`items`,
+        moduleLabel: t`parts`
+      };
+    case "tag":
+      return {
+        module: "settings",
+        action: "create",
+        route: path.to.tags,
+        noun: t`tag`,
+        pluralNoun: t`tags`,
+        moduleLabel: t`settings`
+      };
+    case "gauge":
+      return {
+        module: "quality",
+        action: "create",
+        route: path.to.gauges,
+        noun: t`gauge`,
+        pluralNoun: t`gauges`,
+        moduleLabel: t`quality`
+      };
+    case "storageUnit":
+      return {
+        module: "inventory",
+        action: "create",
+        route: path.to.storageUnits,
+        noun: t`storage unit`,
+        pluralNoun: t`storage units`,
+        moduleLabel: t`inventory`
+      };
+    case "unitOfMeasure":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.uoms,
+        noun: t`unit of measure`,
+        pluralNoun: t`units of measure`,
+        moduleLabel: t`parts`
+      };
+    case "materialDimension":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.materialDimensions,
+        noun: t`dimension`,
+        pluralNoun: t`dimensions`,
+        moduleLabel: t`parts`
+      };
+    case "materialFinish":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.materialFinishes,
+        noun: t`finish`,
+        pluralNoun: t`finishes`,
+        moduleLabel: t`parts`
+      };
+    case "materialGrade":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.materialGrades,
+        noun: t`grade`,
+        pluralNoun: t`grades`,
+        moduleLabel: t`parts`
+      };
+    case "materialSubstance":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.materialSubstances,
+        noun: t`substance`,
+        pluralNoun: t`substances`,
+        moduleLabel: t`parts`
+      };
+    case "materialShape":
+      return {
+        module: "parts",
+        action: "create",
+        route: path.to.materialForms,
+        noun: t`shape`,
+        pluralNoun: t`shapes`,
+        moduleLabel: t`parts`
       };
   }
 };

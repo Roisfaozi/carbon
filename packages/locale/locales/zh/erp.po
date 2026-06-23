@@ -2671,8 +2671,14 @@ msgstr "数字报价"
 msgid "Digital Quotes"
 msgstr "数字报价"
 
+msgid "dimension"
+msgstr ""
+
 msgid "Dimension"
 msgstr "尺寸"
+
+msgid "dimensions"
+msgstr ""
 
 msgid "Dimensions"
 msgstr "尺寸"
@@ -3814,11 +3820,17 @@ msgstr "筛选"
 msgid "Finalize"
 msgstr "完成"
 
+msgid "finish"
+msgstr ""
+
 msgid "Finish"
 msgstr "完成"
 
 msgid "Finish To"
 msgstr "完成至"
+
+msgid "finishes"
+msgstr ""
 
 msgid "Finishes"
 msgstr "表面处理"
@@ -3887,6 +3899,9 @@ msgstr "从存储单位"
 msgid "Fully trained for"
 msgstr "完全培训"
 
+msgid "gauge"
+msgstr ""
+
 msgid "Gauge"
 msgstr "量规"
 
@@ -3904,6 +3919,9 @@ msgstr "仪表类型"
 
 msgid "Gauge Types"
 msgstr "量规类型"
+
+msgid "gauges"
+msgstr ""
 
 msgid "Gauges"
 msgstr "量规"
@@ -3950,8 +3968,14 @@ msgstr "早上好，{0}"
 msgid "Google Places API key not configured"
 msgstr "Google Places API 密钥未配置"
 
+msgid "grade"
+msgstr ""
+
 msgid "Grade"
 msgstr "等级"
+
+msgid "grades"
+msgstr ""
 
 msgid "Grades"
 msgstr "等级"
@@ -6491,6 +6515,9 @@ msgstr "数量。返工"
 msgid "Qty. Scrapped"
 msgstr "数量. 报废"
 
+msgid "quality"
+msgstr ""
+
 msgid "Quality"
 msgstr "质量"
 
@@ -7465,6 +7492,9 @@ msgstr "将版本 {0} 设置为活跃版本？"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "在个人资料设置中设置默认位置以选择存储单位。"
 
+msgid "settings"
+msgstr ""
+
 msgid "Settings"
 msgstr "设置"
 
@@ -7486,8 +7516,14 @@ msgstr "严重程度"
 msgid "Severity"
 msgstr "严重程度"
 
+msgid "shape"
+msgstr ""
+
 msgid "Shape"
 msgstr "形状"
+
+msgid "shapes"
+msgstr ""
 
 msgid "Shapes"
 msgstr "形状"
@@ -7886,8 +7922,14 @@ msgstr ""
 msgid "Storage Types"
 msgstr "存储类型"
 
+msgid "storage unit"
+msgstr ""
+
 msgid "Storage Unit"
 msgstr "存储单位"
+
+msgid "storage units"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "存储单位"
@@ -7925,8 +7967,14 @@ msgstr "提交检验"
 msgid "Submitted By"
 msgstr "提交者"
 
+msgid "substance"
+msgstr ""
+
 msgid "Substance"
 msgstr "物质"
+
+msgid "substances"
+msgstr ""
 
 msgid "Substances"
 msgstr "物质"
@@ -8099,6 +8147,12 @@ msgstr "表"
 
 msgid "Table actions"
 msgstr "表格操作"
+
+msgid "tag"
+msgstr ""
+
+msgid "tags"
+msgstr ""
 
 msgid "Tags"
 msgstr "标签"
@@ -8622,6 +8676,9 @@ msgstr "单位"
 msgid "Unit Cost"
 msgstr "单位成本"
 
+msgid "unit of measure"
+msgstr ""
+
 msgid "Unit of Measure"
 msgstr "计量单位"
 
@@ -8639,6 +8696,9 @@ msgstr "单位销售价格"
 
 msgid "Units"
 msgstr "单位"
+
+msgid "units of measure"
+msgstr ""
 
 msgid "Unknown"
 msgstr "未知"

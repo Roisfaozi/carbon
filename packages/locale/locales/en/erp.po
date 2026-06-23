@@ -2671,8 +2671,14 @@ msgstr "Digital Quote"
 msgid "Digital Quotes"
 msgstr "Digital Quotes"
 
+msgid "dimension"
+msgstr "dimension"
+
 msgid "Dimension"
 msgstr "Dimension"
+
+msgid "dimensions"
+msgstr "dimensions"
 
 msgid "Dimensions"
 msgstr "Dimensions"
@@ -3814,11 +3820,17 @@ msgstr "Filter"
 msgid "Finalize"
 msgstr "Finalize"
 
+msgid "finish"
+msgstr "finish"
+
 msgid "Finish"
 msgstr "Finish"
 
 msgid "Finish To"
 msgstr "Finish To"
+
+msgid "finishes"
+msgstr "finishes"
 
 msgid "Finishes"
 msgstr "Finishes"
@@ -3887,6 +3899,9 @@ msgstr "From Storage Unit"
 msgid "Fully trained for"
 msgstr "Fully trained for"
 
+msgid "gauge"
+msgstr "gauge"
+
 msgid "Gauge"
 msgstr "Gauge"
 
@@ -3904,6 +3919,9 @@ msgstr "Gauge Type"
 
 msgid "Gauge Types"
 msgstr "Gauge Types"
+
+msgid "gauges"
+msgstr "gauges"
 
 msgid "Gauges"
 msgstr "Gauges"
@@ -3950,8 +3968,14 @@ msgstr "Good morning, {0}"
 msgid "Google Places API key not configured"
 msgstr "Google Places API key not configured"
 
+msgid "grade"
+msgstr "grade"
+
 msgid "Grade"
 msgstr "Grade"
+
+msgid "grades"
+msgstr "grades"
 
 msgid "Grades"
 msgstr "Grades"
@@ -6491,6 +6515,9 @@ msgstr "Qty. Reworked"
 msgid "Qty. Scrapped"
 msgstr "Qty. Scrapped"
 
+msgid "quality"
+msgstr "quality"
+
 msgid "Quality"
 msgstr "Quality"
 
@@ -7465,6 +7492,9 @@ msgstr "Set Version {0} as Active Version?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Set your default location in profile settings to pick a storage unit."
 
+msgid "settings"
+msgstr "settings"
+
 msgid "Settings"
 msgstr "Settings"
 
@@ -7486,8 +7516,14 @@ msgstr "Severities"
 msgid "Severity"
 msgstr "Severity"
 
+msgid "shape"
+msgstr "shape"
+
 msgid "Shape"
 msgstr "Shape"
+
+msgid "shapes"
+msgstr "shapes"
 
 msgid "Shapes"
 msgstr "Shapes"
@@ -7886,8 +7922,14 @@ msgstr "storage types"
 msgid "Storage Types"
 msgstr "Storage Types"
 
+msgid "storage unit"
+msgstr "storage unit"
+
 msgid "Storage Unit"
 msgstr "Storage Unit"
+
+msgid "storage units"
+msgstr "storage units"
 
 msgid "Storage Units"
 msgstr "Storage Units"
@@ -7925,8 +7967,14 @@ msgstr "Submit Inspection"
 msgid "Submitted By"
 msgstr "Submitted By"
 
+msgid "substance"
+msgstr "substance"
+
 msgid "Substance"
 msgstr "Substance"
+
+msgid "substances"
+msgstr "substances"
 
 msgid "Substances"
 msgstr "Substances"
@@ -8099,6 +8147,12 @@ msgstr "Table"
 
 msgid "Table actions"
 msgstr "Table actions"
+
+msgid "tag"
+msgstr "tag"
+
+msgid "tags"
+msgstr "tags"
 
 msgid "Tags"
 msgstr "Tags"
@@ -8622,6 +8676,9 @@ msgstr "Unit"
 msgid "Unit Cost"
 msgstr "Unit Cost"
 
+msgid "unit of measure"
+msgstr "unit of measure"
+
 msgid "Unit of Measure"
 msgstr "Unit of Measure"
 
@@ -8639,6 +8696,9 @@ msgstr "Unit Sale Price"
 
 msgid "Units"
 msgstr "Units"
+
+msgid "units of measure"
+msgstr "units of measure"
 
 msgid "Unknown"
 msgstr "Unknown"

@@ -20,6 +20,7 @@ import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { MethodItemTypeIcon } from "../Icons";
+import { useEmptyState } from "./emptyStates";
 
 type ItemsSelectProps = Omit<CreatableMultiSelectProps, "options">;
 
@@ -64,6 +65,10 @@ const Items = (props: ItemsSelectProps) => {
     triggerRef.current?.click();
   };
 
+  const emptyMessage = useEmptyState("item", {
+    onCreate: () => selectTypeModal.onOpen()
+  });
+
   return (
     <>
       <CreatableMultiSelect
@@ -72,6 +77,7 @@ const Items = (props: ItemsSelectProps) => {
         {...props}
         label={props?.label ?? "Items"}
         createLabel={t`Item`}
+        emptyMessage={emptyMessage}
         onCreateOption={(value) => {
           setCreated(value);
           selectTypeModal.onOpen();

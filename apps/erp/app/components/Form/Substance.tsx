@@ -8,6 +8,7 @@ import type { getMaterialSubstancesList } from "~/modules/items";
 import { MaterialSubstanceForm } from "~/modules/items/ui/MaterialSubstances";
 import { path } from "~/utils/path";
 import { Enumerable } from "../Enumerable";
+import { useEmptyState } from "./emptyStates";
 
 type SubstanceSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
   inline?: boolean;
@@ -30,6 +31,10 @@ const Substance = (props: SubstanceSelectProps) => {
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
+  const emptyMessage = useEmptyState("materialSubstance", {
+    onCreate: () => newSubstanceModal.onOpen()
+  });
+
   return permissions.can("create", "inventory") ? (
     <>
       <CreatableCombobox
@@ -38,6 +43,7 @@ const Substance = (props: SubstanceSelectProps) => {
         {...props}
         inline={props.inline ? SubstancePreview : undefined}
         label={props?.label ?? "Substance"}
+        emptyMessage={emptyMessage}
         onCreateOption={(option) => {
           newSubstanceModal.onOpen();
           setCreated(option);

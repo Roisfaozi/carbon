@@ -2671,8 +2671,14 @@ msgstr "Dijital Teklif"
 msgid "Digital Quotes"
 msgstr "Dijital Teklifler"
 
+msgid "dimension"
+msgstr ""
+
 msgid "Dimension"
 msgstr "Boyut"
+
+msgid "dimensions"
+msgstr ""
 
 msgid "Dimensions"
 msgstr "Boyutlar"
@@ -3814,11 +3820,17 @@ msgstr "Filtre"
 msgid "Finalize"
 msgstr "Onayla"
 
+msgid "finish"
+msgstr ""
+
 msgid "Finish"
 msgstr "Bitiş"
 
 msgid "Finish To"
 msgstr "Bitirmek İçin"
+
+msgid "finishes"
+msgstr ""
 
 msgid "Finishes"
 msgstr "Kaplamalar"
@@ -3887,6 +3899,9 @@ msgstr "Kaynak Depo Birimi"
 msgid "Fully trained for"
 msgstr "Tamamen eğitilmiş"
 
+msgid "gauge"
+msgstr ""
+
 msgid "Gauge"
 msgstr "Kalibratör"
 
@@ -3904,6 +3919,9 @@ msgstr "Kalibrasyon Tipi"
 
 msgid "Gauge Types"
 msgstr "Ölçüm Tipleri"
+
+msgid "gauges"
+msgstr ""
 
 msgid "Gauges"
 msgstr "Kalibratörler"
@@ -3950,8 +3968,14 @@ msgstr "Günaydın, {0}"
 msgid "Google Places API key not configured"
 msgstr "Google Yerler API anahtarı yapılandırılmamış"
 
+msgid "grade"
+msgstr ""
+
 msgid "Grade"
 msgstr "Derece"
+
+msgid "grades"
+msgstr ""
 
 msgid "Grades"
 msgstr "Dereceler"
@@ -6491,6 +6515,9 @@ msgstr "Revize Edilen Miktar"
 msgid "Qty. Scrapped"
 msgstr "Hur. Hurda"
 
+msgid "quality"
+msgstr ""
+
 msgid "Quality"
 msgstr "Kalite"
 
@@ -7465,6 +7492,9 @@ msgstr "Sürüm {0}\"ü Aktif Sürüm Olarak Ayarla?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Bir depolama birimi seçmek için varsayılan konumunuzu profil ayarlarınızda belirleyin."
 
+msgid "settings"
+msgstr ""
+
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -7486,8 +7516,14 @@ msgstr "Şiddetler"
 msgid "Severity"
 msgstr "Şiddet"
 
+msgid "shape"
+msgstr ""
+
 msgid "Shape"
 msgstr "Şekil"
+
+msgid "shapes"
+msgstr ""
 
 msgid "Shapes"
 msgstr "Şekiller"
@@ -7886,8 +7922,14 @@ msgstr ""
 msgid "Storage Types"
 msgstr "Depolama Türleri"
 
+msgid "storage unit"
+msgstr ""
+
 msgid "Storage Unit"
 msgstr "Depolama Birimi"
+
+msgid "storage units"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "Depolama Birimleri"
@@ -7925,8 +7967,14 @@ msgstr "Muayene Et"
 msgid "Submitted By"
 msgstr "Gönderen"
 
+msgid "substance"
+msgstr ""
+
 msgid "Substance"
 msgstr "Madde"
+
+msgid "substances"
+msgstr ""
 
 msgid "Substances"
 msgstr "Madde Maddeleri"
@@ -8099,6 +8147,12 @@ msgstr "Tablo"
 
 msgid "Table actions"
 msgstr "Tablo işlemleri"
+
+msgid "tag"
+msgstr ""
+
+msgid "tags"
+msgstr ""
 
 msgid "Tags"
 msgstr "Etiketler"
@@ -8622,6 +8676,9 @@ msgstr "Birim"
 msgid "Unit Cost"
 msgstr "Birim Maliyeti"
 
+msgid "unit of measure"
+msgstr ""
+
 msgid "Unit of Measure"
 msgstr "Birim"
 
@@ -8639,6 +8696,9 @@ msgstr "Birim Satış Fiyatı"
 
 msgid "Units"
 msgstr "Birimler"
+
+msgid "units of measure"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Bilinmeyen"

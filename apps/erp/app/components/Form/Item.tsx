@@ -39,6 +39,8 @@ import { methodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { MethodItemTypeIcon } from "../Icons";
+import type { EntityKey } from "./emptyStates";
+import { useEmptyState } from "./emptyStates";
 
 type ItemSelectProps = Omit<ComboboxProps, "options" | "type" | "inline"> & {
   isReadOnly?: boolean;
@@ -188,6 +190,27 @@ const Item = ({
   const canSwitchItemType = typeof onTypeChange === "function";
   const submitRef = useRef<HTMLButtonElement>(null);
 
+  const entityKey: EntityKey =
+    type === "Part"
+      ? "part"
+      : type === "Material"
+        ? "material"
+        : type === "Tool"
+          ? "tool"
+          : type === "Consumable"
+            ? "consumable"
+            : "item";
+
+  const emptyMessage = useEmptyState(entityKey, {
+    onCreate: () => {
+      if (type === "Item") {
+        selectTypeModal.onOpen();
+      } else {
+        newItemsModal.onOpen();
+      }
+    }
+  });
+
   return (
     <>
       <FormControl isInvalid={!!error} className="w-full">
@@ -242,6 +265,7 @@ const Item = ({
                         : undefined
             }
             itemHeight={44}
+            emptyMessage={emptyMessage}
             onCreateOption={(option) => {
               if (type === "Item") {
                 selectTypeModal.onOpen();

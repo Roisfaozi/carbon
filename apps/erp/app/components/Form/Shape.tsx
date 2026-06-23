@@ -8,6 +8,7 @@ import type { getMaterialFormsList } from "~/modules/items";
 import { MaterialShapeForm } from "~/modules/items/ui/MaterialShapes";
 import { path } from "~/utils/path";
 import { Enumerable } from "../Enumerable";
+import { useEmptyState } from "./emptyStates";
 
 type ShapeSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
   inline?: boolean;
@@ -30,6 +31,10 @@ const Shape = (props: ShapeSelectProps) => {
   const [created, setCreated] = useState<string>("");
   const triggerRef = useRef<HTMLButtonElement>(null);
 
+  const emptyMessage = useEmptyState("materialShape", {
+    onCreate: () => newShapeModal.onOpen()
+  });
+
   return permissions.can("create", "inventory") ? (
     <>
       <CreatableCombobox
@@ -38,6 +43,7 @@ const Shape = (props: ShapeSelectProps) => {
         {...props}
         inline={props.inline ? ShapePreview : undefined}
         label={props?.label ?? "Shape"}
+        emptyMessage={emptyMessage}
         onCreateOption={(option) => {
           newShapeModal.onOpen();
           setCreated(option);

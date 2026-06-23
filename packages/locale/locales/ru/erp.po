@@ -2671,8 +2671,14 @@ msgstr "Цифровая котировка"
 msgid "Digital Quotes"
 msgstr "Цифровые предложения"
 
+msgid "dimension"
+msgstr ""
+
 msgid "Dimension"
 msgstr "Размер"
+
+msgid "dimensions"
+msgstr ""
 
 msgid "Dimensions"
 msgstr "Размеры"
@@ -3814,11 +3820,17 @@ msgstr "Фильтр"
 msgid "Finalize"
 msgstr "Завершить"
 
+msgid "finish"
+msgstr ""
+
 msgid "Finish"
 msgstr "Отделка"
 
 msgid "Finish To"
 msgstr "Завершить в"
+
+msgid "finishes"
+msgstr ""
 
 msgid "Finishes"
 msgstr "Отделки"
@@ -3887,6 +3899,9 @@ msgstr "Из хранилища"
 msgid "Fully trained for"
 msgstr "Полностью обучен для"
 
+msgid "gauge"
+msgstr ""
+
 msgid "Gauge"
 msgstr "Манометр"
 
@@ -3904,6 +3919,9 @@ msgstr "Тип датчика"
 
 msgid "Gauge Types"
 msgstr "Типы датчиков"
+
+msgid "gauges"
+msgstr ""
 
 msgid "Gauges"
 msgstr "Датчики"
@@ -3950,8 +3968,14 @@ msgstr "Доброе утро, {0}"
 msgid "Google Places API key not configured"
 msgstr "Ключ API Google Places не настроен"
 
+msgid "grade"
+msgstr ""
+
 msgid "Grade"
 msgstr "Сорт"
+
+msgid "grades"
+msgstr ""
 
 msgid "Grades"
 msgstr "Сорта"
@@ -6491,6 +6515,9 @@ msgstr "Кол-во переработано"
 msgid "Qty. Scrapped"
 msgstr "Кол-во брака"
 
+msgid "quality"
+msgstr ""
+
 msgid "Quality"
 msgstr "Качество"
 
@@ -7465,6 +7492,9 @@ msgstr "Установить версию {0} как активную верси
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Установите местоположение по умолчанию в настройках профиля, чтобы выбрать единицу хранения."
 
+msgid "settings"
+msgstr ""
+
 msgid "Settings"
 msgstr "Параметры"
 
@@ -7486,8 +7516,14 @@ msgstr "Серьезности"
 msgid "Severity"
 msgstr "Серьезность"
 
+msgid "shape"
+msgstr ""
+
 msgid "Shape"
 msgstr "Форма"
+
+msgid "shapes"
+msgstr ""
 
 msgid "Shapes"
 msgstr "Формы"
@@ -7886,8 +7922,14 @@ msgstr ""
 msgid "Storage Types"
 msgstr "Типы хранилищ"
 
+msgid "storage unit"
+msgstr ""
+
 msgid "Storage Unit"
 msgstr "Единица хранения"
+
+msgid "storage units"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "Единицы хранения"
@@ -7925,8 +7967,14 @@ msgstr "Отправить проверку"
 msgid "Submitted By"
 msgstr "Отправлено"
 
+msgid "substance"
+msgstr ""
+
 msgid "Substance"
 msgstr "Вещество"
+
+msgid "substances"
+msgstr ""
 
 msgid "Substances"
 msgstr "Вещества"
@@ -8099,6 +8147,12 @@ msgstr "Таблица"
 
 msgid "Table actions"
 msgstr "Действия таблицы"
+
+msgid "tag"
+msgstr ""
+
+msgid "tags"
+msgstr ""
 
 msgid "Tags"
 msgstr "Теги"
@@ -8622,6 +8676,9 @@ msgstr "Единица"
 msgid "Unit Cost"
 msgstr "Стоимость единицы"
 
+msgid "unit of measure"
+msgstr ""
+
 msgid "Unit of Measure"
 msgstr "Единица измерения"
 
@@ -8639,6 +8696,9 @@ msgstr "Цена продажи за единицу"
 
 msgid "Units"
 msgstr "Единицы"
+
+msgid "units of measure"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Неизвестно"

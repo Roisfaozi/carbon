@@ -2671,8 +2671,14 @@ msgstr "Preventivo Digitale"
 msgid "Digital Quotes"
 msgstr "Preventivi Digitali"
 
+msgid "dimension"
+msgstr ""
+
 msgid "Dimension"
 msgstr "Dimensione"
+
+msgid "dimensions"
+msgstr ""
 
 msgid "Dimensions"
 msgstr "Dimensioni"
@@ -3814,11 +3820,17 @@ msgstr "Filtro"
 msgid "Finalize"
 msgstr "Finalizza"
 
+msgid "finish"
+msgstr ""
+
 msgid "Finish"
 msgstr "Finitura"
 
 msgid "Finish To"
 msgstr "Finisci a"
+
+msgid "finishes"
+msgstr ""
 
 msgid "Finishes"
 msgstr "Finiture"
@@ -3887,6 +3899,9 @@ msgstr "Da Unità di Stoccaggio"
 msgid "Fully trained for"
 msgstr "Completamente formato per"
 
+msgid "gauge"
+msgstr ""
+
 msgid "Gauge"
 msgstr "Calibro"
 
@@ -3904,6 +3919,9 @@ msgstr "Tipo di Calibro"
 
 msgid "Gauge Types"
 msgstr "Tipi di Calibro"
+
+msgid "gauges"
+msgstr ""
 
 msgid "Gauges"
 msgstr "Calibri"
@@ -3950,8 +3968,14 @@ msgstr "Buongiorno, {0}"
 msgid "Google Places API key not configured"
 msgstr "Chiave API di Google Places non configurata"
 
+msgid "grade"
+msgstr ""
+
 msgid "Grade"
 msgstr "Grado"
+
+msgid "grades"
+msgstr ""
 
 msgid "Grades"
 msgstr "Gradi"
@@ -6491,6 +6515,9 @@ msgstr "Qtà. Rilavorata"
 msgid "Qty. Scrapped"
 msgstr "Qtà. Scartata"
 
+msgid "quality"
+msgstr ""
+
 msgid "Quality"
 msgstr "Qualità"
 
@@ -7465,6 +7492,9 @@ msgstr "Imposta la versione {0} come versione attiva?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Imposta la tua posizione predefinita nelle impostazioni del profilo per selezionare un'unità di archiviazione."
 
+msgid "settings"
+msgstr ""
+
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -7486,8 +7516,14 @@ msgstr "Gravità"
 msgid "Severity"
 msgstr "Gravità"
 
+msgid "shape"
+msgstr ""
+
 msgid "Shape"
 msgstr "Forma"
+
+msgid "shapes"
+msgstr ""
 
 msgid "Shapes"
 msgstr "Forme"
@@ -7886,8 +7922,14 @@ msgstr ""
 msgid "Storage Types"
 msgstr "Tipi di Archiviazione"
 
+msgid "storage unit"
+msgstr ""
+
 msgid "Storage Unit"
 msgstr "Unità di Stoccaggio"
+
+msgid "storage units"
+msgstr ""
 
 msgid "Storage Units"
 msgstr "Unità di Stoccaggio"
@@ -7925,8 +7967,14 @@ msgstr "Invia Ispezione"
 msgid "Submitted By"
 msgstr "Inviato da"
 
+msgid "substance"
+msgstr ""
+
 msgid "Substance"
 msgstr "Sostanza"
+
+msgid "substances"
+msgstr ""
 
 msgid "Substances"
 msgstr "Sostanze"
@@ -8099,6 +8147,12 @@ msgstr "Tabella"
 
 msgid "Table actions"
 msgstr "Azioni tabella"
+
+msgid "tag"
+msgstr ""
+
+msgid "tags"
+msgstr ""
 
 msgid "Tags"
 msgstr "Etichette"
@@ -8622,6 +8676,9 @@ msgstr "Unità"
 msgid "Unit Cost"
 msgstr "Costo Unitario"
 
+msgid "unit of measure"
+msgstr ""
+
 msgid "Unit of Measure"
 msgstr "Unità di Misura"
 
@@ -8639,6 +8696,9 @@ msgstr "Prezzo di vendita unitario"
 
 msgid "Units"
 msgstr "Unità"
+
+msgid "units of measure"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Sconosciuto"
