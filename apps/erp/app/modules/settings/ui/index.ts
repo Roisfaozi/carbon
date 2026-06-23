@@ -7,6 +7,7 @@ export * from "./Companies";
 export * from "./Company";
 export * from "./CustomFields";
 export * from "./Integrations";
+export * from "./MigrationRuns";
 export * from "./Printing";
 export * from "./Sequences";
 export * from "./Theme";

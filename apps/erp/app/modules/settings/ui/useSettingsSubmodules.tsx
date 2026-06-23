@@ -152,6 +152,12 @@ export default function useSettingsSubmodules() {
             icon: <LuKey />
           },
           {
+            name: t`Migration Runs`,
+            to: path.to.migrationRuns,
+            role: "employee",
+            icon: <LuFactory />
+          },
+          {
             name: t`Approval Rules`,
             to: path.to.approvalRules,
             role: "employee",

@@ -1420,6 +1420,12 @@ export const path = {
     printingSettingsJobs: `${x}/settings/printing/jobs`,
     deletePrinterRoute: (id: string) =>
       generatePath(`${x}/settings/printing/${id}/delete`),
+    migrationRuns: `${x}/settings/migration-runs`,
+    newMigrationRun: `${x}/settings/migration-runs/new`,
+    migrationRun: (id: string) =>
+      generatePath(`${x}/settings/migration-runs/${id}`),
+    applyMigrationRun: (id: string) =>
+      generatePath(`${x}/settings/migration-runs/${id}/apply`),
     production: `${x}/production`,
     productionPlanning: `${x}/production/planning`,
     productionPlanningItem: (itemId: string) =>
