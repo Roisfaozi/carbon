@@ -327,6 +327,35 @@ export const savedViewStateValidator = z.object({
   sorts: z.array(z.string()).optional()
 });
 
+export const migrationRunStatuses = [
+  "queued-dry-run",
+  "running-dry-run",
+  "review-ready",
+  "queued-apply",
+  "running-apply",
+  "applied",
+  "failed"
+] as const;
+
+export const migrationRunStatusValidator = z.enum(migrationRunStatuses, {
+  errorMap: () => ({ message: "Migration run status is required" })
+});
+
+export const migrationRunValidator = z.object({
+  id: z.string(),
+  companyId: z.string(),
+  status: migrationRunStatusValidator,
+  request: z.record(z.string(), z.any()),
+  planSnapshot: z.record(z.string(), z.any()).nullable().optional(),
+  dryRunSummary: z.record(z.string(), z.any()).nullable().optional(),
+  applySummary: z.record(z.string(), z.any()).nullable().optional(),
+  error: z.string().nullable().optional(),
+  createdBy: z.string(),
+  createdAt: z.string(),
+  updatedBy: z.string().nullable().optional(),
+  updatedAt: z.string().nullable().optional()
+});
+
 export const standardFactorType = [
   "Hours/Piece",
   "Hours/100 Pieces",

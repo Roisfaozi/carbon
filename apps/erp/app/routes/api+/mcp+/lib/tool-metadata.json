@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-22T02:53:05.724Z",
-  "totalTools": 1209,
+  "generated": "2026-06-23T09:17:40.594Z",
+  "totalTools": 1214,
   "modules": 15,
   "tools": [
     {
@@ -36097,6 +36097,149 @@
         },
         "required": [
           "report"
+        ]
+      }
+    },
+    {
+      "name": "shared_createMigrationRun",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "create migration run",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "request": {}
+        },
+        "required": [
+          "request"
+        ]
+      }
+    },
+    {
+      "name": "shared_getMigrationRuns",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get migration runs",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "shared_getMigrationRun",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get migration run",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shared_updateMigrationRun",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "update migration run",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "planSnapshot": {},
+          "dryRunSummary": {},
+          "applySummary": {}
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "shared_updateMigrationRunStatus",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "update migration run status",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
         ]
       }
     },

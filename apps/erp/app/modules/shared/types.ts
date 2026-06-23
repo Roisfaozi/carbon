@@ -8,6 +8,8 @@ import type {
   approvalRuleValidator,
   methodItemType,
   methodType,
+  migrationRunStatusValidator,
+  migrationRunValidator,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
@@ -17,6 +19,8 @@ import type {
 import type {
   getApprovalRequestsByDocument,
   getApprovalRuleByAmount,
+  getMigrationRun,
+  getMigrationRuns,
   getNotes
 } from "./shared.service";
 
@@ -93,6 +97,14 @@ export enum DataType {
 
 export type MethodItemType = (typeof methodItemType)[number];
 export type MethodType = (typeof methodType)[number];
+export type MigrationRunStatus = z.infer<typeof migrationRunStatusValidator>;
+export type MigrationRun = z.infer<typeof migrationRunValidator>;
+export type MigrationRunListItem = NonNullable<
+  Awaited<ReturnType<typeof getMigrationRuns>>["data"]
+>[number];
+export type MigrationRunDetail = NonNullable<
+  Awaited<ReturnType<typeof getMigrationRun>>["data"]
+>;
 export type SourcingType = (typeof sourcingType)[number];
 
 export type Note = NonNullable<

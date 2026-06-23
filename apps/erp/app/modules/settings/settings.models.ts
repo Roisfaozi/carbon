@@ -383,3 +383,24 @@ export const documentSectionValidator = zfd.formData({
   content: jsonField(z.any(), "Invalid section content"),
   config: jsonField(sectionConfigSchema, "Invalid section config").optional()
 });
+
+export const migrationRunRequestValidator = z.object({
+  scenario: z.string().min(1),
+  profile: z.string().transform((val, ctx) => {
+    try {
+      return JSON.parse(val);
+    } catch {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Invalid JSON" });
+      return z.NEVER;
+    }
+  }),
+  files: z.string().transform((val, ctx) => {
+    try {
+      return JSON.parse(val);
+    } catch {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Invalid JSON" });
+      return z.NEVER;
+    }
+  }),
+  filePathPrefix: z.string().optional()
+});

@@ -24,6 +24,7 @@ import type {
   ApprovalRequestForViewCheck,
   ApprovalRule,
   CreateApprovalRequestInput,
+  MigrationRun,
   UpsertApprovalRuleInput
 } from "./types";
 
@@ -999,6 +1000,111 @@ export async function executeMigrationImportPlan(
 ): Promise<MigrationExecutionReport> {
   const { executeMigrationPlan } = await import("@carbon/database/migration");
   return executeMigrationPlan(report, createImportCsvExecutor(client));
+}
+
+export async function createMigrationRun(
+  client: SupabaseClient<Database>,
+  args: {
+    request: Record<string, unknown>;
+    companyId: string;
+    userId: string;
+  }
+): Promise<{ data: MigrationRun | null; error: any }> {
+  const db = client as any;
+  return db
+    .from("migrationRun")
+    .insert([
+      {
+        request: args.request,
+        status: "queued-dry-run",
+        companyId: args.companyId,
+        createdBy: args.userId
+      }
+    ])
+    .select("*")
+    .single();
+}
+
+export async function getMigrationRuns(
+  client: SupabaseClient<Database>,
+  companyId: string
+): Promise<{ data: MigrationRun[] | null; count: number | null; error: any }> {
+  const db = client as any;
+  return db
+    .from("migrationRun")
+    .select("*")
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getMigrationRun(
+  client: SupabaseClient<Database>,
+  id: string,
+  companyId: string
+): Promise<{ data: MigrationRun | null; error: any }> {
+  const db = client as any;
+  return db
+    .from("migrationRun")
+    .select("*")
+    .eq("id", id)
+    .eq("companyId", companyId)
+    .single();
+}
+
+export async function updateMigrationRun(
+  client: SupabaseClient<Database>,
+  args: {
+    id: string;
+    companyId: string;
+    userId: string;
+    status?: string;
+    error?: string | null;
+    planSnapshot?: unknown;
+    dryRunSummary?: unknown;
+    applySummary?: unknown;
+  }
+): Promise<{ data: MigrationRun | null; error: any }> {
+  const db = client as any;
+  return db
+    .from("migrationRun")
+    .update({
+      status: args.status,
+      error: args.error,
+      planSnapshot: args.planSnapshot,
+      dryRunSummary: args.dryRunSummary,
+      applySummary: args.applySummary,
+      updatedBy: args.userId,
+      updatedAt: new Date().toISOString()
+    })
+    .eq("id", args.id)
+    .eq("companyId", args.companyId)
+    .select("*")
+    .single();
+}
+
+export async function updateMigrationRunStatus(
+  client: SupabaseClient<Database>,
+  args: {
+    id: string;
+    companyId: string;
+    userId: string;
+    status: string;
+    error?: string | null;
+  }
+): Promise<{ data: MigrationRun | null; error: any }> {
+  const db = client as any;
+  return db
+    .from("migrationRun")
+    .update({
+      status: args.status,
+      error: args.error,
+      updatedBy: args.userId,
+      updatedAt: new Date().toISOString()
+    })
+    .eq("id", args.id)
+    .eq("companyId", args.companyId)
+    .select("*")
+    .single();
 }
 
 export async function insertNote(
