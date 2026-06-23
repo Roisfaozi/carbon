@@ -1,29 +1,49 @@
-# CSV Import System
+# CSV Import and Migration System
 
 ## Overview
 
-The Carbon system includes a comprehensive CSV import system that allows users to bulk import data for various entities including customers, suppliers, parts, materials, work centers, and processes. The import system is designed to be idempotent and supports enum mappings for dropdown fields.
+The Carbon system includes a comprehensive CSV import and migration system. It allows users to bulk import data for various entities and orchestrate multi-table migration runs with dry-run planning, plan persistence, review, and async apply.
 
 ## Architecture
 
 ### Frontend Components
 
 - **Location**: `/apps/erp/app/components/ImportCSVModal/`
-- **Main Component**: `ImportCSVModal.tsx` - Modal interface for CSV imports
+- **Main Component**: `ImportCSVModal.tsx` - Modal interface for single-table CSV imports
 - **Sub-components**:
   - `UploadCSV.tsx` - Handles CSV file upload to private storage
   - `FieldMappings.tsx` - UI for mapping CSV columns to database fields
   - `useCsvContext.tsx` - Context management for import state
 
+### Persisted Migration Runs (Phase 7)
+
+To orchestrate complex multi-table migrations:
+1. **Model**: `migrationRun` table stores:
+   - `id` and `companyId` (composite primary key)
+   - `status`: `queued-dry-run` | `running-dry-run` | `review-ready` | `queued-apply` | `running-apply` | `applied` | `failed`
+   - `request`: JSONB payload containing `scenario`, source `profile`, and `files` (file name to raw CSV content maps)
+   - `planSnapshot`: JSONB copy of the dry-run plan. Used for execution to prevent drift.
+   - `dryRunSummary` and `applySummary`: JSONB summary metrics (inserted, updated, skipped, errors)
+   - `error`: Text error reason on failure
+   - Standard audit and composite RLS policies.
+2. **Settings UI**:
+   - List View: `/x/settings/migration-runs` lists runs with status, scenario, table counts, and timestamps.
+   - New Run Form: `/x/settings/migration-runs/new` validates JSON payloads and triggers dry-run.
+   - Detail View: `/x/settings/migration-runs/$migrationRunId` displays overview and collapsible JSON panels (Request, Dry Run, Plan, Apply).
+   - Apply: Route action queues the async apply only when status is `review-ready`.
+3. **Async Processing (Inngest)**:
+   - Inngest task: `migration-run` (event `carbon/migration-run`) runs in background.
+   - Dry-Run Action: Moves status to `running-dry-run`, computes import requests using pure `migration-runner.ts` logic, stores `planSnapshot` + `dryRunSummary`, and sets status to `review-ready` or `failed`.
+   - Apply Action: Moves status to `running-apply`, executes the stored `planSnapshot` sequentially by invoking Deno `import-csv` function, aggregates count summary, and transitions to `applied` or `failed`.
+
 ### Backend Route
 
-- **Location**: `/apps/erp/app/routes/x+/shared+/import.$tableId.tsx`
-- **Method**: Validates permissions and form data
+- **Single Table Import Location**: `/apps/erp/app/routes/x+/shared+/import.$tableId.tsx`
 - **Flow**:
   1. Checks user permissions for the table being imported
   2. Validates form data using Zod schemas
   3. Extracts column mappings and enum mappings
-  4. Calls Supabase edge function
+  4. Calls Deno Supabase edge function `import-csv`
 
 ### Supabase Edge Function
 
@@ -63,46 +83,26 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 ### Core Tables with Field Mappings
 
 1. **customer** - Permission: `sales`
-
    - Fields: id, name, accountManagerId, fax, taxId, currencyCode, website
-
 2. **customerContact** - Permission: `sales`
-
    - Fields: id, companyId, firstName, lastName, email, title, mobilePhone, workPhone, homePhone, fax, notes
-
 3. **supplier** - Permission: `purchasing`
-
    - Fields: id, name, accountManagerId, phone, fax, taxId, currencyCode, website
-
 4. **supplierContact** - Permission: `purchasing`
-
    - Fields: id, companyId, firstName, lastName, email, title, mobilePhone, workPhone, homePhone, fax, notes
-
 5. **part** - Permission: `parts`
-
    - Fields: id, readableId, revision, name, description, active, replenishmentSystem, defaultMethodType, itemTrackingType, unitOfMeasureCode
-
 6. **material** - Permission: `parts`
-
    - Fields: Same as part, plus: materialSubstanceId, materialFormId, finish, grade, dimensions
-
 7. **tool** - Permission: `parts`
-
    - Fields: Same as part
-
 8. **fixture** - Permission: `parts`
-
    - Fields: Same as part
-
 9. **consumable** - Permission: `parts`
-
    - Fields: Same as part
-
 10. **workCenter** - Permission: `production`
-
     - Required Fields: id, name, description, defaultStandardFactor, laborRate, machineRate, overheadRate, locationId
     - Description: Bulk import work centers with cost rates and location assignment
-
 11. **process** - Permission: `production`
     - Required Fields: id, name, processType
     - Optional Fields: defaultStandardFactor (required for Inside processes), completeAllOnScan
@@ -112,7 +112,7 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 
 ## Import Process Flow
 
-### Frontend Flow
+### Single Table Frontend Flow
 
 1. User opens ImportCSVModal
 2. Uploads CSV file to `/private` storage (via browser)
@@ -123,7 +123,6 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 ### Backend Flow
 
 1. **Route Handler** (`import.$tableId.tsx`):
-
    - Verifies user has permission to import the table
    - Validates input data using Zod schema
    - Extracts column mappings and enum mappings
@@ -151,7 +150,6 @@ Field mappings are defined in `/apps/erp/app/modules/shared/imports.models.ts` a
 ## Zod Validators
 
 All import tables have Zod validators in `importSchemas` for client-side validation:
-
 - Ensures required fields are present
 - Validates field types
 - Provides user-friendly error messages
@@ -181,67 +179,10 @@ Import permissions are defined in `importPermissions`:
 1. **Column Mapping**: Flexible assignment of CSV columns to database fields
 2. **Enum Mapping**: Custom value mappings for dropdown fields (e.g., "B" → "Buy")
 3. **Default Values**: Auto-populate fields from predefined defaults
-4. **Validation**: Both client and server-side validation with schema enforcemen t
+4. **Validation**: Both client and server-side validation with schema enforcement
 5. **Idempotent Imports**: Re-import same data without creating duplicates
 6. **Transaction Safety**: All or nothing behavior for database operations
 7. **Error Handling**: Graceful error reporting with detailed messages
-
-## Example: Importing Work Centers
-
-### CSV Format
-
-```
-id,name,description,defaultStandardFactor,laborRate,machineRate,overheadRate,locationId
-WC001,Lathe A,Primary lathe machine,Hours,50.00,75.00,25.00,LOC-A
-WC002,Mill B,CNC milling machine,Minutes,55.00,80.00,30.00,LOC-A
-```
-
-### Field Mapping (User Selection)
-
-- CSV Column "id" → Database Field "id"
-- CSV Column "name" → Database Field "name"
-- CSV Column "description" → Database Field "description"
-- CSV Column "defaultStandardFactor" → Database Field "defaultStandardFactor"
-- CSV Column "laborRate" → Database Field "laborRate"
-- CSV Column "machineRate" → Database Field "machineRate"
-- CSV Column "overheadRate" → Database Field "overheadRate"
-- CSV Column "locationId" → Database Field "locationId"
-
-### Edge Function Processing
-
-1. Parses CSV rows
-2. Maps columns: "WC001" → id, "Lathe A" → name, etc.
-3. Converts numeric fields: "50.00" → 50
-4. Creates workCenter records with proper types
-5. Stores external ID mapping: "WC001" → internal UUID
-
-## Example: Importing Processes
-
-### CSV Format
-
-```
-id,name,processType,defaultStandardFactor,completeAllOnScan
-PROC-001,Drilling,Inside,Hours,false
-PROC-002,Assembly,Inside,Hours,true
-PROC-003,Plating,Outside,,false
-```
-
-### Field Mapping (User Selection)
-
-- CSV Column "id" → Database Field "id"
-- CSV Column "name" → Database Field "name"
-- CSV Column "processType" → Database Field "processType"
-- CSV Column "defaultStandardFactor" → Database Field "defaultStandardFactor"
-- CSV Column "completeAllOnScan" → Database Field "completeAllOnScan"
-
-### Edge Function Processing
-
-1. Parses CSV rows
-2. Maps columns: "PROC-001" → id, "Drilling" → name, etc.
-3. Validates processType is "Inside" or "Outside"
-4. Converts boolean: "true" → true, "false" → false
-5. Creates process records
-6. Stores external ID mapping: "PROC-001" → internal UUID
 
 ## Location References
 
@@ -250,51 +191,33 @@ PROC-003,Plating,Outside,,false
 - `/apps/erp/app/modules/shared/imports.models.ts` - Field mappings and Zod schemas
 - `/apps/erp/app/modules/resources/resources.models.ts` - Work center validator
 - `/apps/erp/app/modules/production/production.models.ts` - Process validator
+- `/apps/erp/app/modules/settings/settings.models.ts` - `migrationRunRequestValidator`
 
 ### Routes & Controllers
 
 - `/apps/erp/app/routes/x+/shared+/import.$tableId.tsx` - Import route handler
+- `/apps/erp/app/routes/x+/settings+/migration-runs.tsx` - Migration runs list route
+- `/apps/erp/app/routes/x+/settings+/migration-runs.new.tsx` - Create migration run route
+- `/apps/erp/app/routes/x+/settings+/migration-runs.$migrationRunId.tsx` - Migration run detail route
+- `/apps/erp/app/routes/x+/settings+/migration-runs.$migrationRunId.apply.tsx` - Migration run apply action route
 
 ### Frontend Components
 
 - `/apps/erp/app/components/ImportCSVModal/` - Import UI components
+- `/apps/erp/app/modules/settings/ui/MigrationRuns/` - Persisted migration run list/detail/form components
 
-### Backend Processing
+### Backend & Async Processing
 
 - `/packages/database/supabase/functions/import-csv/index.ts` - Edge function
+- `/packages/jobs/src/inngest/functions/tasks/migration-run.ts` - Async Inngest processor
+- `/packages/jobs/src/inngest/functions/tasks/migration-run.core.ts` - Core plan processor
 
 ## Test Foundation
 
 The import CSV package includes a migration test foundation under `/packages/database/supabase/functions/import-csv/fixtures/`:
-
 - `golden/v1/` contains replayable happy-path CSV data, reference data, existing state, and expected semantic results.
-- `edge-cases/` contains focused scenarios for supported import paths such as supplier blank-ID deduplication, missing work-center location, and missing material substance.
+- `edge-cases/` contains focused scenarios for supported import paths.
 - `fixture-schema.ts` defines the manifest, expected-result, reference-data, and existing-state schemas used by the fixture validation tests.
 - `imports.contract.test.ts` keeps ERP import tables, app schemas, edge-supported tables, material field names, and enum-mapping payload typing aligned.
 - `migration-source-profiles.ts` defines the canonical Carbon source profile and table execution order for migration planning.
-- `migration-runner.ts` builds deterministic dry-run reports, validates required and unique fields, and plans `import-csv` requests without executing database writes.
-- `executeMigrationPlan` in `migration-runner.ts` adds deterministic apply orchestration over dry-run `importRequests` via an injected executor; it refuses failed dry-runs, executes sequentially, aggregates counts, and fails fast on table errors or executor exceptions without directly calling Supabase or Postgres.
-- `@carbon/database/migration` re-exports the migration runner and canonical source-profile API for ERP app code without importing raw `supabase/functions` files.
-- `apps/erp/app/modules/shared/shared.service.ts` now exposes `ImportCsvArgs`, `createImportCsvExecutor(client)`, and `executeMigrationImportPlan(client, report)` so real migration apply can reuse the existing `importCsv(...)` edge-function wrapper while keeping the runner pure.
-- `apps/erp/app/routes/x+/shared+/import.$tableId.tsx` remains the single-table import seam; route tests now lock validation failure and edge-function error passthrough behavior.
-- `migration-runner.test.ts` covers golden-row counting, required-field failures, duplicate-id failures, import-request planning, golden summary comparison, supported edge-case scenarios, dry-run execution guards, sequential execution order, fail-fast execution, thrown executor errors, and fixture-backed fake apply summaries.
-- The canonical source profile and golden manifest must stay aligned so migration coverage and fixture coverage do not drift.
-- The dry-run/apply runner is intentionally pure and deterministic; real execution is injected by callers, so the runner itself does not write to Supabase or Postgres.
-- `fixedAsset` and `methodMaterial` remain excluded from supported CSV imports until their end-to-end semantics are implemented.
-- Future phases should build orchestration and execution on top of this source-profile + dry-run layer, not bypass it.
-
-## Limitations & Future Work
-
-1. **methodMaterial**: Not exposed as a supported CSV import until BOM/method semantics are implemented end-to-end
-2. **fixedAsset**: Not exposed as a supported CSV import until accounting/asset semantics are implemented end-to-end
-3. **Process-WorkCenter Association**: Currently manual association after import
-4. **Bulk Updates**: No bulk update from existing records
-5. **Error Reporting**: Limited line-by-line error reporting for malformed rows
-6. **Preview**: No CSV preview before import confirmation
-
-## Related Systems
-
-- **Authentication**: Uses Carbon auth for permission checks
-- **Database**: Uses Supabase/PostgreSQL for storage
-- **File Storage**: Uses Supabase private storage for CSV files
-- **Form Validation**: Uses Zod for schema validation
+- `migration-runner.ts` builds dry-run reports and deterministically runs plan orchestration without direct database calls.
