@@ -10,6 +10,7 @@ import type {
 } from "~/modules/sales";
 import CustomerContactForm from "~/modules/sales/ui/Customer/CustomerContactForm";
 import { path } from "~/utils/path";
+import { useEmptyState } from "./emptyStates";
 
 type CustomerContactSelectProps = Omit<
   ComboboxProps,
@@ -68,6 +69,11 @@ const CustomerContact = ({
     props.onChange?.(contact ?? null);
   };
 
+  const emptyMessage = useEmptyState(
+    "customerContact",
+    props.customer ? { onCreate: () => newContactModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -77,6 +83,7 @@ const CustomerContact = ({
         placeholder={props?.placeholder ?? t`Select Contact`}
         inline={props.inline ? CustomerContactPreview : undefined}
         label={props?.label ?? t`Customer Contact`}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newContactModal.onOpen();

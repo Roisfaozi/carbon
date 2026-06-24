@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { LuCheck, LuPlus, LuSettings2, LuX } from "react-icons/lu";
 import {
@@ -34,6 +34,7 @@ export type CreatableComboboxProps = Omit<
   isReadOnly?: boolean;
   label?: string;
   placeholder?: string;
+  emptyMessage?: ReactNode;
   inline?: (
     value: string,
     options: { value: string; label: string | JSX.Element; helper?: string }[]
@@ -55,6 +56,7 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
       isClearable,
       isReadOnly,
       placeholder,
+      emptyMessage,
       onChange,
       label,
       itemHeight = 40,
@@ -179,6 +181,8 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
           </PopoverTrigger>
           <PopoverContent
             align="start"
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
             className="min-w-[var(--radix-popover-trigger-width)] max-w-[min(560px,calc(100vw-2rem))] p-1"
             style={{
               width: dropdownContentWidthCh
@@ -186,18 +190,22 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
                 : "var(--radix-popover-trigger-width)"
             }}
           >
-            <VirtualizedCommand
-              label={label}
-              options={options}
-              selected={selected}
-              value={value}
-              itemHeight={itemHeight}
-              search={search}
-              onChange={onChange}
-              onCreateOption={onCreateOption}
-              setOpen={setOpen}
-              setSearch={setSearch}
-            />
+            {emptyMessage && options.length === 0 ? (
+              emptyMessage
+            ) : (
+              <VirtualizedCommand
+                label={label}
+                options={options}
+                selected={selected}
+                value={value}
+                itemHeight={itemHeight}
+                search={search}
+                onChange={onChange}
+                onCreateOption={onCreateOption}
+                setOpen={setOpen}
+                setSearch={setSearch}
+              />
+            )}
           </PopoverContent>
         </Popover>
         {isClearable && !isReadOnly && value && (

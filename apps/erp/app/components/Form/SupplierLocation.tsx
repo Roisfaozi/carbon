@@ -12,6 +12,7 @@ import { SupplierLocationForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
 import { useCountries } from "./Country";
+import { useEmptyState } from "./emptyStates";
 
 type SupplierLocationSelectProps = Omit<
   CreatableComboboxProps,
@@ -101,6 +102,11 @@ const SupplierLocation = ({
     propsOnChange?.(location as SupplierLocationType | null);
   };
 
+  const emptyMessage = useEmptyState(
+    "supplierLocation",
+    props.supplier ? { onCreate: () => newLocationModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -115,6 +121,7 @@ const SupplierLocation = ({
         }
         inline={inline ? SupplierLocationPreview : undefined}
         label={props?.label ?? "Supplier Location"}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newLocationModal.onOpen();

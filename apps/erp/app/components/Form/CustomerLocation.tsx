@@ -12,6 +12,7 @@ import type {
 import CustomerLocationForm from "~/modules/sales/ui/Customer/CustomerLocationForm";
 import { path } from "~/utils/path";
 import { useCountries } from "./Country";
+import { useEmptyState } from "./emptyStates";
 
 type CustomerLocationSelectProps = Omit<
   ComboboxProps,
@@ -98,6 +99,11 @@ const CustomerLocation = ({
     props.onChange?.(location as CustomerLocationType | null);
   };
 
+  const emptyMessage = useEmptyState(
+    "customerLocation",
+    props.customer ? { onCreate: () => newLocationModal.onOpen() } : undefined
+  );
+
   return (
     <>
       <CreatableCombobox
@@ -107,6 +113,7 @@ const CustomerLocation = ({
         inline={props?.inline ? CustomerLocationPreview : undefined}
         label={props?.label ?? t`Customer Location`}
         placeholder={props?.placeholder ?? t`Select`}
+        emptyMessage={emptyMessage}
         onChange={onChange}
         onCreateOption={(option) => {
           newLocationModal.onOpen();

@@ -885,6 +885,7 @@ const PurchaseOrderLineForm = ({
                               <CostCenter
                                 name="costCenterId"
                                 label={t`Cost Center`}
+                                termId="cost-center"
                                 isOptional
                               />
                             </>
