@@ -43,7 +43,7 @@ const Columns = <T extends object>({
 
   return (
     <Drawer>
-      <DrawerTrigger>
+      <DrawerTrigger asChild>
         <Tooltip>
           <TooltipTrigger asChild>
             <IconButton
