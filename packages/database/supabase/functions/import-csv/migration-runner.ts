@@ -136,15 +136,19 @@ export function buildDryRunReport(args: {
   const warnings = tables.flatMap((table) =>
     table.warnings.map((message) => ({ table: table.table, message }))
   );
-  const importRequests = args.profile.tables.map((tableProfile) => ({
-    table: tableProfile.table,
-    fileName: tableProfile.fileName,
-    filePath: [args.filePathPrefix, tableProfile.fileName].filter(Boolean).join("/"),
-    columnMappings: tableProfile.columnMappings,
-    enumMappings: tableProfile.enumMappings,
-    companyId: args.companyId ?? "",
-    userId: args.userId ?? "",
-  }));
+  const importRequests = args.profile.tables
+    .filter((tableProfile) => args.files[tableProfile.fileName] !== undefined)
+    .map((tableProfile) => ({
+      table: tableProfile.table,
+      fileName: tableProfile.fileName,
+      filePath: [args.filePathPrefix, tableProfile.fileName]
+        .filter(Boolean)
+        .join("/"),
+      columnMappings: tableProfile.columnMappings,
+      enumMappings: tableProfile.enumMappings,
+      companyId: args.companyId ?? "",
+      userId: args.userId ?? "",
+    }));
 
   return {
     scenario: args.scenario,

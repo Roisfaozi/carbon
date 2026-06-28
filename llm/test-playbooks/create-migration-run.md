@@ -491,7 +491,7 @@ Possible run statuses:
 
 ## Fast Pass Checklist
 
-- [ ] `/api/inngest` returns `200`
+- [*] `/api/inngest` returns `200`
 - [ ] local Inngest app is synced
 - [ ] Can open `/x/settings/migration-runs`
 - [ ] Can open `/x/settings/migration-runs/new`

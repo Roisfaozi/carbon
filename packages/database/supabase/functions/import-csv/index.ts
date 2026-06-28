@@ -18,24 +18,133 @@ import {
   prepareMappedRecords,
 } from "./import-runner.ts";
 import { classifyImportRow } from "./classify-import-row.ts";
+import { permissionForImportTable } from "./permissions.ts";
+
+const TABLES = [
+  "consumable",
+  "customer",
+  "customerContact",
+  "fixture",
+  "material",
+  "part",
+  "supplier",
+  "supplierContact",
+  "tool",
+  "workCenter",
+  "process",
+] as const;
+
+type ImportTable = (typeof TABLES)[number];
+
+function getEdgeFunctionErrorMessage(err: unknown): string {
+  if (err && typeof err === "object") {
+    const maybeContext = (err as { context?: Response }).context;
+    if (maybeContext && typeof maybeContext.clone === "function") {
+      return "Edge Function returned a non-2xx status code";
+    }
+  }
+
+  return err instanceof Error ? err.message : "Import failed";
+}
+
+function non2xxError(message: string, status = 500) {
+  return new Response(JSON.stringify({ success: false, message }), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    status,
+  });
+}
+
+function isImportTable(table: string): table is ImportTable {
+  return TABLES.includes(table as ImportTable);
+}
+
+function requireImportPermission(
+  req: Request,
+  companyId: string,
+  userId: string,
+  table: string,
+) {
+  if (!isImportTable(table)) {
+    throw new Error(`Unsupported import table: ${table}`);
+  }
+
+  return requirePermissions(req, companyId, userId, {
+    create: permissionForImportTable(table),
+  });
+}
+
+async function loadCsvText(
+  client: Awaited<ReturnType<typeof requirePermissions>>,
+  filePath: string,
+  csvText?: string,
+) {
+  if (csvText) return csvText;
+
+  const csvFile = await client.storage.from("private").download(filePath);
+  if (!csvFile.data) {
+    throw new Error("Failed to download file");
+  }
+
+  return new TextDecoder().decode(
+    new Uint8Array(await csvFile.data.arrayBuffer()),
+  );
+}
+
+function parseCsvText(csvText: string) {
+  try {
+    return parse(csvText, {
+      skipFirstRow: true,
+      lazyQuotes: true,
+    }) as Record<string, string>[];
+  } catch (_strictErr) {
+    return parsePermissiveCsv(csvText);
+  }
+}
+
+function importCsvErrorResponse(err: unknown) {
+  console.error(err);
+  return non2xxError(getEdgeFunctionErrorMessage(err));
+}
+
+function importCsvSuccessResponse(summary: {
+  inserted: number;
+  updated: number;
+  errors: Array<{ row: number; reason: string }>;
+}) {
+  return new Response(
+    JSON.stringify({
+      success: true,
+      inserted: summary.inserted,
+      updated: summary.updated,
+      skipped: summary.errors.length,
+      errors: summary.errors,
+    }),
+    {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    },
+  );
+}
+
+function logImportRequest(args: {
+  table: string;
+  filePath: string;
+  columnMappings: Record<string, string>;
+  enumMappings: Record<string, Record<string, string>>;
+  companyId: string;
+  userId: string;
+}) {
+  console.log({
+    function: "import-csv",
+    ...args,
+  });
+}
 
 const pool = getConnectionPool(1);
 const db = getDatabaseClient<DB>(pool);
 
 const importCsvValidator = z.object({
-  table: z.enum([
-    "consumable",
-    "customer",
-    "customerContact",
-    "fixture",
-    "material",
-    "part",
-    "supplier",
-    "supplierContact",
-    "tool",
-    "workCenter",
-    "process",
-  ]),
+  table: z.enum(TABLES),
   filePath: z.string(),
   csvText: z.string().optional(),
   columnMappings: z.record(z.string()),
@@ -665,8 +774,7 @@ serve(async (req: Request) => {
       userId,
     } = importCsvValidator.parse(payload);
 
-    console.log({
-      function: "import-csv",
+    logImportRequest({
       table,
       filePath,
       columnMappings,
@@ -675,30 +783,10 @@ serve(async (req: Request) => {
       userId,
     });
 
-    const client = await requirePermissions(req, companyId, userId, { create: "resources" });
+    const client = await requireImportPermission(req, companyId, userId, table);
 
-    const resolvedCsvText = csvText
-      ? csvText
-      : await (async () => {
-          const csvFile = await client.storage.from("private").download(filePath);
-          if (!csvFile.data) {
-            throw new Error("Failed to download file");
-          }
-          return new TextDecoder().decode(
-            new Uint8Array(await csvFile.data.arrayBuffer())
-          );
-        })();
-    // std/csv is strict on row-length mismatches; fall back to the
-    // permissive parser for real-world CSVs with quoting/comma issues.
-    let parsedCsv: Record<string, string>[];
-    try {
-      parsedCsv = parse(resolvedCsvText, {
-        skipFirstRow: true,
-        lazyQuotes: true,
-      }) as Record<string, string>[];
-    } catch (_strictErr) {
-      parsedCsv = parsePermissiveCsv(resolvedCsvText);
-    }
+    const resolvedCsvText = await loadCsvText(client, filePath, csvText);
+    const parsedCsv = parseCsvText(resolvedCsvText);
 
     const mappedRecords = prepareMappedRecords(
       parsedCsv,
@@ -1974,25 +2062,9 @@ serve(async (req: Request) => {
       }
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        inserted: summary.inserted,
-        updated: summary.updated,
-        skipped: summary.errors.length,
-        errors: summary.errors,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return importCsvSuccessResponse(summary);
   } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify(err), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
+    return importCsvErrorResponse(err);
   }
 });
 
