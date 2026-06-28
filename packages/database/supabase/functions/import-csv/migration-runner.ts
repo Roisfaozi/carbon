@@ -41,7 +41,9 @@ function validateUniqueFields(
 
 export type MigrationImportRequest = {
   table: string;
+  fileName?: string;
   filePath: string;
+  csvText?: string;
   columnMappings: Record<string, string>;
   enumMappings?: Record<string, Record<string, string>>;
   companyId: string;
@@ -136,6 +138,7 @@ export function buildDryRunReport(args: {
   );
   const importRequests = args.profile.tables.map((tableProfile) => ({
     table: tableProfile.table,
+    fileName: tableProfile.fileName,
     filePath: [args.filePathPrefix, tableProfile.fileName].filter(Boolean).join("/"),
     columnMappings: tableProfile.columnMappings,
     enumMappings: tableProfile.enumMappings,

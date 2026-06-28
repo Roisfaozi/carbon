@@ -122,6 +122,7 @@ test("buildDryRunReport includes import requests in execution order", () => {
   assert.deepEqual(report.importRequests, [
     {
       table: "customer",
+      fileName: "customer.csv",
       filePath: "migration/golden/customer.csv",
       columnMappings: { id: "id", name: "name" },
       enumMappings: undefined,

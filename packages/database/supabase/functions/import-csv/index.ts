@@ -37,6 +37,7 @@ const importCsvValidator = z.object({
     "process",
   ]),
   filePath: z.string(),
+  csvText: z.string().optional(),
   columnMappings: z.record(z.string()),
   enumMappings: z.record(z.record(z.string())).optional(),
   companyId: z.string(),
@@ -657,6 +658,7 @@ serve(async (req: Request) => {
     const {
       table,
       filePath,
+      csvText,
       columnMappings,
       enumMappings = {},
       companyId,
@@ -675,23 +677,27 @@ serve(async (req: Request) => {
 
     const client = await requirePermissions(req, companyId, userId, { create: "resources" });
 
-    const csvFile = await client.storage.from("private").download(filePath);
-    if (!csvFile.data) {
-      throw new Error("Failed to download file");
-    }
-    const csvText = new TextDecoder().decode(
-      new Uint8Array(await csvFile.data.arrayBuffer())
-    );
+    const resolvedCsvText = csvText
+      ? csvText
+      : await (async () => {
+          const csvFile = await client.storage.from("private").download(filePath);
+          if (!csvFile.data) {
+            throw new Error("Failed to download file");
+          }
+          return new TextDecoder().decode(
+            new Uint8Array(await csvFile.data.arrayBuffer())
+          );
+        })();
     // std/csv is strict on row-length mismatches; fall back to the
     // permissive parser for real-world CSVs with quoting/comma issues.
     let parsedCsv: Record<string, string>[];
     try {
-      parsedCsv = parse(csvText, {
+      parsedCsv = parse(resolvedCsvText, {
         skipFirstRow: true,
         lazyQuotes: true,
       }) as Record<string, string>[];
     } catch (_strictErr) {
-      parsedCsv = parsePermissiveCsv(csvText);
+      parsedCsv = parsePermissiveCsv(resolvedCsvText);
     }
 
     const mappedRecords = prepareMappedRecords(

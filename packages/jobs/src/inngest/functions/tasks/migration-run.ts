@@ -1,7 +1,10 @@
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { MigrationDryRunReport } from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
+import type {
+  MigrationDryRunReport,
+  MigrationImportRequest
+} from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
 import { inngest } from "../../client";
 import type {
   MigrationRunPayload,
@@ -67,9 +70,15 @@ async function updateMigrationRun(
   }
 }
 
+function fileNameForRequest(request: { fileName?: string; filePath: string }) {
+  if (request.fileName) return request.fileName;
+  return request.filePath.split("/").pop() ?? request.filePath;
+}
+
 async function executePersistedApply(
   client: SupabaseClient<Database>,
-  report: MigrationDryRunReport
+  report: MigrationDryRunReport,
+  persistedRequest: PersistedMigrationRunRequest
 ) {
   const migrationRunnerModule = await import(
     "../../../../../database/supabase/functions/import-csv/migration-runner.ts"
@@ -77,22 +86,35 @@ async function executePersistedApply(
   const migrationRunner =
     (migrationRunnerModule as any).default ?? migrationRunnerModule;
 
-  return migrationRunner.executeMigrationPlan(report, async (request: any) => {
-    const result = await client.functions.invoke("import-csv", {
-      body: request
-    });
+  return migrationRunner.executeMigrationPlan(
+    report,
+    async (request: MigrationImportRequest) => {
+      const fileName = fileNameForRequest(request);
+      const csvText = persistedRequest.files[fileName];
 
-    if (result.error) {
-      throw new Error(result.error.message);
+      if (csvText === undefined) {
+        throw new Error(`Missing persisted CSV for ${fileName}`);
+      }
+
+      const result = await client.functions.invoke("import-csv", {
+        body: {
+          ...request,
+          csvText
+        }
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      return {
+        inserted: result.data?.inserted ?? 0,
+        updated: result.data?.updated ?? 0,
+        skipped: result.data?.skipped ?? 0,
+        errors: result.data?.errors ?? []
+      };
     }
-
-    return {
-      inserted: result.data?.inserted ?? 0,
-      updated: result.data?.updated ?? 0,
-      skipped: result.data?.skipped ?? 0,
-      errors: result.data?.errors ?? []
-    };
-  });
+  );
 }
 
 export const migrationRunFunction = inngest.createFunction(
@@ -105,7 +127,8 @@ export const migrationRunFunction = inngest.createFunction(
     await runMigrationRun(payload, {
       loadRun: (currentPayload) => loadMigrationRun(client, currentPayload),
       updateRun: (update) => updateMigrationRun(client, payload, update),
-      executeApply: (report) => executePersistedApply(client, report)
+      executeApply: (report, request) =>
+        executePersistedApply(client, report, request)
     });
 
     return { success: true };

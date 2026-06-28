@@ -41,7 +41,8 @@ export type MigrationRunDeps = {
   loadRun: (payload: MigrationRunPayload) => Promise<PersistedMigrationRun>;
   updateRun: (update: MigrationRunUpdate) => Promise<void>;
   executeApply: (
-    report: MigrationDryRunReport
+    report: MigrationDryRunReport,
+    request: PersistedMigrationRunRequest
   ) => Promise<MigrationExecutionReport>;
 };
 
@@ -168,7 +169,28 @@ export async function runMigrationRun(
 
   await deps.updateRun({ status: "running-apply", error: null });
 
-  const execution = await deps.executeApply(run.planSnapshot);
+  const fileNameForRequest = (request: {
+    fileName?: string;
+    filePath: string;
+  }) => {
+    if (request.fileName) return request.fileName;
+    return request.filePath.split("/").pop() ?? request.filePath;
+  };
+
+  const missingFile = run.planSnapshot.importRequests.find((request) => {
+    const fileName = fileNameForRequest(request);
+    return run.request.files[fileName] === undefined;
+  });
+
+  if (missingFile) {
+    await deps.updateRun({
+      status: "failed",
+      error: `Missing persisted CSV for ${fileNameForRequest(missingFile)}`
+    });
+    return null;
+  }
+
+  const execution = await deps.executeApply(run.planSnapshot, run.request);
 
   await deps.updateRun({
     status: execution.status === "pass" ? "applied" : "failed",

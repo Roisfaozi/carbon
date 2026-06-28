@@ -137,6 +137,7 @@ test("runMigrationRun applies stored plan snapshot and persists execution summar
     importRequests: [
       {
         table: "customer",
+        fileName: "customers.csv",
         filePath: "private/migrations/run-1/customers.csv",
         columnMappings: { id: "id", name: "name" },
         companyId: "company-1",
@@ -165,8 +166,9 @@ test("runMigrationRun applies stored plan snapshot and persists execution summar
       updateRun: async (update) => {
         updates.push(update);
       },
-      executeApply: async (report) => {
+      executeApply: async (report, persistedRequest) => {
         assert.equal(report, planSnapshot);
+        assert.equal(persistedRequest, request);
         return execution;
       }
     }
@@ -179,4 +181,53 @@ test("runMigrationRun applies stored plan snapshot and persists execution summar
     skipped: 0
   });
   assert.equal((updates[1] as any).status, "applied");
+});
+
+test("runMigrationRun fails apply gracefully when persisted csv file is missing", async () => {
+  const updates: unknown[] = [];
+  const planSnapshot: MigrationDryRunReport = {
+    scenario: "golden-v1",
+    status: "pass",
+    totalRows: 1,
+    tables: [],
+    errors: [],
+    warnings: [],
+    importRequests: [
+      {
+        table: "customer",
+        fileName: "customers.csv",
+        filePath: "private/migrations/run-1/customers.csv",
+        columnMappings: { id: "id", name: "name" },
+        companyId: "company-1",
+        userId: "user-1"
+      }
+    ]
+  };
+
+  await runMigrationRun(
+    {
+      migrationRunId: "run-1",
+      companyId: "company-1",
+      userId: "user-1",
+      action: "apply"
+    },
+    {
+      loadRun: async () =>
+        ({
+          id: "run-1",
+          request: { ...request, files: {} },
+          planSnapshot
+        }) as any,
+      updateRun: async (update) => {
+        updates.push(update);
+      },
+      executeApply: async () => {
+        throw new Error("should not execute apply without csv content");
+      }
+    }
+  );
+
+  assert.equal((updates[0] as any).status, "running-apply");
+  assert.equal((updates[1] as any).status, "failed");
+  assert.match((updates[1] as any).error, /Missing persisted CSV/);
 });
