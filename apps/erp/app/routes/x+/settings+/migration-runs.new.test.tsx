@@ -28,9 +28,13 @@ vi.mock("@carbon/jobs", () => ({
   trigger
 }));
 
-vi.mock("~/modules/settings", () => ({
-  MigrationRunForm: vi.fn(() => null)
-}));
+vi.mock("~/modules/settings", async () => {
+  const actual = await import("~/modules/settings/settings.models");
+  return {
+    MigrationRunForm: vi.fn(() => null),
+    migrationRunRequestValidator: actual.migrationRunRequestValidator
+  };
+});
 
 vi.mock("~/modules/shared", () => ({
   createMigrationRun
@@ -55,6 +59,75 @@ vi.mock("react-router", async (importOriginal) => {
 });
 
 describe("migration-runs new action", () => {
+  it("rejects invalid profile shape before create and trigger", async () => {
+    requirePermissions.mockResolvedValue({
+      client: { from: vi.fn() },
+      companyId: "company-1",
+      userId: "user-1"
+    } as any);
+
+    const form = new FormData();
+    form.set("scenario", "golden-v1");
+    form.set("profile", JSON.stringify({ id: "profile-1", name: "Profile" }));
+    form.set("files", JSON.stringify({ "customer.csv": "id,name\nC-1,Acme" }));
+    form.set("filePathPrefix", "private/migration/run-1");
+
+    const { action } = await import("./migration-runs.new");
+    const result = await action({
+      request: new Request("http://localhost/x/settings/migration-runs/new", {
+        method: "POST",
+        body: form
+      })
+    } as any);
+
+    expect(result).toMatchObject({
+      data: {
+        fieldErrors: expect.any(Object)
+      },
+      init: {
+        status: 422
+      }
+    });
+    expect(createMigrationRun).not.toHaveBeenCalled();
+    expect(trigger).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid files payload before create and trigger", async () => {
+    requirePermissions.mockResolvedValue({
+      client: { from: vi.fn() },
+      companyId: "company-1",
+      userId: "user-1"
+    } as any);
+
+    const form = new FormData();
+    form.set("scenario", "golden-v1");
+    form.set(
+      "profile",
+      JSON.stringify({ id: "profile-1", name: "Profile", tables: [] })
+    );
+    form.set("files", JSON.stringify({ "customer.csv": 123 }));
+    form.set("filePathPrefix", "private/migration/run-1");
+
+    const { action } = await import("./migration-runs.new");
+    const result = await action({
+      request: new Request("http://localhost/x/settings/migration-runs/new", {
+        method: "POST",
+        body: form
+      })
+    } as any);
+
+    expect(result).toMatchObject({
+      data: {
+        fieldErrors: expect.any(Object)
+      },
+      init: {
+        status: 422
+      }
+    });
+    expect(createMigrationRun).not.toHaveBeenCalled();
+    expect(trigger).not.toHaveBeenCalled();
+  });
+
   it("creates run and queues dry-run job", async () => {
     requirePermissions.mockResolvedValue({
       client: { from: vi.fn() },

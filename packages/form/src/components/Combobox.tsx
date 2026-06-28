@@ -68,15 +68,21 @@ const Combobox = ({
           {label}
         </FormLabel>
       )}
-      <input
-        {...getInputProps({
+      {(() => {
+        const { defaultValue, ...inputProps } = getInputProps({
           id: name
-        })}
-        type="hidden"
-        name={name}
-        id={name}
-        value={value}
-      />
+        } as any);
+
+        return (
+          <input
+            {...inputProps}
+            type="hidden"
+            name={name}
+            id={name}
+            {...(value !== undefined ? { value } : { defaultValue })}
+          />
+        );
+      })()}
       <ComboboxBase
         {...props}
         value={value}

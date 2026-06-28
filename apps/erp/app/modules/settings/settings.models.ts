@@ -1,4 +1,8 @@
 import {
+  migrationRunFilesSchema,
+  sourceProfileSchema
+} from "@carbon/database/migration";
+import {
   blockSchema,
   documentSectionPlacementSchema,
   documentSettingsSchema,
@@ -384,23 +388,9 @@ export const documentSectionValidator = zfd.formData({
   config: jsonField(sectionConfigSchema, "Invalid section config").optional()
 });
 
-export const migrationRunRequestValidator = z.object({
-  scenario: z.string().min(1),
-  profile: z.string().transform((val, ctx) => {
-    try {
-      return JSON.parse(val);
-    } catch {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Invalid JSON" });
-      return z.NEVER;
-    }
-  }),
-  files: z.string().transform((val, ctx) => {
-    try {
-      return JSON.parse(val);
-    } catch {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Invalid JSON" });
-      return z.NEVER;
-    }
-  }),
-  filePathPrefix: z.string().optional()
+export const migrationRunRequestValidator = zfd.formData({
+  scenario: zfd.text(z.string().min(1)),
+  profile: jsonField(sourceProfileSchema, "Invalid migration profile"),
+  files: jsonField(migrationRunFilesSchema, "Invalid migration files"),
+  filePathPrefix: zfd.text(z.string().optional())
 });

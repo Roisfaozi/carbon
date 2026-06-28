@@ -57,6 +57,41 @@ test("runMigrationRun persists review-ready dry-run state with plan snapshot", a
   assert.equal((updates[1] as any).dryRunSummary.totalRows, 1);
 });
 
+test("runMigrationRun fails gracefully for invalid persisted request shape", async () => {
+  const updates: unknown[] = [];
+
+  await runMigrationRun(
+    {
+      migrationRunId: "run-1",
+      companyId: "company-1",
+      userId: "user-1",
+      action: "dry-run"
+    },
+    {
+      loadRun: async () =>
+        ({
+          id: "run-1",
+          request: {
+            scenario: "golden-v1",
+            profile: { id: "profile-1", name: "Broken Profile" },
+            files: { "customers.csv": "id,name\nC-001,Acme" }
+          },
+          planSnapshot: null
+        }) as any,
+      updateRun: async (update) => {
+        updates.push(update);
+      },
+      executeApply: async () => {
+        throw new Error("apply should not run");
+      }
+    }
+  );
+
+  assert.equal((updates[0] as any).status, "running-dry-run");
+  assert.equal((updates[1] as any).status, "failed");
+  assert.match((updates[1] as any).error, /Invalid migration run request/);
+});
+
 test("runMigrationRun persists failed dry-run validation state", async () => {
   const updates: unknown[] = [];
 

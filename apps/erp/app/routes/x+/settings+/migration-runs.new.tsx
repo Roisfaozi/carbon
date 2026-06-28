@@ -1,10 +1,14 @@
 import { assertIsPost, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useNavigate } from "react-router";
-import { MigrationRunForm } from "~/modules/settings";
+import {
+  MigrationRunForm,
+  migrationRunRequestValidator
+} from "~/modules/settings";
 import { createMigrationRun } from "~/modules/shared";
 import { path } from "~/utils/path";
 
@@ -23,17 +27,16 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const requestJson = {
-    scenario: String(formData.get("scenario") ?? ""),
-    profile: JSON.parse(String(formData.get("profile") ?? "{}")),
-    files: JSON.parse(String(formData.get("files") ?? "{}")),
-    filePathPrefix: formData.get("filePathPrefix")
-      ? String(formData.get("filePathPrefix"))
-      : undefined
-  };
+  const validation = await validator(migrationRunRequestValidator).validate(
+    formData
+  );
+
+  if (validation.error) {
+    return validationError(validation.error);
+  }
 
   const result = await createMigrationRun(client, {
-    request: requestJson,
+    request: validation.data,
     companyId,
     userId
   });

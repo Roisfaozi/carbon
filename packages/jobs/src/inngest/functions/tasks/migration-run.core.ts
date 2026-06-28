@@ -2,7 +2,10 @@ import type {
   MigrationDryRunReport,
   MigrationExecutionReport
 } from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
-import type { SourceProfile } from "../../../../../database/supabase/functions/import-csv/migration-source-profiles.ts";
+import type {
+  MigrationRunRequest,
+  SourceProfile
+} from "../../../../../database/supabase/functions/import-csv/migration-source-profiles.ts";
 
 type MigrationRunAction = "dry-run" | "apply";
 
@@ -41,6 +44,29 @@ export type MigrationRunDeps = {
     report: MigrationDryRunReport
   ) => Promise<MigrationExecutionReport>;
 };
+
+async function loadMigrationRequestSchema() {
+  const module = await import(
+    "../../../../../database/supabase/functions/import-csv/migration-source-profiles.ts"
+  );
+  const resolved =
+    (module as any).migrationRunRequestSchema ??
+    (module as any).default?.migrationRunRequestSchema ??
+    (module as any)["module.exports"]?.migrationRunRequestSchema;
+
+  if (!resolved) {
+    throw new Error("migrationRunRequestSchema export not found");
+  }
+
+  return resolved as {
+    safeParse: (value: unknown) =>
+      | { success: true; data: MigrationRunRequest }
+      | {
+          success: false;
+          error: { issues: Array<{ path: PropertyKey[]; message: string }> };
+        };
+  };
+}
 
 async function buildDryRunReport(args: {
   scenario: string;
@@ -85,6 +111,15 @@ function firstErrorReason(
   return report.errors[0]?.reason ?? "Migration run failed";
 }
 
+function invalidRequestReason(error: {
+  issues: Array<{ path: PropertyKey[]; message: string }>;
+}) {
+  const issue = error.issues[0];
+  const path = issue?.path.length ? issue.path.join(".") : "request";
+  const message = issue?.message ?? "invalid shape";
+  return `Invalid migration run request: ${path} ${message}`;
+}
+
 export async function runMigrationRun(
   payload: MigrationRunPayload,
   deps: MigrationRunDeps
@@ -94,13 +129,23 @@ export async function runMigrationRun(
   if (payload.action === "dry-run") {
     await deps.updateRun({ status: "running-dry-run", error: null });
 
+    const migrationRunRequestSchema = await loadMigrationRequestSchema();
+    const parsedRequest = migrationRunRequestSchema.safeParse(run.request);
+    if (!parsedRequest.success) {
+      await deps.updateRun({
+        status: "failed",
+        error: invalidRequestReason(parsedRequest.error)
+      });
+      return null;
+    }
+
     const report = await buildDryRunReport({
-      scenario: run.request.scenario,
-      profile: run.request.profile,
-      files: run.request.files,
+      scenario: parsedRequest.data.scenario,
+      profile: parsedRequest.data.profile,
+      files: parsedRequest.data.files,
       companyId: payload.companyId,
       userId: payload.userId,
-      filePathPrefix: run.request.filePathPrefix
+      filePathPrefix: parsedRequest.data.filePathPrefix
     });
 
     await deps.updateRun({

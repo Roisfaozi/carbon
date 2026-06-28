@@ -1,22 +1,44 @@
-import type { z } from "zod";
+import { z } from "zod";
 import type { ColumnMappings, EnumMappings } from "./import-runner.ts";
 import { supportedFixtureTableSchema } from "./fixture-schema.ts";
 
 export type MigrationTable = z.infer<typeof supportedFixtureTableSchema>;
 
-export type SourceTableProfile = {
-  table: MigrationTable;
-  fileName: string;
+const columnMappingsSchema = z.record(z.string());
+const enumMappingsSchema = z.record(z.record(z.string()));
+
+export const sourceTableProfileSchema = z.object({
+  table: supportedFixtureTableSchema,
+  fileName: z.string().min(1),
+  columnMappings: columnMappingsSchema,
+  enumMappings: enumMappingsSchema.optional(),
+  requiredFields: z.array(z.string()).optional(),
+  uniqueFields: z.array(z.string()).optional()
+});
+
+export type SourceTableProfile = z.infer<typeof sourceTableProfileSchema> & {
   columnMappings: ColumnMappings;
   enumMappings?: EnumMappings;
-  requiredFields?: string[];
-  uniqueFields?: string[];
 };
-export type SourceProfile = {
-  id: string;
-  name: string;
-  tables: SourceTableProfile[];
-};
+
+export const sourceProfileSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  tables: z.array(sourceTableProfileSchema)
+});
+
+export type SourceProfile = z.infer<typeof sourceProfileSchema>;
+
+export const migrationRunFilesSchema = z.record(z.string());
+
+export const migrationRunRequestSchema = z.object({
+  scenario: z.string().min(1),
+  profile: sourceProfileSchema,
+  files: migrationRunFilesSchema,
+  filePathPrefix: z.string().optional()
+});
+
+export type MigrationRunRequest = z.infer<typeof migrationRunRequestSchema>;
 
 export const tableExecutionOrder: MigrationTable[] = [
   "customer",
