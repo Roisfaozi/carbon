@@ -1,7 +1,4 @@
-import {
-  carbonCanonicalProfile,
-  migrationRunRequestSchema
-} from "@carbon/database/migration";
+import { carbonCanonicalProfile } from "@carbon/database/migration";
 import { ValidatedForm } from "@carbon/form";
 import { Button, HStack, VStack } from "@carbon/react";
 import { Hidden, Input, Submit, TextArea } from "~/components/Form";
@@ -15,31 +12,16 @@ type MigrationRunFormValues = {
   filePathPrefix?: string;
 };
 
-type MigrationRunFormDefaultValues = {
-  scenario: string;
-  profile: typeof carbonCanonicalProfile;
-  files: Record<string, string>;
-  filePathPrefix?: string;
-};
-
 type MigrationRunFormProps = {
   onClose?: () => void;
 };
 
-const initialValues: MigrationRunFormValues = {
+const defaultValues: MigrationRunFormValues = {
   scenario: carbonCanonicalProfile.id,
   profile: JSON.stringify(carbonCanonicalProfile, null, 2),
   files: "{}",
   filePathPrefix: "private/migration/carbon-canonical-v1"
 };
-
-const defaultValues: MigrationRunFormDefaultValues =
-  migrationRunRequestSchema.parse({
-    scenario: initialValues.scenario,
-    profile: JSON.parse(initialValues.profile),
-    files: JSON.parse(initialValues.files),
-    filePathPrefix: initialValues.filePathPrefix
-  });
 
 const MigrationRunForm = ({ onClose }: MigrationRunFormProps) => {
   return (
@@ -47,7 +29,7 @@ const MigrationRunForm = ({ onClose }: MigrationRunFormProps) => {
       method="post"
       action={path.to.newMigrationRun}
       validator={migrationRunRequestValidator}
-      defaultValues={defaultValues}
+      defaultValues={defaultValues as any}
       className="w-full animate-in slide-in-from-right"
     >
       <VStack spacing={4} className="w-full">
