@@ -7,6 +7,29 @@ const { assertIsPost, requirePermissions, trigger, createMigrationRun } =
     trigger: vi.fn(),
     createMigrationRun: vi.fn()
   }));
+const validationError = vi.fn((error: unknown) => ({
+  data: error,
+  init: { status: 422 }
+}));
+const validator = vi.fn((schema: { safeParse: (value: FormData) => any }) => ({
+  validate: vi.fn(async (formData: FormData) => {
+    const result = schema.safeParse(formData);
+    if (result.success) {
+      return { data: result.data };
+    }
+
+    return {
+      error: {
+        fieldErrors: result.error.flatten().fieldErrors
+      }
+    };
+  })
+}));
+
+vi.mock("@carbon/form", () => ({
+  validationError,
+  validator
+}));
 
 vi.mock("@carbon/auth", () => ({
   assertIsPost,

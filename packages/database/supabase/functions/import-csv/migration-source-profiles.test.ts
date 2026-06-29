@@ -47,6 +47,57 @@ test("carbon canonical profile maps material contract fields by name", () => {
   assert.equal("dimensionId" in material.columnMappings, false);
 });
 
+test("carbon canonical profile maps supplier fields needed by migration runs", () => {
+  const supplier = carbonCanonicalProfile.tables.find((table) => table.table === "supplier");
+
+  assert.ok(supplier);
+  assert.equal(supplier.fileName, "supplier.csv");
+  assert.deepEqual(supplier.requiredFields, ["id", "name"]);
+  assert.equal(supplier.columnMappings.supplierStatus, "supplierStatus");
+  assert.equal(supplier.columnMappings.locationName, "locationName");
+  assert.equal(supplier.columnMappings.paymentTermId, "paymentTermId");
+  assert.equal(supplier.columnMappings.shippingMethodId, "shippingMethodId");
+  assert.equal(supplier.columnMappings.incoterm, "incoterm");
+  assert.equal(supplier.columnMappings.incotermLocation, "incotermLocation");
+});
+
+test("carbon canonical profile maps work center fields by name", () => {
+  const workCenter = carbonCanonicalProfile.tables.find(
+    (table) => table.table === "workCenter"
+  );
+
+  assert.ok(workCenter);
+  assert.equal(workCenter.fileName, "workCenter.csv");
+  assert.deepEqual(workCenter.requiredFields, [
+    "id",
+    "name",
+    "description",
+    "locationId",
+  ]);
+  assert.equal(
+    workCenter.columnMappings.defaultStandardFactor,
+    "defaultStandardFactor"
+  );
+  assert.equal(workCenter.columnMappings.laborRate, "laborRate");
+  assert.equal(workCenter.columnMappings.machineRate, "machineRate");
+  assert.equal(workCenter.columnMappings.overheadRate, "overheadRate");
+  assert.equal(workCenter.columnMappings.locationId, "locationId");
+});
+
+test("carbon canonical profile maps process fields by name", () => {
+  const process = carbonCanonicalProfile.tables.find((table) => table.table === "process");
+
+  assert.ok(process);
+  assert.equal(process.fileName, "process.csv");
+  assert.deepEqual(process.requiredFields, ["id", "name", "processType"]);
+  assert.equal(process.columnMappings.processType, "processType");
+  assert.equal(
+    process.columnMappings.defaultStandardFactor,
+    "defaultStandardFactor"
+  );
+  assert.equal(process.columnMappings.completeAllOnScan, "completeAllOnScan");
+});
+
 test("carbon canonical profile covers exactly the golden manifest tables", () => {
   const manifest = goldenManifestSchema.parse(
     readJson(resolve(goldenRoot, "manifest.json"))

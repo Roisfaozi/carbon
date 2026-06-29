@@ -142,7 +142,7 @@ Based on current canonical profile:
 - `workCenter`: `id`, `name`, `description`, `locationId`
 - `process`: `id`, `name`, `processType`
 
-For first manual smoke test, start with `customer.csv` only.
+For first manual smoke test, start with `supplier.csv` only.
 
 ## Data Preparation Rules
 
@@ -154,14 +154,14 @@ For first manual smoke test, start with `customer.csv` only.
 - Keep first run small: 1-2 files, 1-3 rows each
 - Prefer testing with only required columns first
 
-## Recommended First Test: Minimal Smoke Dataset
+## Recommended First Test: Supplier Smoke Dataset
 
 Use this exact input.
 
 ### Scenario
 
 ```txt
-manual-smoke-customer-v1
+manual-smoke-supplier-v1
 ```
 
 ### Profile JSON
@@ -171,25 +171,31 @@ Leave default form value unchanged.
 ### File Path Prefix
 
 ```txt
-private/migration/manual-smoke-customer-v1
+private/migration/manual-smoke-supplier-v1
 ```
 
 ### Files JSON
 
 ```json
 {
-  "customer.csv": "id,name\nCUST-MANUAL-001,Acme Manual Test\n"
+  "supplier.csv": "id,name\nSUPP-MANUAL-001,Supplier Manual Test\n"
 }
 ```
 
-## Recommended Second Test: Parent + Child Dataset
+Expected result:
+- dry-run reaches `review-ready`
+- apply reaches `applied`
+- `Request.files` stores supplier CSV text inline
+- `Apply Summary` is populated
 
-Use this to verify cross-file reference flow.
+## Recommended Second Test: Process Smoke Dataset
+
+Use this exact input.
 
 ### Scenario
 
 ```txt
-manual-smoke-contact-v1
+manual-smoke-process-v1
 ```
 
 ### Profile JSON
@@ -199,17 +205,54 @@ Leave default form value unchanged.
 ### File Path Prefix
 
 ```txt
-private/migration/manual-smoke-contact-v1
+private/migration/manual-smoke-process-v1
 ```
 
 ### Files JSON
 
 ```json
 {
-  "customer.csv": "id,name\nCUST-MANUAL-002,Bravo Manual Test\n",
-  "customerContact.csv": "id,companyId,firstName,lastName,email,title\nCONT-MANUAL-001,CUST-MANUAL-002,Ana,Buyer,ana.buyer@example.com,Purchasing Manager\n"
+  "process.csv": "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n"
 }
 ```
+
+Expected result:
+- dry-run reaches `review-ready`
+- apply reaches `applied`
+- `processType` value accepted by current import contract
+
+## Recommended Third Test: Work Center Smoke Dataset
+
+Use this exact input.
+
+### Scenario
+
+```txt
+manual-smoke-workcenter-v1
+```
+
+### Profile JSON
+
+Leave default form value unchanged.
+
+### File Path Prefix
+
+```txt
+private/migration/manual-smoke-workcenter-v1
+```
+
+### Files JSON
+
+```json
+{
+  "workCenter.csv": "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,LOC-MANUAL-001\n"
+}
+```
+
+Expected result:
+- dry-run reaches `review-ready`
+- apply reaches `applied`
+- `locationId` must point at valid location data already present in Carbon
 
 ## Recommended Failure Test: Missing Required Field
 
@@ -346,10 +389,10 @@ If `tables` is missing, do not submit.
 ### 4. Fill form
 
 For first smoke test:
-- Scenario: `manual-smoke-customer-v1`
+- Scenario: `manual-smoke-supplier-v1`
 - Profile JSON: leave default
-- Files JSON: paste minimal smoke dataset
-- File Path Prefix: `private/migration/manual-smoke-customer-v1`
+- Files JSON: paste supplier smoke dataset
+- File Path Prefix: `private/migration/manual-smoke-supplier-v1`
 
 ### 5. Submit
 
@@ -452,11 +495,45 @@ For broader manual testing, prepare these items:
 4. **Reference data awareness**
    - Some optional fields may reference existing Carbon records or enums
    - For first test, avoid optional lookup-heavy columns unless you know their values are valid
+   - `workCenter.locationId` must reference valid location data already present in Carbon
+   - `process.processType` should use current accepted runtime values like `Inside`
 
 5. **Small batch first**
    - Run 1 file / 1 row first
    - Then 2 files / a few rows
    - Then full pack
+
+6. **Current browser verification blocker**
+   - In this session, browser automation could not run because `agent-browser` was unavailable in the CLI environment
+   - Use manual browser testing for final supplier / process / workCenter verification until that tooling is available again
+   - Because of that blocker, no exact nested-button repro was confirmed on the migration-runs table in this session
+   - Do not change migration-runs table markup unless the warning is reproduced on the exact page path during manual testing
+
+7. **Known good manual order**
+   - `supplier.csv`
+   - `process.csv`
+   - `workCenter.csv`
+   - customer + contact datasets after single-table smoke passes
+
+8. **Recommended location prerequisite for work center**
+   - Before running `workCenter.csv`, confirm the `locationId` you plan to use already exists in seeded data or create it first
+   - Replace `LOC-MANUAL-001` with a real location identifier from your environment if needed
+
+9. **Manual test note for process**
+   - Start with only `id`, `name`, and `processType`
+   - Add optional fields like `defaultStandardFactor` or `completeAllOnScan` only after the minimal smoke case passes
+
+10. **Manual test note for supplier**
+   - Start with only `id` and `name`
+   - Add address, payment, shipping, and incoterm fields only after the minimal smoke case passes to isolate failures more easily
+
+11. **Expected status path for all happy-path smoke runs**
+   - `queued-dry-run`
+   - `running-dry-run`
+   - `review-ready`
+   - `queued-apply`
+   - `running-apply`
+   - `applied`
 
 ## Using Fixture Data as Reference
 
@@ -491,12 +568,12 @@ Possible run statuses:
 
 ## Fast Pass Checklist
 
-- [*] `/api/inngest` returns `200`
+- [ ] `/api/inngest` returns `200`
 - [ ] local Inngest app is synced
 - [ ] Can open `/x/settings/migration-runs`
 - [ ] Can open `/x/settings/migration-runs/new`
 - [ ] Default `Profile JSON` contains `tables`
-- [ ] Can submit minimal smoke dataset
+- [ ] Can submit supplier smoke dataset
 - [ ] Dry-run reaches `review-ready`
 - [ ] Detail shows request / summary / snapshot
 - [ ] Apply reaches `applied`
@@ -504,3 +581,8 @@ Possible run statuses:
 - [ ] Failure dataset reaches `failed`
 - [ ] Invalid profile/files payload is blocked before run creation
 - [ ] Failed run shows error and cannot be applied
+- [ ] Supplier smoke dataset confirmed by manual browser run when browser tooling is available
+- [ ] Process smoke dataset confirmed by manual browser run when browser tooling is available
+- [ ] WorkCenter smoke dataset confirmed by manual browser run when browser tooling is available
+- [ ] No nested-button warning repro found on `/x/settings/migration-runs` unless exact page path shows it again
+

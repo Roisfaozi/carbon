@@ -231,3 +231,108 @@ test("runMigrationRun fails apply gracefully when persisted csv file is missing"
   assert.equal((updates[1] as any).status, "failed");
   assert.match((updates[1] as any).error, /Missing persisted CSV/);
 });
+
+function smokeRequest(args: {
+  scenario: string;
+  table: "supplier" | "process" | "workCenter";
+  fileName: string;
+  csvText: string;
+  requiredFields: string[];
+  columnMappings: Record<string, string>;
+}) {
+  return {
+    scenario: args.scenario,
+    profile: {
+      id: "test-profile",
+      name: "Test Profile",
+      tables: [
+        {
+          table: args.table,
+          fileName: args.fileName,
+          columnMappings: args.columnMappings,
+          requiredFields: args.requiredFields,
+          uniqueFields: ["id"]
+        }
+      ]
+    },
+    files: {
+      [args.fileName]: args.csvText
+    },
+    filePathPrefix: `private/migrations/${args.scenario}`
+  };
+}
+
+async function expectReviewReadyForSmokeRequest(
+  request: Record<string, unknown>
+) {
+  const updates: unknown[] = [];
+
+  await runMigrationRun(
+    {
+      migrationRunId: "run-1",
+      companyId: "company-1",
+      userId: "user-1",
+      action: "dry-run"
+    },
+    {
+      loadRun: async () =>
+        ({ id: "run-1", request, planSnapshot: null }) as any,
+      updateRun: async (update) => {
+        updates.push(update);
+      },
+      executeApply: async () => {
+        throw new Error("apply should not run");
+      }
+    }
+  );
+
+  assert.equal((updates[0] as any).status, "running-dry-run");
+  assert.equal((updates[1] as any).status, "review-ready");
+  assert.equal((updates[1] as any).planSnapshot.status, "pass");
+  assert.equal((updates[1] as any).dryRunSummary.totalRows, 1);
+}
+
+test("runMigrationRun persists review-ready dry-run state for supplier smoke dataset", async () => {
+  await expectReviewReadyForSmokeRequest(
+    smokeRequest({
+      scenario: "manual-smoke-supplier-v1",
+      table: "supplier",
+      fileName: "supplier.csv",
+      csvText: "id,name\nSUPP-MANUAL-001,Supplier Manual Test\n",
+      requiredFields: ["id", "name"],
+      columnMappings: { id: "id", name: "name" }
+    })
+  );
+});
+
+test("runMigrationRun persists review-ready dry-run state for process smoke dataset", async () => {
+  await expectReviewReadyForSmokeRequest(
+    smokeRequest({
+      scenario: "manual-smoke-process-v1",
+      table: "process",
+      fileName: "process.csv",
+      csvText: "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n",
+      requiredFields: ["id", "name", "processType"],
+      columnMappings: { id: "id", name: "name", processType: "processType" }
+    })
+  );
+});
+
+test("runMigrationRun persists review-ready dry-run state for workCenter smoke dataset", async () => {
+  await expectReviewReadyForSmokeRequest(
+    smokeRequest({
+      scenario: "manual-smoke-workcenter-v1",
+      table: "workCenter",
+      fileName: "workCenter.csv",
+      csvText:
+        "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,LOC-MANUAL-001\n",
+      requiredFields: ["id", "name", "description", "locationId"],
+      columnMappings: {
+        id: "id",
+        name: "name",
+        description: "description",
+        locationId: "locationId"
+      }
+    })
+  );
+});

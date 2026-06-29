@@ -203,6 +203,78 @@ test("buildDryRunReport accepts supplier blank IDs without duplicate failures", 
   assert.equal(report.status, "pass");
 });
 
+test("buildDryRunReport supports minimal supplier smoke dataset", () => {
+  const supplier = carbonCanonicalProfile.tables.find((table) => table.table === "supplier");
+
+  assert.ok(supplier);
+
+  const report = buildDryRunReport({
+    scenario: "manual-smoke-supplier-v1",
+    profile: {
+      id: carbonCanonicalProfile.id,
+      name: carbonCanonicalProfile.name,
+      tables: [supplier],
+    },
+    files: {
+      "supplier.csv": "id,name\nSUPP-MANUAL-001,Supplier Manual Test\n",
+    },
+    filePathPrefix: "private/migration/manual-smoke-supplier-v1",
+  });
+
+  assert.equal(report.status, "pass");
+  assert.equal(report.totalRows, 1);
+  assert.deepEqual(report.importRequests.map((request) => request.table), ["supplier"]);
+});
+
+test("buildDryRunReport supports minimal process smoke dataset", () => {
+  const process = carbonCanonicalProfile.tables.find((table) => table.table === "process");
+
+  assert.ok(process);
+
+  const report = buildDryRunReport({
+    scenario: "manual-smoke-process-v1",
+    profile: {
+      id: carbonCanonicalProfile.id,
+      name: carbonCanonicalProfile.name,
+      tables: [process],
+    },
+    files: {
+      "process.csv": "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n",
+    },
+    filePathPrefix: "private/migration/manual-smoke-process-v1",
+  });
+
+  assert.equal(report.status, "pass");
+  assert.equal(report.totalRows, 1);
+  assert.deepEqual(report.importRequests.map((request) => request.table), ["process"]);
+});
+
+test("buildDryRunReport supports minimal work center smoke dataset", () => {
+  const workCenter = carbonCanonicalProfile.tables.find(
+    (table) => table.table === "workCenter"
+  );
+
+  assert.ok(workCenter);
+
+  const report = buildDryRunReport({
+    scenario: "manual-smoke-workcenter-v1",
+    profile: {
+      id: carbonCanonicalProfile.id,
+      name: carbonCanonicalProfile.name,
+      tables: [workCenter],
+    },
+    files: {
+      "workCenter.csv":
+        "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,LOC-MANUAL-001\n",
+    },
+    filePathPrefix: "private/migration/manual-smoke-workcenter-v1",
+  });
+
+  assert.equal(report.status, "pass");
+  assert.equal(report.totalRows, 1);
+  assert.deepEqual(report.importRequests.map((request) => request.table), ["workCenter"]);
+});
+
 test("executeMigrationPlan refuses to run when dry-run validation fails", async () => {
   const report = buildDryRunReport({
     scenario: "missing-required-customer-name",
