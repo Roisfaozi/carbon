@@ -1,12 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 
-const { assertIsPost, requirePermissions, trigger, getMigrationRun } =
-  vi.hoisted(() => ({
-    assertIsPost: vi.fn(),
-    requirePermissions: vi.fn(),
-    trigger: vi.fn(),
-    getMigrationRun: vi.fn()
-  }));
+const {
+  assertIsPost,
+  requirePermissions,
+  trigger,
+  getMigrationRun,
+  updateMigrationRunStatus
+} = vi.hoisted(() => ({
+  assertIsPost: vi.fn(),
+  requirePermissions: vi.fn(),
+  trigger: vi.fn(),
+  getMigrationRun: vi.fn(),
+  updateMigrationRunStatus: vi.fn()
+}));
 
 vi.mock("@carbon/auth", () => ({
   assertIsPost,
@@ -29,7 +35,8 @@ vi.mock("@carbon/jobs", () => ({
 }));
 
 vi.mock("~/modules/shared", () => ({
-  getMigrationRun
+  getMigrationRun,
+  updateMigrationRunStatus
 }));
 
 vi.mock("~/utils/path", () => ({
@@ -78,6 +85,50 @@ describe("migration-runs apply action", () => {
     expect(response).toEqual({
       success: false,
       message: "Migration run is not ready to apply"
+    });
+  });
+
+  it("marks run queued-apply before triggering background apply", async () => {
+    const client = { from: vi.fn() };
+    requirePermissions.mockResolvedValue({
+      client,
+      companyId: "company-1",
+      userId: "user-1"
+    } as any);
+    getMigrationRun.mockResolvedValue({
+      data: { id: "run-1", status: "review-ready" },
+      error: null
+    } as any);
+
+    const { action } = await import("./migration-runs.$migrationRunId.apply");
+
+    await expect(
+      action({
+        request: new Request(
+          "http://localhost/x/settings/migration-runs/run-1/apply",
+          {
+            method: "POST"
+          }
+        ),
+        params: { migrationRunId: "run-1" }
+      } as any)
+    ).rejects.toMatchObject({
+      status: 302,
+      url: "/x/settings/migration-runs/run-1"
+    });
+
+    expect(updateMigrationRunStatus).toHaveBeenCalledWith(client, {
+      id: "run-1",
+      companyId: "company-1",
+      userId: "user-1",
+      status: "queued-apply",
+      error: null
+    });
+    expect(trigger).toHaveBeenCalledWith("migration-run", {
+      migrationRunId: "run-1",
+      companyId: "company-1",
+      userId: "user-1",
+      action: "apply"
     });
   });
 });

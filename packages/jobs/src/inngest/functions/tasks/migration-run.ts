@@ -1,10 +1,7 @@
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type {
-  MigrationDryRunReport,
-  MigrationImportRequest
-} from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
+import type { MigrationDryRunReport } from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
 import { inngest } from "../../client";
 import type {
   MigrationRunPayload,
@@ -12,7 +9,7 @@ import type {
   PersistedMigrationRun,
   PersistedMigrationRunRequest
 } from "./migration-run.core";
-import { runMigrationRun } from "./migration-run.core";
+import { executePersistedApply, runMigrationRun } from "./migration-run.core";
 
 export type {
   MigrationRunPayload,
@@ -20,7 +17,7 @@ export type {
   PersistedMigrationRun,
   PersistedMigrationRunRequest
 } from "./migration-run.core";
-export { runMigrationRun } from "./migration-run.core";
+export { executePersistedApply, runMigrationRun } from "./migration-run.core";
 
 async function loadMigrationRun(
   client: SupabaseClient<Database>,
@@ -68,53 +65,6 @@ async function updateMigrationRun(
   if (error) {
     throw new Error(error.message);
   }
-}
-
-function fileNameForRequest(request: { fileName?: string; filePath: string }) {
-  if (request.fileName) return request.fileName;
-  return request.filePath.split("/").pop() ?? request.filePath;
-}
-
-async function executePersistedApply(
-  client: SupabaseClient<Database>,
-  report: MigrationDryRunReport,
-  persistedRequest: PersistedMigrationRunRequest
-) {
-  const migrationRunnerModule = await import(
-    "../../../../../database/supabase/functions/import-csv/migration-runner.ts"
-  );
-  const migrationRunner =
-    (migrationRunnerModule as any).default ?? migrationRunnerModule;
-
-  return migrationRunner.executeMigrationPlan(
-    report,
-    async (request: MigrationImportRequest) => {
-      const fileName = fileNameForRequest(request);
-      const csvText = persistedRequest.files[fileName];
-
-      if (csvText === undefined) {
-        throw new Error(`Missing persisted CSV for ${fileName}`);
-      }
-
-      const result = await client.functions.invoke("import-csv", {
-        body: {
-          ...request,
-          csvText
-        }
-      });
-
-      if (result.error) {
-        throw new Error(result.error.message);
-      }
-
-      return {
-        inserted: result.data?.inserted ?? 0,
-        updated: result.data?.updated ?? 0,
-        skipped: result.data?.skipped ?? 0,
-        errors: result.data?.errors ?? []
-      };
-    }
-  );
 }
 
 export const migrationRunFunction = inngest.createFunction(

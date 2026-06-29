@@ -45,9 +45,6 @@ const MigrationRunDetail = ({ run }: MigrationRunDetailProps) => {
   const navigate = useNavigate();
   const canApply = run.status === "review-ready";
 
-  const requestFiles = (run.request as any)?.files ?? {};
-  const requestProfile = (run.request as any)?.profile ?? {};
-
   return (
     <Drawer
       open
@@ -59,9 +56,7 @@ const MigrationRunDetail = ({ run }: MigrationRunDetailProps) => {
         <DrawerHeader>
           <HStack className="items-center justify-between pr-10">
             <div>
-              <DrawerTitle>
-                {(run.request as any)?.scenario ?? run.id}
-              </DrawerTitle>
+              <DrawerTitle>{run.request.scenario ?? run.id}</DrawerTitle>
               <p className="mt-1 text-xs text-muted-foreground font-mono">
                 {run.id}
               </p>
@@ -105,7 +100,7 @@ const MigrationRunDetail = ({ run }: MigrationRunDetailProps) => {
                     Profile
                   </div>
                   <div className="mt-1 text-sm text-foreground">
-                    {requestProfile.name ?? requestProfile.id ?? "—"}
+                    {run.request.profile.name ?? run.request.profile.id ?? "—"}
                   </div>
                 </div>
                 <div>
@@ -113,7 +108,7 @@ const MigrationRunDetail = ({ run }: MigrationRunDetailProps) => {
                     Files
                   </div>
                   <div className="mt-1 text-sm text-foreground">
-                    {Object.keys(requestFiles).length}
+                    {Object.keys(run.request.files).length}
                   </div>
                 </div>
                 <div>
@@ -121,7 +116,7 @@ const MigrationRunDetail = ({ run }: MigrationRunDetailProps) => {
                     File Path Prefix
                   </div>
                   <div className="mt-1 break-all text-sm text-foreground">
-                    {(run.request as any)?.filePathPrefix ?? "—"}
+                    {run.request.filePathPrefix ?? "—"}
                   </div>
                 </div>
               </div>

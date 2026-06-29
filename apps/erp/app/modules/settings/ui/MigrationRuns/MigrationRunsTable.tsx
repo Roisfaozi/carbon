@@ -35,7 +35,7 @@ const MigrationRunsTable = ({
         header: "Scenario",
         cell: ({ row }) => (
           <div className="max-w-65 truncate font-medium">
-            {row.original.request?.scenario ?? "—"}
+            {row.original.request.scenario ?? "—"}
           </div>
         )
       },
@@ -44,8 +44,8 @@ const MigrationRunsTable = ({
         header: "Profile",
         cell: ({ row }) => (
           <span className="text-sm text-muted-foreground">
-            {row.original.request?.profile?.name ??
-              row.original.request?.profile?.id ??
+            {row.original.request.profile.name ??
+              row.original.request.profile.id ??
               "—"}
           </span>
         )
@@ -55,7 +55,7 @@ const MigrationRunsTable = ({
         header: "Files",
         cell: ({ row }) => (
           <span className="text-sm text-muted-foreground">
-            {Object.keys(row.original.request?.files ?? {}).length}
+            {Object.keys(row.original.request.files).length}
           </span>
         )
       },

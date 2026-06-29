@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
-import { getMigrationRun } from "~/modules/shared";
+import { getMigrationRun, updateMigrationRunStatus } from "~/modules/shared";
 import { path } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -22,6 +22,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (run.error || !run.data || run.data.status !== "review-ready") {
     return { success: false, message: "Migration run is not ready to apply" };
   }
+
+  await updateMigrationRunStatus(client, {
+    id: migrationRunId,
+    companyId,
+    userId,
+    status: "queued-apply",
+    error: null
+  });
 
   await trigger("migration-run", {
     migrationRunId,

@@ -1,6 +1,9 @@
+import type { Database } from "@carbon/database";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   MigrationDryRunReport,
-  MigrationExecutionReport
+  MigrationExecutionReport,
+  MigrationImportRequest
 } from "../../../../../database/supabase/functions/import-csv/migration-runner.ts";
 import type {
   MigrationRunRequest,
@@ -121,6 +124,53 @@ function invalidRequestReason(error: {
   return `Invalid migration run request: ${path} ${message}`;
 }
 
+function fileNameForRequest(request: { fileName?: string; filePath: string }) {
+  if (request.fileName) return request.fileName;
+  return request.filePath.split("/").pop() ?? request.filePath;
+}
+
+export async function executePersistedApply(
+  client: Pick<SupabaseClient<Database>, "functions">,
+  report: MigrationDryRunReport,
+  persistedRequest: PersistedMigrationRunRequest
+) {
+  const migrationRunnerModule = await import(
+    "../../../../../database/supabase/functions/import-csv/migration-runner.ts"
+  );
+  const migrationRunner =
+    (migrationRunnerModule as any).default ?? migrationRunnerModule;
+
+  return migrationRunner.executeMigrationPlan(
+    report,
+    async (request: MigrationImportRequest) => {
+      const fileName = fileNameForRequest(request);
+      const csvText = persistedRequest.files[fileName];
+
+      if (csvText === undefined) {
+        throw new Error(`Missing persisted CSV for ${fileName}`);
+      }
+
+      const result = await client.functions.invoke("import-csv", {
+        body: {
+          ...request,
+          csvText
+        }
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      return {
+        inserted: result.data?.inserted ?? 0,
+        updated: result.data?.updated ?? 0,
+        skipped: result.data?.skipped ?? 0,
+        errors: result.data?.errors ?? []
+      };
+    }
+  );
+}
+
 export async function runMigrationRun(
   payload: MigrationRunPayload,
   deps: MigrationRunDeps
@@ -168,14 +218,6 @@ export async function runMigrationRun(
   }
 
   await deps.updateRun({ status: "running-apply", error: null });
-
-  const fileNameForRequest = (request: {
-    fileName?: string;
-    filePath: string;
-  }) => {
-    if (request.fileName) return request.fileName;
-    return request.filePath.split("/").pop() ?? request.filePath;
-  };
 
   const missingFile = run.planSnapshot.importRequests.find((request) => {
     const fileName = fileNameForRequest(request);

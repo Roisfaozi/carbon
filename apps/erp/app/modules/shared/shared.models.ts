@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import { migrationRunRequestSchema } from "@carbon/database/migration";
 import { textToTiptap } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -345,7 +346,7 @@ export const migrationRunValidator = z.object({
   id: z.string(),
   companyId: z.string(),
   status: migrationRunStatusValidator,
-  request: z.record(z.string(), z.any()),
+  request: migrationRunRequestSchema,
   planSnapshot: z.record(z.string(), z.any()).nullable().optional(),
   dryRunSummary: z.record(z.string(), z.any()).nullable().optional(),
   applySummary: z.record(z.string(), z.any()).nullable().optional(),
