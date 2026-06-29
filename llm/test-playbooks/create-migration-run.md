@@ -212,7 +212,7 @@ private/migration/manual-smoke-process-v1
 
 ```json
 {
-  "process.csv": "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n"
+  "process.csv": "id,name,processType,defaultStandardFactor\nPROC-MANUAL-001,Manual Process,Inside,Hours/Piece\n"
 }
 ```
 
@@ -220,6 +220,7 @@ Expected result:
 - dry-run reaches `review-ready`
 - apply reaches `applied`
 - `processType` value accepted by current import contract
+- `defaultStandardFactor` is present because current DB schema requires it
 
 ## Recommended Third Test: Work Center Smoke Dataset
 
@@ -245,7 +246,7 @@ private/migration/manual-smoke-workcenter-v1
 
 ```json
 {
-  "workCenter.csv": "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,LOC-MANUAL-001\n"
+  "workCenter.csv": "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,<REAL_LOCATION_ID>\n"
 }
 ```
 
@@ -253,6 +254,7 @@ Expected result:
 - dry-run reaches `review-ready`
 - apply reaches `applied`
 - `locationId` must point at valid location data already present in Carbon
+- Use real `location.id` from current company, not dummy `LOC-MANUAL-001`
 
 ## Recommended Failure Test: Missing Required Field
 

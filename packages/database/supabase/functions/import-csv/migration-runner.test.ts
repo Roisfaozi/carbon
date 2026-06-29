@@ -239,7 +239,8 @@ test("buildDryRunReport supports minimal process smoke dataset", () => {
       tables: [process],
     },
     files: {
-      "process.csv": "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n",
+      "process.csv":
+        "id,name,processType,defaultStandardFactor\nPROC-MANUAL-001,Manual Process,Inside,Hours/Piece\n",
     },
     filePathPrefix: "private/migration/manual-smoke-process-v1",
   });

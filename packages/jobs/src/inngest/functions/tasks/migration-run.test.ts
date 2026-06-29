@@ -311,9 +311,15 @@ test("runMigrationRun persists review-ready dry-run state for process smoke data
       scenario: "manual-smoke-process-v1",
       table: "process",
       fileName: "process.csv",
-      csvText: "id,name,processType\nPROC-MANUAL-001,Manual Process,Inside\n",
-      requiredFields: ["id", "name", "processType"],
-      columnMappings: { id: "id", name: "name", processType: "processType" }
+      csvText:
+        "id,name,processType,defaultStandardFactor\nPROC-MANUAL-001,Manual Process,Inside,Hours/Piece\n",
+      requiredFields: ["id", "name", "processType", "defaultStandardFactor"],
+      columnMappings: {
+        id: "id",
+        name: "name",
+        processType: "processType",
+        defaultStandardFactor: "defaultStandardFactor"
+      }
     })
   );
 });

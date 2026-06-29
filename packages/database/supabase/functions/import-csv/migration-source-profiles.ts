@@ -253,7 +253,7 @@ export const carbonCanonicalProfile: SourceProfile = {
     {
       table: "process",
       fileName: "process.csv",
-      requiredFields: ["id", "name", "processType"],
+      requiredFields: ["id", "name", "processType", "defaultStandardFactor"],
       uniqueFields: ["id"],
       columnMappings: sameNameMappings([
         "id",

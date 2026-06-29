@@ -89,7 +89,12 @@ test("carbon canonical profile maps process fields by name", () => {
 
   assert.ok(process);
   assert.equal(process.fileName, "process.csv");
-  assert.deepEqual(process.requiredFields, ["id", "name", "processType"]);
+  assert.deepEqual(process.requiredFields, [
+    "id",
+    "name",
+    "processType",
+    "defaultStandardFactor",
+  ]);
   assert.equal(process.columnMappings.processType, "processType");
   assert.equal(
     process.columnMappings.defaultStandardFactor,
