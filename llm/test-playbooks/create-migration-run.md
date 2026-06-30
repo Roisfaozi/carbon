@@ -246,8 +246,13 @@ private/migration/manual-smoke-workcenter-v1
 
 ```json
 {
-  "workCenter.csv": "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,<REAL_LOCATION_ID>\n"
+  "workCenter.csv": "id,name,description,locationId\nWC-MANUAL-001,Manual Work Center,Manual test work center,<HEADQUARTERS_LOCATION_ID>\n"
 }
+```
+
+Before pasting, fetch real id:
+```sql
+select id from location where name = 'Headquarters' and "companyId" = '<CURRENT_COMPANY_ID>' limit 1;
 ```
 
 Expected result:
@@ -255,6 +260,7 @@ Expected result:
 - apply reaches `applied`
 - `locationId` must point at valid location data already present in Carbon
 - Use real `location.id` from current company, not dummy `LOC-MANUAL-001`
+- If dev company is freshly seeded, the location should be `Headquarters`
 
 ## Recommended Failure Test: Missing Required Field
 
