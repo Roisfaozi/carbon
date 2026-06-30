@@ -129,6 +129,96 @@ function fileNameForRequest(request: { fileName?: string; filePath: string }) {
   return request.filePath.split("/").pop() ?? request.filePath;
 }
 
+type ResponseBodyReader = {
+  json?: () => Promise<unknown>;
+  text?: () => Promise<string>;
+};
+
+function toResponseBodyReader(value: unknown): ResponseBodyReader | null {
+  if (!value || typeof value !== "object") return null;
+
+  const json = (value as { json?: unknown }).json;
+  const text = (value as { text?: unknown }).text;
+
+  return {
+    json:
+      typeof json === "function"
+        ? () => (json as () => Promise<unknown>).call(value)
+        : undefined,
+    text:
+      typeof text === "function"
+        ? () => (text as () => Promise<string>).call(value)
+        : undefined
+  };
+}
+
+async function functionErrorMessage(error: unknown) {
+  if (!error || typeof error !== "object") return null;
+
+  const context = (error as { context?: unknown }).context;
+  if (!context || typeof context !== "object") return null;
+
+  const responseLike =
+    typeof (context as { clone?: unknown }).clone === "function"
+      ? toResponseBodyReader((context as { clone: () => unknown }).clone())
+      : toResponseBodyReader(context);
+
+  if (!responseLike) return null;
+
+  const parsedFromJson = await readBodyMessage(responseLike);
+  if (parsedFromJson) return parsedFromJson;
+
+  const parsedFromText = await readTextMessage(responseLike);
+  if (parsedFromText) return parsedFromText;
+
+  return null;
+}
+
+async function readBodyMessage(response: ResponseBodyReader) {
+  if (typeof response.json !== "function") return null;
+
+  try {
+    const body = await response.json();
+    if (typeof body === "string" && body.trim()) return body.trim();
+    if (!body || typeof body !== "object") return null;
+
+    const message = (body as { message?: unknown }).message;
+    if (typeof message === "string" && message.trim()) return message.trim();
+
+    const error = (body as { error?: unknown }).error;
+    if (typeof error === "string" && error.trim()) return error.trim();
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+async function readTextMessage(response: ResponseBodyReader) {
+  if (typeof response.text !== "function") return null;
+
+  try {
+    const body = (await response.text()).trim();
+    if (!body) return null;
+
+    try {
+      const parsed = JSON.parse(body) as { message?: unknown; error?: unknown };
+      if (typeof parsed.message === "string" && parsed.message.trim()) {
+        return parsed.message.trim();
+      }
+      if (typeof parsed.error === "string" && parsed.error.trim()) {
+        return parsed.error.trim();
+      }
+    } catch {
+      return body;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
 export async function executePersistedApply(
   client: Pick<SupabaseClient<Database>, "functions">,
   report: MigrationDryRunReport,
@@ -158,7 +248,11 @@ export async function executePersistedApply(
       });
 
       if (result.error) {
-        throw new Error(result.error.message);
+        const surfacedMessage =
+          (await functionErrorMessage(result.error)) ?? result.error.message;
+        throw new Error(
+          `import-csv ${request.table} ${fileName}: ${surfacedMessage}`
+        );
       }
 
       return {

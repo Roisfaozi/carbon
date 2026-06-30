@@ -109,6 +109,24 @@ describe("migration run persistence", () => {
     ]);
   });
 
+  it("lists migration runs without full snapshot payloads", async () => {
+    const { client, query } = createClient();
+
+    await getMigrationRuns(client as any, "company-1");
+
+    assert.deepEqual(query.calls.slice(0, 3), [
+      ["from", "migrationRun"],
+      [
+        "select",
+        "id, status, error, createdAt, updatedAt, scenario:request->>scenario, profileName:request->profile->>name, profileId:request->profile->>id"
+      ],
+      ["eq", "companyId", "company-1"]
+    ]);
+    assert.deepEqual(query.order.mock.calls, [
+      ["createdAt", { ascending: false }]
+    ]);
+  });
+
   it("updates status without mutating stored plan snapshot", async () => {
     const { client, query } = createClient();
 

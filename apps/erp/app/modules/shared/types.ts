@@ -20,7 +20,6 @@ import type {
   getApprovalRequestsByDocument,
   getApprovalRuleByAmount,
   getMigrationRun,
-  getMigrationRuns,
   getNotes
 } from "./shared.service";
 
@@ -99,9 +98,16 @@ export type MethodItemType = (typeof methodItemType)[number];
 export type MethodType = (typeof methodType)[number];
 export type MigrationRunStatus = z.infer<typeof migrationRunStatusValidator>;
 export type MigrationRun = z.infer<typeof migrationRunValidator>;
-export type MigrationRunListItem = NonNullable<
-  Awaited<ReturnType<typeof getMigrationRuns>>["data"]
->[number];
+export type MigrationRunListItem = {
+  id: string;
+  status: MigrationRunStatus;
+  scenario: string | null;
+  profileName: string | null;
+  fileCount?: number | null;
+  error?: string | null;
+  createdAt: string;
+  updatedAt?: string | null;
+};
 export type MigrationRunDetail = NonNullable<
   Awaited<ReturnType<typeof getMigrationRun>>["data"]
 >;

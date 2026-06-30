@@ -25,6 +25,7 @@ import type {
   ApprovalRule,
   CreateApprovalRequestInput,
   MigrationRun,
+  MigrationRunListItem,
   UpsertApprovalRuleInput
 } from "./types";
 
@@ -1028,13 +1029,34 @@ export async function createMigrationRun(
 export async function getMigrationRuns(
   client: SupabaseClient<Database>,
   companyId: string
-): Promise<{ data: MigrationRun[] | null; count: number | null; error: any }> {
+): Promise<{
+  data: MigrationRunListItem[] | null;
+  count: number | null;
+  error: any;
+}> {
   const db = client as any;
-  return db
+  const result = await db
     .from("migrationRun")
-    .select("*")
+    .select(
+      "id, status, error, createdAt, updatedAt, scenario:request->>scenario, profileName:request->profile->>name, profileId:request->profile->>id"
+    )
     .eq("companyId", companyId)
     .order("createdAt", { ascending: false });
+
+  return {
+    ...result,
+    data:
+      result.data?.map((run: any) => ({
+        id: run.id,
+        status: run.status,
+        scenario: run.scenario ?? null,
+        profileName: run.profileName ?? run.profileId ?? null,
+        fileCount: null,
+        error: run.error ?? null,
+        createdAt: run.createdAt,
+        updatedAt: run.updatedAt ?? null
+      })) ?? null
+  };
 }
 
 export async function getMigrationRun(

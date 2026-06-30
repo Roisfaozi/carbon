@@ -230,25 +230,48 @@ async function fetchLiveEntityIds(
  * supplier/customer for companies with large rosters.
  */
 async function getNameMap(
-  entityType: "supplier" | "customer",
+  entityType: "supplier" | "customer" | "workCenter" | "process",
   cId: string,
   namesToCheck: string[]
 ): Promise<Map<string, string>> {
   if (namesToCheck.length === 0) return new Map();
-  const rows =
-    entityType === "supplier"
-      ? await db
-          .selectFrom("supplier")
-          .select(["id", "name"])
-          .where("companyId", "=", cId)
-          .where("name", "in", namesToCheck)
-          .execute()
-      : await db
-          .selectFrom("customer")
-          .select(["id", "name"])
-          .where("companyId", "=", cId)
-          .where("name", "in", namesToCheck)
-          .execute();
+  let rows: Array<{ id: string; name: string }>;
+
+  switch (entityType) {
+    case "supplier":
+      rows = await db
+        .selectFrom("supplier")
+        .select(["id", "name"])
+        .where("companyId", "=", cId)
+        .where("name", "in", namesToCheck)
+        .execute();
+      break;
+    case "customer":
+      rows = await db
+        .selectFrom("customer")
+        .select(["id", "name"])
+        .where("companyId", "=", cId)
+        .where("name", "in", namesToCheck)
+        .execute();
+      break;
+    case "workCenter":
+      rows = await db
+        .selectFrom("workCenter")
+        .select(["id", "name"])
+        .where("companyId", "=", cId)
+        .where("name", "in", namesToCheck)
+        .execute();
+      break;
+    case "process":
+      rows = await db
+        .selectFrom("process")
+        .select(["id", "name"])
+        .where("companyId", "=", cId)
+        .where("name", "in", namesToCheck)
+        .execute();
+      break;
+  }
+
   return new Map(rows.map((r) => [r.name, r.id]));
 }
 
@@ -1868,7 +1891,16 @@ serve(async (req: Request) => {
           "workCenter",
           companyId
         );
-        const workCenterIds = new Set();
+        const csvNames = Array.from(
+          new Set(
+            mappedRecords
+              .map((r) => r.name)
+              .filter((n): n is string => typeof n === "string" && n !== "")
+          )
+        );
+        const nameMap = await getNameMap("workCenter", companyId, csvNames);
+        const workCenterIds = new Set<string>();
+        const namesQueuedForInsert = new Set<string>();
 
         await db.transaction().execute(async (trx) => {
           const workCenterInserts: Database["public"]["Tables"]["workCenter"]["Insert"][] =
@@ -1878,6 +1910,10 @@ serve(async (req: Request) => {
             id: string;
             data: Database["public"]["Tables"]["workCenter"]["Update"];
           }[] = [];
+          const csvIdsForNameMatchedUpdates: Array<{
+            entityId: string;
+            externalId: string;
+          }> = [];
 
           const isWorkCenterValid = (
             record: Record<string, string>
@@ -1890,42 +1926,66 @@ serve(async (req: Request) => {
             );
           };
 
-          for (const record of mappedRecords) {
+          for (const [rowIndex, record] of mappedRecords.entries()) {
             const { id, ...rest } = record;
-            if (externalIdMap.has(id)) {
-              const existingEntityId = externalIdMap.get(id)!;
-              if (isWorkCenterValid(rest) && !workCenterIds.has(id)) {
-                workCenterIds.add(id);
-                workCenterUpdates.push({
-                  id: existingEntityId,
-                  data: {
-                    ...rest,
-                    laborRate: rest.laborRate ? parseFloat(rest.laborRate) : 0,
-                    machineRate: rest.machineRate
-                      ? parseFloat(rest.machineRate)
-                      : 0,
-                    overheadRate: rest.overheadRate
-                      ? parseFloat(rest.overheadRate)
-                      : 0,
-                    updatedAt: new Date().toISOString(),
-                    updatedBy: userId,
-                  },
+            if (!isWorkCenterValid(rest)) {
+              summary.errors.push({
+                row: rowIndex,
+                reason: "Invalid work center (missing required fields)"
+              });
+              continue;
+            }
+
+            const matchedByCsvId = id ? externalIdMap.get(id) : undefined;
+            const decision = classifyImportRow({
+              id,
+              name: rest.name,
+              externalIdMap,
+              nameMap,
+              seenIds: workCenterIds,
+              seenNames: namesQueuedForInsert
+            });
+
+            if (decision.action === "skip") {
+              summary.errors.push({ row: rowIndex, reason: decision.reason });
+              continue;
+            }
+
+            if (id) workCenterIds.add(id);
+            if (decision.action === "insert") namesQueuedForInsert.add(rest.name);
+
+            const normalizedData = {
+              ...rest,
+              defaultStandardFactor:
+                rest.defaultStandardFactor && rest.defaultStandardFactor.trim()
+                  ? rest.defaultStandardFactor
+                  : undefined,
+              laborRate: rest.laborRate ? parseFloat(rest.laborRate) : 0,
+              machineRate: rest.machineRate ? parseFloat(rest.machineRate) : 0,
+              overheadRate: rest.overheadRate ? parseFloat(rest.overheadRate) : 0
+            };
+
+            if (decision.action === "update") {
+              workCenterUpdates.push({
+                id: decision.entityId,
+                data: {
+                  ...normalizedData,
+                  updatedAt: new Date().toISOString(),
+                  updatedBy: userId
+                }
+              });
+              if (matchedByCsvId === undefined && id) {
+                csvIdsForNameMatchedUpdates.push({
+                  entityId: decision.entityId,
+                  externalId: id
                 });
               }
-            } else if (isWorkCenterValid(rest) && !workCenterIds.has(id)) {
-              workCenterIds.add(id);
+            } else {
               workCenterInserts.push({
-                ...rest,
-                laborRate: rest.laborRate ? parseFloat(rest.laborRate) : 0,
-                machineRate: rest.machineRate
-                  ? parseFloat(rest.machineRate)
-                  : 0,
-                overheadRate: rest.overheadRate
-                  ? parseFloat(rest.overheadRate)
-                  : 0,
+                ...normalizedData,
                 companyId,
                 createdAt: new Date().toISOString(),
-                createdBy: userId,
+                createdBy: userId
               } as never);
               csvIdsForInserts.push(id);
             }
@@ -1934,8 +1994,11 @@ serve(async (req: Request) => {
           console.log({
             totalRecords: mappedRecords.length,
             workCenterInserts: workCenterInserts.length,
-            workCenterUpdates: workCenterUpdates.length,
+            workCenterUpdates: workCenterUpdates.length
           });
+
+          summary.inserted += workCenterInserts.length;
+          summary.updated += workCenterUpdates.length;
 
           if (workCenterInserts.length > 0) {
             const inserted = await trx
@@ -1948,7 +2011,7 @@ serve(async (req: Request) => {
               "workCenter",
               inserted.map((row, i) => ({
                 entityId: row.id!,
-                externalId: csvIdsForInserts[i],
+                externalId: csvIdsForInserts[i]
               })),
               companyId,
               userId
@@ -1963,12 +2026,30 @@ serve(async (req: Request) => {
                 .execute();
             }
           }
+          if (csvIdsForNameMatchedUpdates.length > 0) {
+            await upsertCsvMappings(
+              trx,
+              "workCenter",
+              csvIdsForNameMatchedUpdates,
+              companyId,
+              userId
+            );
+          }
         });
         break;
       }
       case "process": {
         const externalIdMap = await getCsvExternalIdMap("process", companyId);
-        const processIds = new Set();
+        const csvNames = Array.from(
+          new Set(
+            mappedRecords
+              .map((r) => r.name)
+              .filter((n): n is string => typeof n === "string" && n !== "")
+          )
+        );
+        const nameMap = await getNameMap("process", companyId, csvNames);
+        const processIds = new Set<string>();
+        const namesQueuedForInsert = new Set<string>();
 
         await db.transaction().execute(async (trx) => {
           const processInserts: Database["public"]["Tables"]["process"]["Insert"][] =
@@ -1978,6 +2059,10 @@ serve(async (req: Request) => {
             id: string;
             data: Database["public"]["Tables"]["process"]["Update"];
           }[] = [];
+          const csvIdsForNameMatchedUpdates: Array<{
+            entityId: string;
+            externalId: string;
+          }> = [];
 
           const isProcessValid = (
             record: Record<string, string>
@@ -1991,32 +2076,65 @@ serve(async (req: Request) => {
             );
           };
 
-          for (const record of mappedRecords) {
+          for (const [rowIndex, record] of mappedRecords.entries()) {
             const { id, ...rest } = record;
-            if (externalIdMap.has(id)) {
-              const existingEntityId = externalIdMap.get(id)!;
-              if (isProcessValid(rest) && !processIds.has(id)) {
-                processIds.add(id);
-                processUpdates.push({
-                  id: existingEntityId,
-                  data: {
-                    ...rest,
-                    completeAllOnScan:
-                      rest.completeAllOnScan?.toLowerCase() === "true" ?? false,
-                    updatedAt: new Date().toISOString(),
-                    updatedBy: userId,
-                  },
+            if (!isProcessValid(rest)) {
+              summary.errors.push({
+                row: rowIndex,
+                reason: "Invalid process (missing required fields)"
+              });
+              continue;
+            }
+
+            const matchedByCsvId = id ? externalIdMap.get(id) : undefined;
+            const decision = classifyImportRow({
+              id,
+              name: rest.name,
+              externalIdMap,
+              nameMap,
+              seenIds: processIds,
+              seenNames: namesQueuedForInsert
+            });
+
+            if (decision.action === "skip") {
+              summary.errors.push({ row: rowIndex, reason: decision.reason });
+              continue;
+            }
+
+            if (id) processIds.add(id);
+            if (decision.action === "insert") namesQueuedForInsert.add(rest.name);
+
+            const normalizedData = {
+              ...rest,
+              defaultStandardFactor:
+                rest.defaultStandardFactor && rest.defaultStandardFactor.trim()
+                  ? rest.defaultStandardFactor
+                  : undefined,
+              completeAllOnScan:
+                rest.completeAllOnScan?.toLowerCase() === "true" ?? false
+            };
+
+            if (decision.action === "update") {
+              processUpdates.push({
+                id: decision.entityId,
+                data: {
+                  ...normalizedData,
+                  updatedAt: new Date().toISOString(),
+                  updatedBy: userId
+                }
+              });
+              if (matchedByCsvId === undefined && id) {
+                csvIdsForNameMatchedUpdates.push({
+                  entityId: decision.entityId,
+                  externalId: id
                 });
               }
-            } else if (isProcessValid(rest) && !processIds.has(id)) {
-              processIds.add(id);
+            } else {
               processInserts.push({
-                ...rest,
-                completeAllOnScan:
-                  rest.completeAllOnScan?.toLowerCase() === "true" ?? false,
+                ...normalizedData,
                 companyId,
                 createdAt: new Date().toISOString(),
-                createdBy: userId,
+                createdBy: userId
               } as never);
               csvIdsForInserts.push(id);
             }
@@ -2025,8 +2143,11 @@ serve(async (req: Request) => {
           console.log({
             totalRecords: mappedRecords.length,
             processInserts: processInserts.length,
-            processUpdates: processUpdates.length,
+            processUpdates: processUpdates.length
           });
+
+          summary.inserted += processInserts.length;
+          summary.updated += processUpdates.length;
 
           if (processInserts.length > 0) {
             const inserted = await trx
@@ -2039,7 +2160,7 @@ serve(async (req: Request) => {
               "process",
               inserted.map((row, i) => ({
                 entityId: row.id!,
-                externalId: csvIdsForInserts[i],
+                externalId: csvIdsForInserts[i]
               })),
               companyId,
               userId
@@ -2053,6 +2174,15 @@ serve(async (req: Request) => {
                 .where("id", "=", update.id)
                 .execute();
             }
+          }
+          if (csvIdsForNameMatchedUpdates.length > 0) {
+            await upsertCsvMappings(
+              trx,
+              "process",
+              csvIdsForNameMatchedUpdates,
+              companyId,
+              userId
+            );
           }
         });
         break;

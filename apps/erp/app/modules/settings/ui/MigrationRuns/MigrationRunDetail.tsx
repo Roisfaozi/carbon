@@ -4,7 +4,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CodeBlock,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -13,6 +12,7 @@ import {
   HStack
 } from "@carbon/react";
 import { formatDateTime } from "@carbon/utils";
+import { useState } from "react";
 import { Form, useNavigate } from "react-router";
 import type { MigrationRun } from "~/modules/shared";
 import { path } from "~/utils/path";
@@ -28,15 +28,46 @@ function toJson(value: unknown) {
   return JSON.stringify(value ?? null, null, 2);
 }
 
+function jsonSummary(value: unknown) {
+  if (value === null || value === undefined) return "No data";
+  if (Array.isArray(value)) return `${value.length} items`;
+  if (typeof value === "object") {
+    return `${Object.keys(value).length} keys`;
+  }
+  return typeof value;
+}
+
 function JsonCard({ title, value }: { title: string; value: unknown }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const json = isOpen ? toJson(value) : null;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <HStack className="items-center justify-between">
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {jsonSummary(value)}
+            </p>
+          </div>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => setIsOpen((open) => !open)}
+          >
+            {isOpen ? "Hide" : "Show"}
+          </Button>
+        </HStack>
       </CardHeader>
-      <CardContent>
-        <CodeBlock className="language-javascript">{toJson(value)}</CodeBlock>
-      </CardContent>
+      {isOpen && (
+        <CardContent>
+          <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-md bg-[#011627] p-4 font-mono text-sm text-[#d6deeb]">
+            {json}
+          </pre>
+        </CardContent>
+      )}
     </Card>
   );
 }

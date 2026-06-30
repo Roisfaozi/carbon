@@ -232,6 +232,62 @@ test("runMigrationRun fails apply gracefully when persisted csv file is missing"
   assert.match((updates[1] as any).error, /Missing persisted CSV/);
 });
 
+test("executePersistedApply surfaces edge-function JSON message for non-2xx responses", async () => {
+  const { executePersistedApply } = await import("./migration-run.core.ts");
+  const planSnapshot: MigrationDryRunReport = {
+    scenario: "golden-v1",
+    status: "pass",
+    totalRows: 1,
+    tables: [],
+    errors: [],
+    warnings: [],
+    importRequests: [
+      {
+        table: "customer",
+        fileName: "customers.csv",
+        filePath: "private/migrations/run-1/customers.csv",
+        columnMappings: { id: "id", name: "name" },
+        companyId: "company-1",
+        userId: "user-1"
+      }
+    ]
+  };
+
+  const response = new Response(
+    JSON.stringify({
+      success: false,
+      message:
+        'duplicate key value violates unique constraint "workCenter_name_companyId_key"'
+    }),
+    {
+      status: 409,
+      headers: { "Content-Type": "application/json" }
+    }
+  );
+
+  const execution = await executePersistedApply(
+    {
+      functions: {
+        invoke: async () => ({
+          data: null,
+          error: {
+            message: "Edge Function returned a non-2xx status code",
+            context: response
+          }
+        })
+      }
+    } as any,
+    planSnapshot,
+    request as any
+  );
+
+  assert.equal(execution.status, "fail");
+  assert.match(
+    execution.errors[0]?.reason ?? "",
+    /duplicate key value violates unique constraint/
+  );
+});
+
 function smokeRequest(args: {
   scenario: string;
   table: "supplier" | "process" | "workCenter";
